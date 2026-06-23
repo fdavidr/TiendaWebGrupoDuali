@@ -6,7 +6,7 @@
   <title>MI EMPRESA – Panel Admin</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
@@ -22,29 +22,32 @@
      * ═══════════════════════════════════════════════════════════ */
     :root {
       /* Fondos */
-      --bg: #f7f4fe;                 /* Fondo general (lavanda muy claro) */
+      --bg: #f8f5ff;                 /* Fondo general (lavanda muy claro) */
       --surface: #ffffff;             /* Fondo de paneles y tarjetas */
       --panel-soft: #f4f0fd;          /* Fondo de inputs y áreas suaves */
       /* Bordes (basados en el color de marca) */
       --card-border: rgba(124, 58, 237, 0.18);   /* Borde de tarjetas */
-      --border: rgba(124, 58, 237, 0.24);        /* Borde estándar */
-      --line-strong: rgba(124, 58, 237, 0.42);   /* Borde destacado */
+      --border:      rgba(124, 58, 237, 0.22);   /* Borde estándar */
+      --line-strong: rgba(124, 58, 237, 0.44);   /* Borde destacado */
       /* ── Color de marca: CAMBIA ESTOS para otro cliente ── */
-      --accent: #7c3aed;                        /* Color primario de marca (violeta) */
-      --accent2: #6d28d9;                       /* Variante oscura (hover, gradientes) */
-      --accent-light: rgba(124, 58, 237, 0.10); /* Fondo suave de chips/badges */
-      --accent-mid: rgba(124, 58, 237, 0.14);   /* Fondo intermedio */
+      --accent:  #7c3aed;                        /* Color primario de marca (violeta) */
+      --accent2: #6d28d9;                        /* Variante oscura (hover, gradientes) */
+      --accent3: #a855f7;                        /* Variante suave (destellos, gradientes) */
+      --pink:    #ec4899;                        /* Acento rosa (orbes, gradientes) */
+      --accent-light: rgba(124, 58, 237, 0.10);  /* Fondo suave de chips/badges */
+      --accent-mid:   rgba(124, 58, 237, 0.14);  /* Fondo intermedio */
       /* Textos */
-      --text: #1f1535;               /* Texto principal (morado muy oscuro) */
+      --text:     #1f1535;           /* Texto principal (morado muy oscuro) */
       --text-mid: #3a2d57;           /* Texto medio */
-      --muted: #6f6488;              /* Texto secundario */
+      --muted:    #6f6488;           /* Texto secundario */
       /* Colores funcionales */
-      --danger: #dc2626;             /* Errores, eliminar */
+      --danger:  #dc2626;            /* Errores, eliminar */
+      --success: #16a34a;            /* Confirmaciones positivas */
       --header-bg: rgba(247, 244, 254, 0.92); /* Fondo del encabezado */
       /* Sombras */
-      --shadow-sm: 0 8px 22px rgba(76, 29, 149, 0.10);
-      --shadow-md: 0 18px 50px rgba(76, 29, 149, 0.16);
-      --shadow-lg: 0 26px 80px rgba(76, 29, 149, 0.20);
+      --shadow-sm: 0 8px 24px rgba(76, 29, 149, 0.12);
+      --shadow-md: 0 20px 60px rgba(76, 29, 149, 0.20);
+      --shadow-lg: 0 32px 90px rgba(76, 29, 149, 0.28);
     }
 
     body {
@@ -52,9 +55,11 @@
       font-family: 'Manrope', sans-serif;
       color: var(--text);
       background:
-        radial-gradient(circle at 0% 0%, rgba(124, 58, 237, 0.14) 0, transparent 42%),
-        radial-gradient(circle at 100% 8%, rgba(236, 72, 153, 0.10) 0, transparent 34%),
-        linear-gradient(180deg, #f7f4fe 0%, #ffffff 55%, #f1ebfd 100%);
+        radial-gradient(circle at 8% 12%,  rgba(124, 58, 237, 0.24) 0, transparent 44%),
+        radial-gradient(circle at 90% 5%,  rgba(236, 72, 153, 0.18) 0, transparent 38%),
+        radial-gradient(circle at 75% 90%, rgba(124, 58, 237, 0.16) 0, transparent 40%),
+        radial-gradient(circle at 15% 80%, rgba(168, 85, 247, 0.12) 0, transparent 35%),
+        linear-gradient(135deg, #f5f0fe 0%, #fdf8ff 50%, #f0ebff 100%);
       overflow-x: hidden;
     }
 
@@ -72,14 +77,78 @@
       mask-image: radial-gradient(ellipse at 50% 35%, #000 45%, transparent 100%);
     }
 
+    /* ── Orbes de fondo animados ── */
+    .bg-orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(72px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .bg-orb-1 {
+      width: 420px; height: 420px;
+      top: -100px; left: -100px;
+      background: radial-gradient(circle, rgba(124, 58, 237, .40), transparent 65%);
+      animation: orbFloat 16s ease-in-out infinite;
+    }
+    .bg-orb-2 {
+      width: 340px; height: 340px;
+      bottom: -100px; right: -80px;
+      background: radial-gradient(circle, rgba(236, 72, 153, .38), transparent 65%);
+      animation: orbFloat 20s ease-in-out infinite reverse;
+    }
+    .bg-orb-3 {
+      width: 260px; height: 260px;
+      top: 50%; right: 8%;
+      transform: translateY(-50%);
+      background: radial-gradient(circle, rgba(168, 85, 247, .28), transparent 65%);
+      animation: orbFloat 24s ease-in-out infinite 4s;
+    }
+
+    @keyframes orbFloat {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33%       { transform: translate(24px, 18px) scale(1.06); }
+      66%       { transform: translate(-16px, 28px) scale(.96); }
+    }
+
+    /* ── Animación de entrada para el panel principal ── */
+    @keyframes adminFadeIn {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .admin-shell { animation: adminFadeIn .55s cubic-bezier(.22,1,.36,1) both; }
+    .sidebar     { animation: adminFadeIn .55s cubic-bezier(.22,1,.36,1) .08s both; }
+
+    /* ── Partículas flotantes ── */
+    .particles {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      background: var(--accent);
+      opacity: 0;
+      animation: particleRise var(--dur, 12s) ease-in-out infinite var(--delay, 0s);
+    }
+    @keyframes particleRise {
+      0%   { opacity: 0;   transform: translateY(0)       scale(.6); }
+      20%  { opacity: .55; }
+      80%  { opacity: .25; }
+      100% { opacity: 0;   transform: translateY(-120vh)  scale(1.4); }
+    }
+
     header {
       position: sticky;
       top: 0;
       z-index: 100;
       background: var(--header-bg);
       border-bottom: 1px solid var(--border);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
       box-shadow: 0 6px 20px rgba(76, 29, 149, 0.10);
       padding: .8rem 1.5rem;
       display: flex;
@@ -96,7 +165,7 @@
       font-weight: 700;
       font-size: 1.2rem;
       letter-spacing: .12em;
-      background: linear-gradient(120deg, var(--accent2), var(--accent), #ec4899);
+      background: linear-gradient(120deg, var(--accent2), var(--accent), var(--accent3), #ec4899);
       -webkit-background-clip: text;
       background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -147,9 +216,24 @@
       border: none;
       background: linear-gradient(135deg, var(--accent2), var(--accent));
       box-shadow: 0 10px 20px rgba(124, 58, 237, 0.30);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-link.primary::after {
+      content: '';
+      position: absolute;
+      top: 0; left: -110%;
+      width: 55%;
+      height: 100%;
+      background: linear-gradient(100deg, transparent, rgba(255,255,255,.38), transparent);
+      transform: skewX(-18deg);
+      transition: left .55s ease;
+      pointer-events: none;
     }
 
     .btn-link.primary:hover { color: #fff; box-shadow: 0 16px 30px rgba(124, 58, 237, 0.42); }
+    .btn-link.primary:hover::after { left: 130%; }
 
     /* Personalización de colores de la tienda */
     .color-grid {
@@ -188,7 +272,7 @@
       margin-top: 0.4rem;
     }
 
-    .layout { padding: 1.4rem; }
+    .layout { padding: 1.4rem; position: relative; z-index: 1; }
     .admin-shell {
       display: grid;
       grid-template-columns: 250px minmax(0, 1fr);
@@ -887,6 +971,15 @@
   </style>
 </head>
 <body>
+
+<!-- Orbes de fondo animados -->
+<div class="bg-orb bg-orb-1" aria-hidden="true"></div>
+<div class="bg-orb bg-orb-2" aria-hidden="true"></div>
+<div class="bg-orb bg-orb-3" aria-hidden="true"></div>
+
+<!-- Partículas flotantes -->
+<div class="particles" id="particles" aria-hidden="true"></div>
+
 
   <!-- ── HEADER ── -->
   <header>
@@ -1672,6 +1765,26 @@
   // Ocultar panel hasta confirmar autenticación (fade-in al autenticar)
   document.body.style.opacity = '0';
   document.body.style.transition = 'opacity .4s ease';
+
+  // ── Partículas flotantes ──
+  (function spawnParticles() {
+    const container = document.getElementById('particles');
+    if (!container) return;
+    for (let i = 0; i < 18; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      const size = 3 + Math.random() * 5;
+      p.style.cssText = [
+        `width:${size}px`, `height:${size}px`,
+        `left:${Math.random() * 100}%`,
+        `bottom:${Math.random() * 20}%`,
+        `--dur:${10 + Math.random() * 16}s`,
+        `--delay:${Math.random() * 12}s`,
+        `opacity:0`
+      ].join(';');
+      container.appendChild(p);
+    }
+  })();
 
   _auth.onAuthStateChanged(handleAuthState);
 
