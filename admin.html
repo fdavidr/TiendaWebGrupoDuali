@@ -1338,7 +1338,36 @@
 
               <div class="editor-card">
                 <div class="editor-card-head">
-                  <strong>💾 Copia de seguridad</strong>
+                  <strong>� Cuenta de administrador</strong>
+                </div>
+                <p class="inline-help">Actualiza tu nombre de usuario o correo de recuperación. Para cambiar el correo o la contraseña debes ingresar la contraseña actual.</p>
+                <div class="form-grid" style="margin-top:.4rem;">
+                  <div class="field">
+                    <label for="acc-username">Nombre de usuario</label>
+                    <input type="text" id="acc-username" placeholder="Nombre de usuario" maxlength="30" autocomplete="off" />
+                  </div>
+                  <div class="field">
+                    <label for="acc-email">Correo de recuperación</label>
+                    <input type="email" id="acc-email" placeholder="correo@ejemplo.com" autocomplete="off" />
+                  </div>
+                  <div class="field">
+                    <label for="acc-new-password">Nueva contraseña <span style="font-weight:400;text-transform:none;letter-spacing:0">(dejar vacío para no cambiar)</span></label>
+                    <input type="password" id="acc-new-password" placeholder="Mínimo 6 caracteres" minlength="6" autocomplete="new-password" />
+                  </div>
+                  <div class="field">
+                    <label for="acc-current-password">Contraseña actual <span style="font-weight:400;text-transform:none;letter-spacing:0">(requerida para cambiar correo o contraseña)</span></label>
+                    <input type="password" id="acc-current-password" placeholder="Tu contraseña actual" autocomplete="current-password" />
+                  </div>
+                </div>
+                <div class="form-actions" style="margin-top:.8rem;">
+                  <button class="btn-primary" id="btn-save-account" type="button">Guardar cuenta</button>
+                </div>
+                <p id="acc-msg" style="margin-top:.55rem;font-size:.78rem;min-height:1.1rem;"></p>
+              </div><!-- /.editor-card cuenta -->
+
+              <div class="editor-card">
+                <div class="editor-card-head">
+                  <strong>�💾 Copia de seguridad</strong>
                 </div>
                 <p class="inline-help">Exporta todos los datos ingresados desde el panel (productos, configuración, sucursales, categorías y catálogos) o importa una copia guardada.</p>
                 <div class="backup-actions">
@@ -1823,6 +1852,10 @@
       document.getElementById('cfg-company-slogan').value = slogan;
       document.getElementById('cfg-logo-name').textContent = data.logoFileName || (logoSource ? getFileNameFromUrl(logoSource) : 'Sin logo cargado');
       document.getElementById('cfg-whatsapp-url').value = whatsAppUrl;
+      const accUsernameEl = document.getElementById('acc-username');
+      const accEmailEl    = document.getElementById('acc-email');
+      if (accUsernameEl) accUsernameEl.value = String(data.username || '').trim();
+      if (accEmailEl)    accEmailEl.value    = String(data.recoveryEmail || data.email || '').trim();
       fillThemeColorInputs(themeColors);
       fillSectionVisibilityInputs(sectionVisibility);
 
@@ -1908,6 +1941,77 @@
       previewEl.innerHTML = url ? `<img src="${escapeHtml(url)}" alt="Vista previa del logo" />` : '<span>Logo</span>';
     } catch (e) {
       previewEl.innerHTML = '<span>Logo</span>';
+    }
+  }
+
+  async function saveAccountSettings() {
+    const newUsername = document.getElementById('acc-username').value.trim();
+    const newEmail    = document.getElementById('acc-email').value.trim();
+    const newPassword = document.getElementById('acc-new-password').value;
+    const currentPwd  = document.getElementById('acc-current-password').value;
+    const msgEl = document.getElementById('acc-msg');
+    const btn   = document.getElementById('btn-save-account');
+
+    msgEl.style.color = 'var(--danger)';
+    msgEl.textContent = '';
+
+    if (!newUsername) { msgEl.textContent = 'El nombre de usuario no puede estar vacío.'; return; }
+    if (newEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)) { msgEl.textContent = 'El correo ingresado no es válido.'; return; }
+
+    const user = _auth.currentUser;
+    if (!user) { msgEl.textContent = 'No hay sesión activa. Recarga la página.'; return; }
+
+    const snap = await CONFIG_DOC.get();
+    const meta = snap.exists ? snap.data() : {};
+    const currentEmail = String(meta.recoveryEmail || meta.email || user.email || '').trim();
+    const emailChanged    = newEmail && newEmail !== currentEmail;
+    const passwordChanged = newPassword.length > 0;
+
+    if ((emailChanged || passwordChanged) && !currentPwd) {
+      msgEl.textContent = 'Ingresa tu contraseña actual para cambiar correo o contraseña.';
+      return;
+    }
+    if (passwordChanged && newPassword.length < 6) {
+      msgEl.textContent = 'La contraseña nueva debe tener al menos 6 caracteres.';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Guardando...';
+    try {
+      if (emailChanged || passwordChanged) {
+        const cred = firebase.auth.EmailAuthProvider.credential(user.email, currentPwd);
+        await user.reauthenticateWithCredential(cred);
+      }
+      if (emailChanged)    await user.updateEmail(newEmail);
+      if (passwordChanged) await user.updatePassword(newPassword);
+
+      await CONFIG_DOC.set({
+        username:      newUsername,
+        usernameKey:   newUsername.toLowerCase(),
+        recoveryEmail: emailChanged ? newEmail : currentEmail
+      }, { merge: true });
+
+      document.getElementById('acc-new-password').value    = '';
+      document.getElementById('acc-current-password').value = '';
+      msgEl.style.color = 'var(--success)';
+      msgEl.textContent = '✓ Cuenta actualizada correctamente.';
+      showToast('✅ Cuenta actualizada');
+      setTimeout(() => { msgEl.textContent = ''; }, 4500);
+    } catch(e) {
+      const errMap = {
+        'auth/wrong-password':        'Contraseña actual incorrecta.',
+        'auth/invalid-credential':    'Contraseña actual incorrecta.',
+        'auth/email-already-in-use':  'Ese correo ya está en uso por otra cuenta.',
+        'auth/invalid-email':         'El correo ingresado no es válido.',
+        'auth/requires-recent-login': 'Sesión expirada. Cierra sesión y vuelve a ingresar.',
+        'auth/too-many-requests':     'Demasiados intentos. Espera unos minutos.',
+        'auth/network-request-failed':'Sin conexión a internet.',
+      };
+      msgEl.textContent = errMap[e.code] || `Error: ${e.message || e.code}`;
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Guardar cuenta';
     }
   }
 
@@ -2817,6 +2921,7 @@
     document.getElementById('cfg-logo-name').textContent = file ? `${file.name} (pendiente de subir)` : 'Sin logo cargado';
   });
 
+  document.getElementById('btn-save-account').addEventListener('click', saveAccountSettings);
   document.getElementById('btn-save-branding').addEventListener('click', saveCompanyConfig);
   document.getElementById('btn-reset-colors').addEventListener('click', function() {
     fillThemeColorInputs(DEFAULT_THEME_COLORS);
