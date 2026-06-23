@@ -43,7 +43,6 @@
       /* Colores funcionales */
       --danger:  #dc2626;            /* Errores, eliminar */
       --success: #16a34a;            /* Confirmaciones positivas */
-      --header-bg: rgba(247, 244, 254, 0.92); /* Fondo del encabezado */
       /* Sombras */
       --shadow-sm: 0 8px 24px rgba(76, 29, 149, 0.12);
       --shadow-md: 0 20px 60px rgba(76, 29, 149, 0.20);
@@ -145,30 +144,44 @@
       position: sticky;
       top: 0;
       z-index: 100;
-      background: var(--header-bg);
-      border-bottom: 1px solid var(--border);
+      background: linear-gradient(150deg, var(--accent2) 0%, var(--accent) 55%, var(--accent3) 100%);
+      border-bottom: 1px solid rgba(255,255,255,.12);
       backdrop-filter: blur(18px);
       -webkit-backdrop-filter: blur(18px);
-      box-shadow: 0 6px 20px rgba(76, 29, 149, 0.10);
+      box-shadow: 0 6px 28px rgba(76, 29, 149, 0.38);
       padding: .8rem 1.5rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 1rem;
       flex-wrap: wrap;
+      overflow: hidden;
     }
 
-    .header-logo { display: flex; align-items: center; gap: .7rem; text-decoration: none; }
-    .header-logo img { width: 34px; height: 34px; object-fit: contain; }
+    header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 10% 50%, rgba(255,255,255,.14) 0, transparent 55%),
+        radial-gradient(circle at 90% 50%, rgba(0,0,0,.08) 0, transparent 50%);
+      pointer-events: none;
+    }
+
+    .header-logo { display: flex; align-items: center; gap: .7rem; text-decoration: none; position: relative; z-index: 1; }
+    .header-logo img {
+      width: 34px; height: 34px; object-fit: contain;
+      background: rgba(255,255,255,.22);
+      border-radius: 10px;
+      padding: 5px;
+    }
     .header-logo span {
       font-family: 'Space Grotesk', sans-serif;
       font-weight: 700;
       font-size: 1.2rem;
       letter-spacing: .12em;
-      background: linear-gradient(120deg, var(--accent2), var(--accent), var(--accent3), #ec4899);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: #fff;
+      -webkit-text-fill-color: #fff;
     }
 
     .header-title {
@@ -177,45 +190,48 @@
       font-weight: 700;
       letter-spacing: .18em;
       text-transform: uppercase;
-      color: var(--accent2);
-      border: 1px solid var(--border);
+      color: rgba(255,255,255,.85);
+      border: 1px solid rgba(255,255,255,.28);
       border-radius: 999px;
       padding: .32rem .6rem;
-      background: rgba(255,255,255,.7);
+      background: rgba(255,255,255,.15);
+      position: relative;
+      z-index: 1;
     }
 
-    .header-links { display: flex; gap: .65rem; flex-wrap: wrap; }
+    .header-links { display: flex; gap: .65rem; flex-wrap: wrap; position: relative; z-index: 1; }
     .btn-link {
       display: inline-flex;
       align-items: center;
       gap: .35rem;
       padding: .48rem .92rem;
       border-radius: 999px;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,.85);
-      color: var(--muted);
+      border: 1px solid rgba(255,255,255,.3);
+      background: rgba(255,255,255,.16);
+      color: rgba(255,255,255,.9);
       text-decoration: none;
       font-family: 'Space Grotesk', sans-serif;
       font-size: .65rem;
       font-weight: 700;
       letter-spacing: .09em;
       text-transform: uppercase;
-      transition: transform .2s, border-color .2s, color .2s, box-shadow .2s;
+      transition: transform .2s, border-color .2s, color .2s, box-shadow .2s, background .2s;
       cursor: pointer;
     }
 
     .btn-link:hover {
       transform: translateY(-1px);
-      color: var(--accent2);
-      border-color: var(--line-strong);
-      box-shadow: var(--shadow-sm);
+      color: #fff;
+      border-color: rgba(255,255,255,.55);
+      background: rgba(255,255,255,.26);
+      box-shadow: 0 8px 22px rgba(76, 29, 149, 0.28);
     }
 
     .btn-link.primary {
-      color: #fff;
-      border: none;
-      background: linear-gradient(135deg, var(--accent2), var(--accent));
-      box-shadow: 0 10px 20px rgba(124, 58, 237, 0.30);
+      color: var(--accent2);
+      border: 1px solid rgba(255,255,255,.45);
+      background: rgba(255,255,255,.92);
+      box-shadow: 0 10px 22px rgba(76, 29, 149, 0.30);
       position: relative;
       overflow: hidden;
     }
@@ -226,13 +242,13 @@
       top: 0; left: -110%;
       width: 55%;
       height: 100%;
-      background: linear-gradient(100deg, transparent, rgba(255,255,255,.38), transparent);
+      background: linear-gradient(100deg, transparent, rgba(255,255,255,.45), transparent);
       transform: skewX(-18deg);
       transition: left .55s ease;
       pointer-events: none;
     }
 
-    .btn-link.primary:hover { color: #fff; box-shadow: 0 16px 30px rgba(124, 58, 237, 0.42); }
+    .btn-link.primary:hover { color: var(--accent2); background: #fff; box-shadow: 0 16px 32px rgba(76, 29, 149, 0.38); }
     .btn-link.primary:hover::after { left: 130%; }
 
     /* Personalización de colores de la tienda */
@@ -283,33 +299,54 @@
     .sidebar {
       position: sticky;
       top: 92px;
-      background: rgba(255,255,255,.86);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: .95rem;
-      box-shadow: var(--shadow-sm);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
+      background: linear-gradient(150deg, var(--accent2) 0%, var(--accent) 55%, var(--accent3) 100%);
+      border: 1px solid rgba(255,255,255,.15);
+      border-radius: 20px;
+      padding: 1.1rem;
+      box-shadow: 0 16px 44px rgba(76, 29, 149, 0.34);
+      overflow: hidden;
     }
+
+    .sidebar::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,.16) 0, transparent 55%),
+        radial-gradient(circle at 80% 80%, rgba(0,0,0,.09) 0, transparent 50%);
+      pointer-events: none;
+    }
+
+    .sidebar-deco-1,
+    .sidebar-deco-2 {
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,.18);
+      pointer-events: none;
+    }
+    .sidebar-deco-1 { width: 190px; height: 190px; top: -60px; right: -60px; }
+    .sidebar-deco-2 { width: 130px; height: 130px; bottom: 20px; left: -45px; }
 
     .sidebar-title {
       font-family: 'Space Grotesk', sans-serif;
       font-size: .64rem;
       letter-spacing: .17em;
       text-transform: uppercase;
-      color: var(--muted);
+      color: rgba(255,255,255,.62);
       margin-bottom: .7rem;
+      position: relative;
+      z-index: 1;
     }
 
-    .side-menu { display: flex; flex-direction: column; gap: .45rem; }
+    .side-menu { display: flex; flex-direction: column; gap: .45rem; position: relative; z-index: 1; }
     .side-link {
       width: 100%;
       text-align: left;
-      border: 1px solid var(--border);
+      border: 1px solid rgba(255,255,255,.2);
       border-radius: 11px;
       padding: .64rem .75rem;
-      background: rgba(255,255,255,.82);
-      color: var(--muted);
+      background: rgba(255,255,255,.13);
+      color: rgba(255,255,255,.8);
       font-family: 'Space Grotesk', sans-serif;
       font-size: .66rem;
       font-weight: 700;
@@ -321,10 +358,10 @@
 
     .side-link:hover,
     .side-link.active {
-      color: var(--accent2);
-      border-color: var(--line-strong);
-      background: var(--accent-light);
-      box-shadow: 0 6px 14px rgba(124, 58, 237, 0.16);
+      color: #fff;
+      border-color: rgba(255,255,255,.45);
+      background: rgba(255,255,255,.24);
+      box-shadow: 0 6px 18px rgba(76, 29, 149, 0.22);
     }
 
     .content-sections { display: grid; gap: 1rem; }
@@ -872,7 +909,7 @@
       height: 64%;
       width: 3px;
       border-radius: 3px;
-      background: linear-gradient(180deg, var(--accent), #ec4899);
+      background: linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,255,255,.4));
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -902,71 +939,6 @@
       header { padding: .8rem 1rem; }
       .header-links { width: 100%; }
       .btn-link { flex: 1; justify-content: center; }
-    }
-  </style>
-  <style id="admin-dark-overrides" disabled>
-    /* ═══════════════════════════════════════════════════════════
-     *  PALETA DE COLORES – admin.html  (MODO OSCURO)
-     *  Estas variables sobreescriben las del modo claro al activar tema oscuro.
-     * ═══════════════════════════════════════════════════════════ */
-    :root {
-      /* Fondos oscuros */
-      --bg: #0a0a0a;
-      --surface: #121212;
-      --panel-soft: #1d1d1d;
-      /* Bordes */
-      --card-border: rgba(20, 181, 31, 0.35);
-      --border: rgba(20, 181, 31, 0.4);
-      --line-strong: rgba(20, 181, 31, 0.55);
-      /* ── Color de marca (igual que modo claro) ── */
-      --accent: #14b51f;
-      --accent2: #0ca318;
-      --accent-light: rgba(20, 181, 31, 0.18);
-      --accent-mid: rgba(20, 181, 31, 0.22);
-      /* Textos */
-      --text: #f8f8f8;
-      --text-mid: #d6d6d6;
-      --muted: #b5bac2;
-      /* Otros */
-      --header-bg: rgba(10, 10, 10, 0.92);
-      /* Sombras más profundas para contraste oscuro */
-      --shadow-sm: 0 8px 22px rgba(0, 0, 0, 0.4);
-      --shadow-md: 0 18px 50px rgba(0, 0, 0, 0.5);
-      --shadow-lg: 0 26px 80px rgba(0, 0, 0, 0.62);
-    }
-
-    body {
-      background:
-        radial-gradient(circle at 0% 0%, rgba(20, 181, 31, 0.2) 0, transparent 42%),
-        radial-gradient(circle at 100% 8%, rgba(255, 255, 255, 0.05) 0, transparent 32%),
-        linear-gradient(180deg, #0a0a0a 0%, #121212 60%, #090909 100%);
-    }
-
-    .panel,
-    .sidebar,
-    .auth-box,
-    .product-row,
-    .editor-card,
-    .stat-card,
-    .form-modal,
-    .confirm-box {
-      background: rgba(17, 31, 51, 0.9);
-      border-color: var(--card-border);
-    }
-
-    input[type="text"], input[type="number"], input[type="url"], input[type="email"], input[type="password"], input[type="file"], textarea, select {
-      background: var(--panel-soft);
-      color: var(--text);
-      border-color: var(--border);
-    }
-
-    .btn-link,
-    .btn-secondary,
-    .btn-cancel,
-    .icon-btn {
-      background: rgba(22, 38, 61, 0.86);
-      color: var(--muted);
-      border-color: var(--border);
     }
   </style>
 </head>
@@ -1002,6 +974,8 @@
   <div class="layout">
     <div class="admin-shell">
       <aside class="sidebar">
+        <div class="sidebar-deco-1" aria-hidden="true"></div>
+        <div class="sidebar-deco-2" aria-hidden="true"></div>
         <div class="sidebar-title">Secciones</div>
         <div class="side-menu" id="side-menu">
           <button class="side-link active" data-section="products">Productos</button>
