@@ -1750,6 +1750,18 @@
     if (user) {
       document.getElementById('btn-logout').style.display = 'inline-flex';
       document.body.style.opacity = '1';
+      // Recuperar estado incompleto: Auth existe pero Firestore no tiene el doc creado
+      CONFIG_DOC.get().then(snap => {
+        if (!snap.exists || !snap.data().created) {
+          const email = user.email || '';
+          return CONFIG_DOC.set({
+            created: true,
+            recoveryEmail: email,
+            username: email,
+            usernameKey: email.toLowerCase()
+          }, { merge: true });
+        }
+      }).catch(() => {});
       Promise.all([loadProducts(), loadPdfs(), loadCategoryConfig(), loadCompanyConfig()]).then(() => {
         renderList();
         updateStats();

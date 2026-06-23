@@ -759,6 +759,8 @@
   }
 
   async function resolveLoginEmail(usernameInput) {
+    // Permitir login directo con correo aunque Firestore no tenga el doc todavía
+    if (String(usernameInput || '').includes('@')) return String(usernameInput).trim();
     const meta = await getAdminMeta(true);
     if (!meta || !meta.created) throw Object.assign(new Error(), { code: 'NO_ADMIN_ACCOUNT' });
     const inputNorm   = normalizeUsername(usernameInput);
@@ -768,7 +770,6 @@
       if (!recovery) throw Object.assign(new Error(), { code: 'MISSING_RECOVERY_EMAIL' });
       return recovery;
     }
-    if (String(usernameInput || '').includes('@')) return String(usernameInput).trim();
     throw Object.assign(new Error(), { code: 'INVALID_USERNAME' });
   }
 
@@ -864,7 +865,13 @@
       // onAuthStateChanged redirige
     } catch (e) {
       btn.disabled = false; btn.textContent = 'Crear cuenta';
-      showRegisterError(authMsg(e.code));
+      if (e.code === 'auth/email-already-in-use' && !_adminAccountCreated) {
+        showRegisterError('Este correo ya tiene una cuenta de acceso. Ve a "Iniciar sesión" e ingresa tu correo y contraseña.');
+        switchTab('login');
+        document.getElementById('l-username').value = email;
+      } else {
+        showRegisterError(authMsg(e.code));
+      }
     }
   });
 
