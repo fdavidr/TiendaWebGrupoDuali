@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Acceso Admin – MI EMPRESA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="firebase-config.js"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --accent:        #7c3aed;
+      --accent2:       #6d28d9;
+      --accent3:       #a855f7;
+      --pink:          #ec4899;
+      --bg:            #f8f5ff;
+      --surface:       #ffffff;
+      --text:          #1f1535;
+      --muted:         #6f6488;
+      --border:        rgba(124, 58, 237, 0.22);
+      --line-strong:   rgba(124, 58, 237, 0.44);
+      --danger:        #dc2626;
+      --success:       #16a34a;
+      --shadow-sm:     0 8px 24px rgba(76, 29, 149, 0.12);
+      --shadow-md:     0 20px 60px rgba(76, 29, 149, 0.20);
+      --shadow-lg:     0 32px 90px rgba(76, 29, 149, 0.28);
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      font-family: 'Manrope', sans-serif;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 8% 12%, rgba(124, 58, 237, 0.24) 0, transparent 44%),
+        radial-gradient(circle at 90% 5%,  rgba(236, 72, 153, 0.18) 0, transparent 38%),
+        radial-gradient(circle at 75% 90%, rgba(124, 58, 237, 0.16) 0, transparent 40%),
+        radial-gradient(circle at 15% 80%, rgba(168, 85, 247, 0.12) 0, transparent 35%),
+        linear-gradient(135deg, #f5f0fe 0%, #fdf8ff 50%, #f0ebff 100%);
+    }
+
+    /* ── Orbes de fondo animados ── */
+    .bg-orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(72px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .bg-orb-1 {
+      width: 420px; height: 420px;
+      top: -100px; left: -100px;
+      background: radial-gradient(circle, rgba(124,58,237,.40), transparent 65%);
+      animation: orbFloat 16s ease-in-out infinite;
+    }
+    .bg-orb-2 {
+      width: 340px; height: 340px;
+      bottom: -100px; right: -80px;
+      background: radial-gradient(circle, rgba(236,72,153,.38), transparent 65%);
+      animation: orbFloat 20s ease-in-out infinite reverse;
+    }
+    .bg-orb-3 {
+      width: 260px; height: 260px;
+      top: 50%; right: 8%;
+      transform: translateY(-50%);
+      background: radial-gradient(circle, rgba(168,85,247,.28), transparent 65%);
+      animation: orbFloat 24s ease-in-out infinite 4s;
+    }
+
+    @keyframes orbFloat {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33%       { transform: translate(24px, 18px) scale(1.06); }
+      66%       { transform: translate(-16px, 28px) scale(.96); }
+    }
+
+    /* ── Partículas flotantes ── */
+    .particles {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      background: var(--accent);
+      opacity: 0;
+      animation: particleRise var(--dur, 12s) ease-in-out infinite var(--delay, 0s);
+    }
+    @keyframes particleRise {
+      0%   { opacity: 0; transform: translateY(0) scale(.6); }
+      20%  { opacity: .55; }
+      80%  { opacity: .25; }
+      100% { opacity: 0; transform: translateY(-120vh) scale(1.4); }
+    }
+
+    /* ── Layout de dos columnas ── */
+    .login-wrapper {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      width: min(920px, 96vw);
+      min-height: 540px;
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      animation: wrapperIn .7s cubic-bezier(.22,1,.36,1) both;
+    }
+
+    @keyframes wrapperIn {
+      from { opacity: 0; transform: translateY(28px) scale(.97); }
+      to   { opacity: 1; transform: translateY(0)   scale(1); }
+    }
+
+    /* ── Panel izquierdo: branding ── */
+    .login-brand {
+      flex: 0 0 42%;
+      background: linear-gradient(150deg, var(--accent2) 0%, var(--accent) 50%, var(--accent3) 100%);
+      padding: 3rem 2.4rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .login-brand::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,.18) 0, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(0,0,0,.12) 0, transparent 50%);
+      pointer-events: none;
+    }
+
+    /* Círculos decorativos en el panel de marca */
+    .brand-deco-1,
+    .brand-deco-2,
+    .brand-deco-3 {
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,.18);
+      pointer-events: none;
+    }
+    .brand-deco-1 { width: 220px; height: 220px; top: -60px; right: -60px; }
+    .brand-deco-2 { width: 160px; height: 160px; bottom: 40px; left: -50px; }
+    .brand-deco-3 { width: 100px; height: 100px; top: 50%; right: 30px; transform: translateY(-50%); animation: rotateDeco 20s linear infinite; }
+    @keyframes rotateDeco { to { transform: translateY(-50%) rotate(360deg); } }
+
+    .brand-top { position: relative; z-index: 1; }
+    .brand-logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: .85rem;
+      margin-bottom: 2.2rem;
+    }
+    .brand-logo-img {
+      width: 46px; height: 46px;
+      object-fit: contain;
+      border-radius: 12px;
+      background: rgba(255,255,255,.22);
+      padding: 6px;
+    }
+    .brand-logo-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 1.3rem;
+      letter-spacing: .1em;
+      color: #fff;
+    }
+
+    .brand-headline {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.85rem;
+      font-weight: 700;
+      line-height: 1.25;
+      color: #fff;
+      margin-bottom: .9rem;
+    }
+
+    .brand-sub {
+      font-size: .88rem;
+      color: rgba(255,255,255,.78);
+      line-height: 1.65;
+    }
+
+    .brand-features {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: .65rem;
+    }
+
+    .brand-feature {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      font-size: .8rem;
+      color: rgba(255,255,255,.88);
+    }
+
+    .brand-feature-icon {
+      width: 28px; height: 28px;
+      border-radius: 8px;
+      background: rgba(255,255,255,.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .95rem;
+      flex-shrink: 0;
+    }
+
+    /* ── Panel derecho: formulario ── */
+    .login-form-panel {
+      flex: 1;
+      background: var(--surface);
+      padding: 2.8rem 2.6rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      overflow-y: auto;
+    }
+
+    .login-tabs {
+      display: flex;
+      gap: .4rem;
+      background: #f4f0fd;
+      border-radius: 12px;
+      padding: .28rem;
+      margin-bottom: 1.8rem;
+    }
+
+    .login-tab {
+      flex: 1;
+      padding: .52rem .6rem;
+      border: none;
+      border-radius: 9px;
+      background: transparent;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      cursor: pointer;
+      transition: background .25s, color .25s, box-shadow .25s;
+    }
+
+    .login-tab.active {
+      background: #fff;
+      color: var(--accent2);
+      box-shadow: 0 2px 10px rgba(124,58,237,.18);
+    }
+
+    .form-view {
+      display: none;
+    }
+    .form-view.active {
+      display: block;
+      animation: fadeSlide .35s cubic-bezier(.22,1,.36,1);
+    }
+
+    @keyframes fadeSlide {
+      from { opacity: 0; transform: translateX(12px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    .form-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.28rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: .28rem;
+    }
+
+    .form-subtitle {
+      font-size: .82rem;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+
+    .auth-field { margin-bottom: 1rem; }
+
+    .auth-field label {
+      display: block;
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-family: 'Space Grotesk', sans-serif;
+      margin-bottom: .3rem;
+    }
+
+    .auth-field input {
+      width: 100%;
+      padding: .72rem .9rem;
+      border-radius: 11px;
+      border: 1.5px solid var(--border);
+      background: #faf8ff;
+      color: var(--text);
+      font-size: .88rem;
+      font-family: 'Manrope', sans-serif;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s, background .2s;
+    }
+
+    .auth-field input:focus {
+      border-color: var(--accent);
+      background: #fff;
+      box-shadow: 0 0 0 4px rgba(124, 58, 237, .14);
+    }
+
+    .auth-field input:not(:placeholder-shown):valid {
+      border-color: rgba(124,58,237,.5);
+    }
+
+    .password-wrap {
+      position: relative;
+    }
+
+    .password-wrap input {
+      padding-right: 3rem;
+    }
+
+    .password-toggle {
+      position: absolute;
+      top: 50%;
+      right: .55rem;
+      transform: translateY(-50%);
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 1.1rem;
+      line-height: 1;
+      padding: .2rem;
+      transition: color .2s;
+    }
+
+    .password-toggle:hover { color: var(--accent); }
+
+    .btn-auth {
+      width: 100%;
+      padding: .82rem;
+      margin-top: .3rem;
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      background: linear-gradient(135deg, var(--accent2) 0%, var(--accent) 55%, var(--accent3) 100%);
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: .8rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 24px rgba(124, 58, 237, .34);
+      transition: transform .2s, box-shadow .2s, opacity .2s;
+    }
+
+    .btn-auth::after {
+      content: '';
+      position: absolute;
+      top: 0; left: -110%;
+      width: 55%;
+      height: 100%;
+      background: linear-gradient(100deg, transparent, rgba(255,255,255,.42), transparent);
+      transform: skewX(-18deg);
+      transition: left .55s ease;
+      pointer-events: none;
+    }
+
+    .btn-auth:hover { transform: translateY(-2px); box-shadow: 0 16px 36px rgba(124, 58, 237, .46); }
+    .btn-auth:hover::after { left: 130%; }
+    .btn-auth:active { transform: translateY(0); }
+    .btn-auth:disabled { opacity: .6; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    .btn-text-auth {
+      background: none;
+      border: none;
+      color: var(--accent2);
+      font-size: .78rem;
+      font-family: 'Manrope', sans-serif;
+      cursor: pointer;
+      text-decoration: underline;
+      text-decoration-color: rgba(124,58,237,.35);
+      padding: .1rem 0;
+      transition: color .2s, text-decoration-color .2s;
+      display: block;
+      margin: .55rem auto 0;
+      text-align: center;
+    }
+
+    .btn-text-auth:hover {
+      color: var(--accent);
+      text-decoration-color: var(--accent);
+    }
+
+    .btn-text-auth:disabled {
+      opacity: .45;
+      cursor: not-allowed;
+    }
+
+    .auth-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 1rem 0;
+    }
+
+    .auth-error {
+      margin-top: .7rem;
+      font-size: .78rem;
+      color: var(--danger);
+      min-height: 1.1rem;
+      line-height: 1.4;
+      text-align: center;
+    }
+
+    .auth-error.success-msg {
+      color: var(--success);
+    }
+
+    .strength-bar-wrap {
+      height: 4px;
+      background: #e9e2f9;
+      border-radius: 4px;
+      margin-top: .4rem;
+      overflow: hidden;
+    }
+
+    .strength-bar {
+      height: 100%;
+      width: 0;
+      border-radius: 4px;
+      transition: width .35s ease, background .35s ease;
+    }
+
+    .input-hint {
+      font-size: .7rem;
+      color: var(--muted);
+      margin-top: .28rem;
+    }
+
+    .back-to-store {
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+      font-size: .72rem;
+      color: var(--muted);
+      text-decoration: none;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      margin-top: 1.4rem;
+      transition: color .2s;
+    }
+
+    .back-to-store:hover { color: var(--accent2); }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60%  { transform: translateX(-6px); }
+      40%, 80%  { transform: translateX(6px); }
+    }
+
+    .shake { animation: shake .38s ease; }
+
+    @media (max-width: 680px) {
+      .login-brand { display: none; }
+      .login-wrapper { border-radius: 20px; min-height: unset; }
+      .login-form-panel { padding: 2rem 1.5rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .001ms !important;
+        transition-duration: .001ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Orbes de fondo -->
+<div class="bg-orb bg-orb-1" aria-hidden="true"></div>
+<div class="bg-orb bg-orb-2" aria-hidden="true"></div>
+<div class="bg-orb bg-orb-3" aria-hidden="true"></div>
+
+<!-- Partículas -->
+<div class="particles" id="particles" aria-hidden="true"></div>
+
+<!-- ── Login wrapper ── -->
+<div class="login-wrapper">
+
+  <!-- Panel izquierdo: branding -->
+  <div class="login-brand">
+    <div class="brand-deco-1"></div>
+    <div class="brand-deco-2"></div>
+    <div class="brand-deco-3"></div>
+
+    <div class="brand-top">
+      <div class="brand-logo-wrap">
+        <img class="brand-logo-img" src="logo.svg" alt="Logo" id="brand-logo-img" />
+        <span class="brand-logo-name" id="brand-name">MI EMPRESA</span>
+      </div>
+      <div class="brand-headline">Panel de<br/>Administración</div>
+      <p class="brand-sub">Gestiona tus productos, catálogos, sucursales y la apariencia de tu tienda desde un solo lugar.</p>
+    </div>
+
+    <div class="brand-features">
+      <div class="brand-feature">
+        <div class="brand-feature-icon">📦</div>
+        <span>Gestión de productos</span>
+      </div>
+      <div class="brand-feature">
+        <div class="brand-feature-icon">🎨</div>
+        <span>Colores de la tienda</span>
+      </div>
+      <div class="brand-feature">
+        <div class="brand-feature-icon">🏪</div>
+        <span>Sucursales y catálogos</span>
+      </div>
+      <div class="brand-feature">
+        <div class="brand-feature-icon">💾</div>
+        <span>Copia de seguridad</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Panel derecho: formulario -->
+  <div class="login-form-panel">
+    <!-- Tabs -->
+    <div class="login-tabs" id="login-tabs">
+      <button class="login-tab active" id="tab-login" type="button">Iniciar sesión</button>
+      <button class="login-tab" id="tab-register" type="button">Crear cuenta</button>
+    </div>
+
+    <!-- Vista: Login -->
+    <div class="form-view active" id="view-login">
+      <div class="form-title">¡Bienvenido de vuelta!</div>
+      <p class="form-subtitle" id="login-hint-msg">Ingresa tus credenciales para acceder al panel.</p>
+
+      <div class="auth-field">
+        <label for="l-username">Usuario</label>
+        <input type="text" id="l-username" placeholder="Tu nombre de usuario" autocomplete="username" />
+      </div>
+      <div class="auth-field">
+        <label for="l-password">Contraseña</label>
+        <div class="password-wrap">
+          <input type="password" id="l-password" placeholder="••••••" autocomplete="current-password" />
+          <button type="button" class="password-toggle" data-target="l-password" aria-label="Mostrar contraseña">👁</button>
+        </div>
+      </div>
+
+      <button class="btn-auth" id="btn-login" type="button">Iniciar sesión</button>
+      <button class="btn-text-auth" id="btn-forgot" type="button">¿Olvidaste tu contraseña?</button>
+
+      <p class="auth-error" id="login-error"></p>
+      <a href="index.html" class="back-to-store">← Ver tienda</a>
+    </div>
+
+    <!-- Vista: Registro -->
+    <div class="form-view" id="view-register">
+      <div class="form-title">Crear cuenta admin</div>
+      <p class="form-subtitle">Solo se puede crear una cuenta. Elige bien tus datos.</p>
+
+      <div class="auth-field">
+        <label for="r-username">Usuario</label>
+        <input type="text" id="r-username" placeholder="Nombre de usuario" maxlength="30" autocomplete="username" />
+      </div>
+      <div class="auth-field">
+        <label for="r-email">Correo (para recuperación)</label>
+        <input type="email" id="r-email" placeholder="correo@ejemplo.com" autocomplete="email" />
+      </div>
+      <div class="auth-field">
+        <label for="r-password">Contraseña</label>
+        <div class="password-wrap">
+          <input type="password" id="r-password" placeholder="Mínimo 6 caracteres" minlength="6" autocomplete="new-password" />
+          <button type="button" class="password-toggle" data-target="r-password" aria-label="Mostrar contraseña">👁</button>
+        </div>
+        <div class="strength-bar-wrap"><div class="strength-bar" id="strength-bar"></div></div>
+        <div class="input-hint" id="strength-hint"></div>
+      </div>
+
+      <button class="btn-auth" id="btn-register" type="button">Crear cuenta</button>
+      <p class="auth-error" id="register-error"></p>
+      <a href="index.html" class="back-to-store">← Ver tienda</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── Firebase ──
+  let _db, _auth, CONFIG_DOC, _firebaseReady = false;
+  try {
+    firebase.initializeApp(FIREBASE_CONFIG);
+    _db        = firebase.firestore();
+    _auth      = firebase.auth();
+    CONFIG_DOC = _db.collection('config').doc('admin');
+    _firebaseReady = true;
+  } catch (e) {
+    console.error('Firebase no inicializado:', e);
+  }
+
+  // Muestra banner de error si Firebase no cargó
+  function _requireFirebase() {
+    if (_firebaseReady) return true;
+    showLoginError('Error de conexión con el servidor. Recarga la página o accede a través del servidor correcto.');
+    return false;
+  }
+
+  let _adminAccountCreated = false;
+  let _adminAccountMeta    = null;
+
+  // ── Partículas ──
+  (function spawnParticles() {
+    const container = document.getElementById('particles');
+    const count = 18;
+    for (let i = 0; i < count; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      const size = 3 + Math.random() * 5;
+      p.style.cssText = [
+        `width:${size}px`, `height:${size}px`,
+        `left:${Math.random() * 100}%`,
+        `bottom:${Math.random() * 20}%`,
+        `--dur:${10 + Math.random() * 16}s`,
+        `--delay:${Math.random() * 12}s`,
+        `opacity:0`
+      ].join(';');
+      container.appendChild(p);
+    }
+  })();
+
+  // ── Tabs ──
+  document.getElementById('tab-login').addEventListener('click', () => switchTab('login'));
+  document.getElementById('tab-register').addEventListener('click', () => {
+    if (_adminAccountCreated) {
+      showLoginError('Ya existe una cuenta creada. No se permiten más registros.');
+      return;
+    }
+    switchTab('register');
+  });
+
+  function switchTab(tab) {
+    document.querySelectorAll('.login-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.form-view').forEach(v => v.classList.remove('active'));
+    document.getElementById(`tab-${tab}`).classList.add('active');
+    document.getElementById(`view-${tab}`).classList.add('active');
+    document.getElementById('login-error').textContent = '';
+    document.getElementById('register-error').textContent = '';
+  }
+
+  // ── Fortaleza de contraseña ──
+  document.getElementById('r-password').addEventListener('input', function() {
+    const val = this.value;
+    const bar  = document.getElementById('strength-bar');
+    const hint = document.getElementById('strength-hint');
+    let score = 0;
+    if (val.length >= 6)  score++;
+    if (val.length >= 10) score++;
+    if (/[A-Z]/.test(val)) score++;
+    if (/[0-9]/.test(val)) score++;
+    if (/[^A-Za-z0-9]/.test(val)) score++;
+    const levels = [
+      { w: '0%',   bg: 'transparent',  txt: '' },
+      { w: '25%',  bg: '#dc2626',      txt: 'Muy débil' },
+      { w: '50%',  bg: '#f97316',      txt: 'Débil' },
+      { w: '75%',  bg: '#eab308',      txt: 'Moderada' },
+      { w: '90%',  bg: '#22c55e',      txt: 'Fuerte' },
+      { w: '100%', bg: '#16a34a',      txt: '¡Excelente!' }
+    ];
+    const lv = levels[Math.min(score, 5)];
+    bar.style.width  = lv.w;
+    bar.style.background = lv.bg;
+    hint.textContent = lv.txt;
+    hint.style.color = lv.bg;
+  });
+
+  // ── Mostrar/ocultar contraseña ──
+  document.querySelectorAll('.password-toggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const input = document.getElementById(btn.dataset.target);
+      if (!input) return;
+      const show = input.type === 'password';
+      input.type = show ? 'text' : 'password';
+      btn.textContent = show ? '🙈' : '👁';
+      btn.setAttribute('aria-label', show ? 'Ocultar contraseña' : 'Mostrar contraseña');
+    });
+  });
+
+  // ── Enter en login ──
+  ['l-username', 'l-password'].forEach(id => {
+    document.getElementById(id).addEventListener('keydown', e => {
+      if (e.key === 'Enter') document.getElementById('btn-login').click();
+    });
+  });
+
+  // ── Shake visual en error ──
+  function shakeField(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.classList.remove('shake');
+    void el.offsetWidth;
+    el.classList.add('shake');
+  }
+
+  function showLoginError(msg) {
+    const el = document.getElementById('login-error');
+    el.className = 'auth-error';
+    el.textContent = msg;
+    shakeField('view-login');
+  }
+
+  function showRegisterError(msg) {
+    const el = document.getElementById('register-error');
+    el.className = 'auth-error';
+    el.textContent = msg;
+    shakeField('view-register');
+  }
+
+  function showLoginSuccess(msg) {
+    const el = document.getElementById('login-error');
+    el.className = 'auth-error success-msg';
+    el.textContent = msg;
+  }
+
+  // ── Normalizar usuario ──
+  function normalizeUsername(v) { return String(v || '').trim().toLowerCase(); }
+
+  async function getAdminMeta(forceRefresh) {
+    if (_adminAccountMeta && !forceRefresh) return _adminAccountMeta;
+    const snap = await CONFIG_DOC.get();
+    _adminAccountMeta = snap.exists ? (snap.data() || null) : null;
+    return _adminAccountMeta;
+  }
+
+  async function resolveLoginEmail(usernameInput) {
+    const meta = await getAdminMeta(true);
+    if (!meta || !meta.created) throw Object.assign(new Error(), { code: 'NO_ADMIN_ACCOUNT' });
+    const inputNorm   = normalizeUsername(usernameInput);
+    const configNorm  = normalizeUsername(meta.username);
+    const recovery    = String(meta.recoveryEmail || meta.email || '').trim();
+    if (inputNorm && configNorm && inputNorm === configNorm) {
+      if (!recovery) throw Object.assign(new Error(), { code: 'MISSING_RECOVERY_EMAIL' });
+      return recovery;
+    }
+    if (String(usernameInput || '').includes('@')) return String(usernameInput).trim();
+    throw Object.assign(new Error(), { code: 'INVALID_USERNAME' });
+  }
+
+  function authMsg(code) {
+    const map = {
+      'auth/email-already-in-use': 'Este correo ya tiene una cuenta.',
+      'auth/invalid-email':        'Correo inválido.',
+      'auth/weak-password':        'Contraseña muy débil (mínimo 6 caracteres).',
+      'auth/user-not-found':       'No existe una cuenta con ese usuario.',
+      'auth/wrong-password':       'Contraseña incorrecta.',
+      'auth/invalid-credential':   'Usuario o contraseña incorrectos.',
+      'auth/too-many-requests':    'Demasiados intentos. Espera unos minutos.',
+      'auth/user-disabled':        'Cuenta deshabilitada.',
+      'auth/network-request-failed': 'Sin conexión a internet.',
+      INVALID_USERNAME:             'El usuario no coincide con la cuenta registrada.',
+      MISSING_RECOVERY_EMAIL:       'La cuenta no tiene correo de recuperación.',
+      NO_ADMIN_ACCOUNT:             'No existe una cuenta de administrador todavía.'
+    };
+    return map[code] || `Error: ${code}`;
+  }
+
+  // ── Inicializar: verificar si existe cuenta ──
+  async function initLoginPage() {
+    try {
+      const snap = await CONFIG_DOC.get();
+      if (snap.exists && snap.data().created) {
+        _adminAccountCreated = true;
+        _adminAccountMeta    = snap.data();
+        const username = snap.data().username || '';
+        if (username) {
+          document.getElementById('login-hint-msg').textContent = `Hola, ${username}. Ingresa tu contraseña.`;
+        }
+        // Deshabilitar tab de registro visualmente
+        const regTab = document.getElementById('tab-register');
+        regTab.disabled = true;
+        regTab.style.opacity = '.45';
+        regTab.title = 'Ya existe una cuenta creada';
+      }
+    } catch (e) {
+      _adminAccountCreated = true; // asumir que existe por seguridad
+    }
+  }
+
+  // ── Login ──
+  document.getElementById('btn-login').addEventListener('click', async () => {
+    if (!_requireFirebase()) return;
+    const username = document.getElementById('l-username').value.trim();
+    const password = document.getElementById('l-password').value;
+    const btn = document.getElementById('btn-login');
+    document.getElementById('login-error').textContent = '';
+    if (!username || !password) { showLoginError('Ingresa usuario y contraseña.'); return; }
+    btn.disabled = true; btn.textContent = 'Ingresando…';
+    try {
+      const email = await resolveLoginEmail(username);
+      await _auth.signInWithEmailAndPassword(email, password);
+      // onAuthStateChanged redirige
+    } catch (e) {
+      btn.disabled = false; btn.textContent = 'Iniciar sesión';
+      showLoginError(authMsg(e.code || e.message));
+    }
+  });
+
+  // ── Registro ──
+  document.getElementById('btn-register').addEventListener('click', async () => {
+    if (!_requireFirebase()) return;
+    const username = document.getElementById('r-username').value.trim();
+    const email    = document.getElementById('r-email').value.trim();
+    const password = document.getElementById('r-password').value;
+    const btn = document.getElementById('btn-register');
+    document.getElementById('register-error').textContent = '';
+    if (_adminAccountCreated) { showRegisterError('Ya existe una cuenta. No se permiten más registros.'); return; }
+    if (!username) { showRegisterError('El usuario es requerido.'); return; }
+    if (!email)    { showRegisterError('El correo es requerido.'); return; }
+    if (password.length < 6) { showRegisterError('La contraseña debe tener al menos 6 caracteres.'); return; }
+    btn.disabled = true; btn.textContent = 'Creando cuenta…';
+    try {
+      const existsSnap = await CONFIG_DOC.get();
+      if (existsSnap.exists && existsSnap.data().created) {
+        _adminAccountCreated = true;
+        showRegisterError('Ya existe una cuenta creada. Inicia sesión.');
+        switchTab('login');
+        return;
+      }
+      await _auth.createUserWithEmailAndPassword(email, password);
+      await CONFIG_DOC.set({
+        created: true,
+        username,
+        usernameKey: normalizeUsername(username),
+        recoveryEmail: email
+      }, { merge: true });
+      _adminAccountCreated = true;
+      _adminAccountMeta = { created: true, username, usernameKey: normalizeUsername(username), recoveryEmail: email };
+      // onAuthStateChanged redirige
+    } catch (e) {
+      btn.disabled = false; btn.textContent = 'Crear cuenta';
+      showRegisterError(authMsg(e.code));
+    }
+  });
+
+  // ── Recuperar contraseña ──
+  document.getElementById('btn-forgot').addEventListener('click', async () => {
+    if (!_requireFirebase()) return;
+    const username = document.getElementById('l-username').value.trim();
+    const btn = document.getElementById('btn-forgot');
+    document.getElementById('login-error').textContent = '';
+    if (!username) { showLoginError('Ingresa tu usuario primero.'); return; }
+    btn.disabled = true; btn.textContent = 'Enviando…';
+    try {
+      const email = await resolveLoginEmail(username);
+      await _auth.sendPasswordResetEmail(email);
+      showLoginSuccess('✓ Correo de recuperación enviado. Revisa tu bandeja.');
+    } catch (e) {
+      showLoginError(authMsg(e.code || e.message));
+    } finally {
+      btn.disabled = false; btn.textContent = '¿Olvidaste tu contraseña?';
+    }
+  });
+
+  // ── Auth state: si ya está logueado redirigir ──
+  if (_firebaseReady) {
+    _auth.setPersistence(firebase.auth.Auth.Persistence.SESSION)
+      .catch(() => {})
+      .finally(() => {
+        _auth.onAuthStateChanged(user => {
+          if (user) {
+            window.location.replace('admin.html');
+          } else {
+            initLoginPage();
+          }
+        });
+      });
+  } else {
+    // Firebase no disponible → mostrar error pero dejar el form usable
+    document.getElementById('login-hint-msg').textContent = 'No se pudo conectar con Firebase. Verifica la URL del servidor.';
+  }
+
+  // ── Cargar logo y nombre dinámicamente ──
+  (async function loadBrand() {
+    try {
+      const snap = await CONFIG_DOC.get();
+      if (!snap.exists) return;
+      const d = snap.data() || {};
+      if (d.companyName) {
+        document.getElementById('brand-name').textContent = d.companyName;
+        document.title = `Acceso Admin – ${d.companyName}`;
+      }
+      if (d.logo && !d.logoAssetId) {
+        document.getElementById('brand-logo-img').src = d.logo;
+      }
+    } catch (_e) {}
+  })();
+</script>
+</body>
+</html>
