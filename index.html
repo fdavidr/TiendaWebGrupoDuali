@@ -45,6 +45,10 @@
         r.style.setProperty('--muted', muted);
         r.style.setProperty('--line', rgba(brd,0.24));
         r.style.setProperty('--line-strong', rgba(brd,0.44));
+        r.style.setProperty('--body-bg',
+          'radial-gradient(circle at 0% 0%, ' + rgba(brand,0.14) + ' 0, transparent 45%),'
+          + 'radial-gradient(circle at 100% 8%, rgba(0,0,0,0.05) 0, transparent 35%),'
+          + 'linear-gradient(180deg, ' + bg + ' 0%, ' + panel + ' 60%, ' + bg + ' 100%)');
       }
       function buildHideAttr(vis) {
         if (!vis) return '';
@@ -141,10 +145,10 @@
       min-height: 100vh;
       color: var(--text);
       font-family: 'Manrope', sans-serif;
-      background:
+      background: var(--body-bg,
         radial-gradient(circle at 0% 0%, rgba(20, 181, 31, 0.14) 0, transparent 45%),
         radial-gradient(circle at 100% 8%, rgba(0, 0, 0, 0.05) 0, transparent 35%),
-        linear-gradient(180deg, #f4f5f6 0%, #ffffff 60%, #eceef1 100%);
+        linear-gradient(180deg, #f4f5f6 0%, #ffffff 60%, #eceef1 100%));
       overflow-x: hidden;
     }
 
@@ -1607,12 +1611,10 @@
       root.style.setProperty('--muted', c.muted);
       root.style.setProperty('--line', hexToRgba(c.border, 0.24));
       root.style.setProperty('--line-strong', hexToRgba(c.border, 0.44));
-      if (document.body) {
-        document.body.style.background =
-          `radial-gradient(circle at 0% 0%, ${hexToRgba(c.brand, 0.14)} 0, transparent 45%),`
-          + `radial-gradient(circle at 100% 8%, rgba(0, 0, 0, 0.05) 0, transparent 35%),`
-          + `linear-gradient(180deg, ${c.bg} 0%, ${c.panel} 60%, ${c.bg} 100%)`;
-      }
+      root.style.setProperty('--body-bg',
+        `radial-gradient(circle at 0% 0%, ${hexToRgba(c.brand, 0.14)} 0, transparent 45%),`
+        + `radial-gradient(circle at 100% 8%, rgba(0, 0, 0, 0.05) 0, transparent 35%),`
+        + `linear-gradient(180deg, ${c.bg} 0%, ${c.panel} 60%, ${c.bg} 100%)`);
     }
 
     function normalizeBranches(branches) {
