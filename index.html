@@ -33,6 +33,10 @@
         var text  = valid(tc.text)?tc.text:'#111111';
         var muted = valid(tc.muted)?tc.muted:'#5d6168';
         var brd   = valid(tc.border)?tc.border:'#14b51f';
+        var hBg   = valid(tc.headerBg)?tc.headerBg:'#f3f8f8';
+        var hTx   = valid(tc.headerText)?tc.headerText:'#111111';
+        var fBg   = valid(tc.footerBg)?tc.footerBg:'#0f2224';
+        var fTx   = valid(tc.footerText)?tc.footerText:'#ffffff';
         var r = document.documentElement;
         r.style.setProperty('--brand', brand);
         r.style.setProperty('--brand-dark', shade(brand,-0.22));
@@ -45,6 +49,10 @@
         r.style.setProperty('--muted', muted);
         r.style.setProperty('--line', rgba(brd,0.24));
         r.style.setProperty('--line-strong', rgba(brd,0.44));
+        r.style.setProperty('--header-bg', rgba(hBg,0.9));
+        r.style.setProperty('--header-text', hTx);
+        r.style.setProperty('--footer-bg', fBg);
+        r.style.setProperty('--footer-text', fTx);
         r.style.setProperty('--body-bg',
           'radial-gradient(circle at 0% 0%, ' + rgba(brand,0.14) + ' 0, transparent 45%),'
           + 'radial-gradient(circle at 100% 8%, rgba(0,0,0,0.05) 0, transparent 35%),'
@@ -133,6 +141,12 @@
       --brand-light: rgba(20, 181, 31, 0.14);  /* Variante suave (chips, fondos) */
       --accent: #14b51f;         /* Acento de UI (igual a brand por defecto) */
       --ok: #14b51f;             /* Indicador positivo (stock, confirmaciones) */
+      /* ── Encabezado ── */
+      --header-bg: rgba(243, 248, 248, 0.9);   /* Fondo del encabezado */
+      --header-text: #111111;                  /* Texto / nombre del encabezado */
+      /* ── Pie de página ── */
+      --footer-bg: #0f2224;                    /* Fondo del pie de página */
+      --footer-text: rgba(255, 255, 255, 0.82);/* Texto del pie de página */
       /* Sombras */
       --shadow-sm: 0 8px 22px rgba(0, 0, 0, 0.08);
       --shadow-md: 0 18px 46px rgba(0, 0, 0, 0.12);
@@ -171,7 +185,7 @@
       position: sticky;
       top: 0;
       z-index: 80;
-      background: rgba(243, 248, 248, 0.9);
+      background: var(--header-bg);
       border-bottom: 1px solid var(--line);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
@@ -200,7 +214,7 @@
       font-family: 'Space Grotesk', sans-serif;
       font-size: 1.2rem;
       letter-spacing: 0.1em;
-      color: var(--text);
+      color: var(--header-text);
       font-weight: 700;
     }
 
@@ -740,8 +754,8 @@
 
     .site-footer {
       border-top: 1px solid var(--line);
-      background: #0f2224;
-      color: rgba(255, 255, 255, 0.82);
+      background: var(--footer-bg);
+      color: var(--footer-text);
       margin-top: 1rem;
       padding: 2rem 0;
     }
@@ -771,7 +785,7 @@
     .f-btn {
       text-decoration: none;
       border: 1px solid transparent;
-      color: #fff;
+      color: var(--footer-text);
       background: transparent;        /* Sin fondo: solo cambia color al pasar el cursor */
       padding: 0.52rem 0.75rem;
       font-family: 'Space Grotesk', sans-serif;
@@ -1524,12 +1538,16 @@
     };
     /* ── Colores personalizables de la tienda (se cargan desde Firestore) ── */
     const DEFAULT_THEME_COLORS = {
-      brand: '#14b51f',   // Color de marca: botones, acentos, enlaces, bordes activos
-      bg: '#f4f5f6',      // Fondo general de la página
-      panel: '#ffffff',   // Fondo de tarjetas y paneles
-      text: '#111111',    // Texto principal
-      muted: '#5d6168',   // Texto secundario / descripciones
-      border: '#14b51f'   // Color base de los bordes
+      brand: '#14b51f',     // Color de marca: botones, acentos, enlaces, bordes activos
+      bg: '#f4f5f6',        // Fondo general de la página
+      panel: '#ffffff',     // Fondo de tarjetas y paneles
+      text: '#111111',      // Texto principal
+      muted: '#5d6168',     // Texto secundario / descripciones
+      border: '#14b51f',    // Color base de los bordes
+      headerBg: '#f3f8f8',  // Encabezado: fondo
+      headerText: '#111111',// Encabezado: texto / nombre
+      footerBg: '#0f2224',  // Pie de página: fondo
+      footerText: '#ffffff' // Pie de página: texto
     };
 
     function getProducts() { return _products; }
@@ -1562,7 +1580,11 @@
         panel: normalizeHexColor(src.panel, DEFAULT_THEME_COLORS.panel),
         text: normalizeHexColor(src.text, DEFAULT_THEME_COLORS.text),
         muted: normalizeHexColor(src.muted, DEFAULT_THEME_COLORS.muted),
-        border: normalizeHexColor(src.border, DEFAULT_THEME_COLORS.border)
+        border: normalizeHexColor(src.border, DEFAULT_THEME_COLORS.border),
+        headerBg: normalizeHexColor(src.headerBg, DEFAULT_THEME_COLORS.headerBg),
+        headerText: normalizeHexColor(src.headerText, DEFAULT_THEME_COLORS.headerText),
+        footerBg: normalizeHexColor(src.footerBg, DEFAULT_THEME_COLORS.footerBg),
+        footerText: normalizeHexColor(src.footerText, DEFAULT_THEME_COLORS.footerText)
       };
     }
 
@@ -1611,6 +1633,10 @@
       root.style.setProperty('--muted', c.muted);
       root.style.setProperty('--line', hexToRgba(c.border, 0.24));
       root.style.setProperty('--line-strong', hexToRgba(c.border, 0.44));
+      root.style.setProperty('--header-bg', hexToRgba(c.headerBg, 0.9));
+      root.style.setProperty('--header-text', c.headerText);
+      root.style.setProperty('--footer-bg', c.footerBg);
+      root.style.setProperty('--footer-text', c.footerText);
       root.style.setProperty('--body-bg',
         `radial-gradient(circle at 0% 0%, ${hexToRgba(c.brand, 0.14)} 0, transparent 45%),`
         + `radial-gradient(circle at 100% 8%, rgba(0, 0, 0, 0.05) 0, transparent 35%),`

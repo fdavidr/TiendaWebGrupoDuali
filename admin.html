@@ -280,6 +280,18 @@
     .color-info { display: flex; flex-direction: column; line-height: 1.25; }
     .color-info strong { font-size: 0.85rem; }
     .color-info small { color: var(--muted); font-size: 0.72rem; }
+    .color-section-title {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin: 1rem 0 0.1rem;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--brand);
+    }
+    .color-section-title:first-of-type { margin-top: 0.4rem; }
     .color-actions { display: flex; justify-content: flex-end; }
     .backup-actions {
       display: flex;
@@ -1347,6 +1359,26 @@
                 </summary>
                 <div class="settings-collapse-body">
                   <p class="inline-help">Personaliza los colores de la tienda por sección. Pulsa "Guardar ajustes" para que la tienda tome los nuevos colores.</p>
+
+                  <div class="color-section-title">🔝 Encabezado</div>
+                  <div class="color-grid">
+                    <div class="color-item">
+                      <input type="color" id="cfg-color-header-bg" value="#f3f8f8" />
+                      <div class="color-info">
+                        <strong>Fondo del encabezado</strong>
+                        <small>Barra superior de navegación</small>
+                      </div>
+                    </div>
+                    <div class="color-item">
+                      <input type="color" id="cfg-color-header-text" value="#111111" />
+                      <div class="color-info">
+                        <strong>Texto del encabezado</strong>
+                        <small>Nombre de la empresa en la barra</small>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="color-section-title">📄 Contenido</div>
                   <div class="color-grid">
                     <div class="color-item">
                       <input type="color" id="cfg-color-brand" value="#14b51f" />
@@ -1391,6 +1423,25 @@
                       </div>
                     </div>
                   </div>
+
+                  <div class="color-section-title">🔻 Pie de página</div>
+                  <div class="color-grid">
+                    <div class="color-item">
+                      <input type="color" id="cfg-color-footer-bg" value="#0f2224" />
+                      <div class="color-info">
+                        <strong>Fondo del pie</strong>
+                        <small>Franja inferior de la página</small>
+                      </div>
+                    </div>
+                    <div class="color-item">
+                      <input type="color" id="cfg-color-footer-text" value="#ffffff" />
+                      <div class="color-info">
+                        <strong>Texto del pie</strong>
+                        <small>Enlaces y créditos del pie</small>
+                      </div>
+                    </div>
+                  </div>
+
                   <div class="color-actions">
                     <button type="button" class="btn-secondary" id="btn-reset-colors">↺ Restablecer colores</button>
                   </div>
@@ -1512,7 +1563,11 @@
     panel: '#ffffff',   // Fondo de tarjetas y paneles
     text: '#111111',    // Texto principal
     muted: '#5d6168',   // Texto secundario / descripciones
-    border: '#14b51f'   // Color base de los bordes
+    border: '#14b51f',  // Color base de los bordes
+    headerBg: '#f3f8f8',   // Encabezado: fondo
+    headerText: '#111111', // Encabezado: texto / nombre
+    footerBg: '#0f2224',   // Pie de página: fondo
+    footerText: '#ffffff'  // Pie de página: texto
   };
 
   function normalizeHexColor(value, fallback) {
@@ -1528,7 +1583,11 @@
       panel: normalizeHexColor(src.panel, DEFAULT_THEME_COLORS.panel),
       text: normalizeHexColor(src.text, DEFAULT_THEME_COLORS.text),
       muted: normalizeHexColor(src.muted, DEFAULT_THEME_COLORS.muted),
-      border: normalizeHexColor(src.border, DEFAULT_THEME_COLORS.border)
+      border: normalizeHexColor(src.border, DEFAULT_THEME_COLORS.border),
+      headerBg: normalizeHexColor(src.headerBg, DEFAULT_THEME_COLORS.headerBg),
+      headerText: normalizeHexColor(src.headerText, DEFAULT_THEME_COLORS.headerText),
+      footerBg: normalizeHexColor(src.footerBg, DEFAULT_THEME_COLORS.footerBg),
+      footerText: normalizeHexColor(src.footerText, DEFAULT_THEME_COLORS.footerText)
     };
   }
 
@@ -1538,7 +1597,11 @@
     { key: 'panel',  id: 'cfg-color-panel' },
     { key: 'text',   id: 'cfg-color-text' },
     { key: 'muted',  id: 'cfg-color-muted' },
-    { key: 'border', id: 'cfg-color-border' }
+    { key: 'border', id: 'cfg-color-border' },
+    { key: 'headerBg',   id: 'cfg-color-header-bg' },
+    { key: 'headerText', id: 'cfg-color-header-text' },
+    { key: 'footerBg',   id: 'cfg-color-footer-bg' },
+    { key: 'footerText', id: 'cfg-color-footer-text' }
   ];
 
   function fillThemeColorInputs(colors) {
