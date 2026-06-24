@@ -7,7 +7,7 @@
   <meta name="description" content="Tienda virtual Mi empresa. este es el eslogan de tu empresa." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
@@ -158,7 +158,7 @@
     body {
       min-height: 100vh;
       color: var(--text);
-      font-family: 'Manrope', sans-serif;
+      font-family: 'Plus Jakarta Sans', sans-serif;
       background: var(--body-bg,
         radial-gradient(circle at 0% 0%, rgba(20, 181, 31, 0.14) 0, transparent 45%),
         radial-gradient(circle at 100% 8%, rgba(0, 0, 0, 0.05) 0, transparent 35%),
@@ -593,7 +593,7 @@
       font-weight: 700;
     }
 
-    .product-price span { font-size: 0.7rem; color: var(--muted); font-family: 'Manrope', sans-serif; }
+    .product-price span { font-size: 0.7rem; color: var(--muted); font-family: 'Plus Jakarta Sans', sans-serif; }
     .product-price-old { text-decoration: line-through; opacity: 0.6; font-size: 0.75rem; }
 
     .product-discount-tag {
@@ -740,7 +740,7 @@
       border: 1px solid var(--line);
       border-radius: 20px;
       padding: 1.2rem 1.1rem;
-      background: linear-gradient(145deg, rgba(7, 104, 94, 0.95), rgba(12, 138, 123, 0.95));
+      background: linear-gradient(145deg, var(--brand-dark), var(--brand));
       color: #fff;
       display: flex;
       align-items: center;
@@ -1274,6 +1274,51 @@
       .cart-drawer { width: 100vw; }
       .footer-inner { justify-content: center; text-align: center; }
     }
+
+    @media (max-width: 450px) {
+      .products-grid { grid-template-columns: repeat(2, 1fr); gap: 0.55rem; }
+      .product-body { padding: 0.7rem 0.55rem 0.55rem; }
+      .product-name { font-size: 0.84rem; }
+    }
+
+    /* ── Paginación ── */
+    .pagination-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.35rem;
+      margin: 1.5rem 0 0.5rem;
+      flex-wrap: wrap;
+    }
+    .pg-btn {
+      min-width: 36px;
+      height: 36px;
+      padding: 0 0.65rem;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: var(--panel);
+      color: var(--text);
+      font-family: 'Sora', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.18s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .pg-btn:hover:not(:disabled) { border-color: var(--brand); color: var(--brand); }
+    .pg-btn.pg-active { background: var(--brand); border-color: var(--brand); color: #fff; }
+    .pg-btn:disabled { opacity: 0.35; cursor: default; }
+    .pg-dots { color: var(--muted); font-size: 0.9rem; padding: 0 0.2rem; line-height: 36px; }
+
+    /* ── Tipografía: Sora (display) + Plus Jakarta Sans (cuerpo) ── */
+    .logo-wrap span, .chip-btn, .cart-btn, h1, h2, h3,
+    [class*="btn-"], .kpi-value, .section-title, .pg-btn,
+    .product-name, .product-price, .info-title, .f-btn,
+    .modal-title, .branch-name, .cta-band strong,
+    .product-detail-name, .product-detail-price,
+    .cart-header h2, .cart-total strong { font-family: 'Sora', sans-serif; }
   </style>
 </head>
 <body>
@@ -1346,6 +1391,7 @@
 
       <p class="section-title" id="results-label">Productos</p>
       <div class="products-grid" id="products-grid"></div>
+      <div class="pagination-wrap" id="pagination-wrap"></div>
       <div class="empty-state" id="empty-state">
         <p>No encontramos resultados con ese criterio de busqueda.</p>
       </div>
@@ -2157,20 +2203,21 @@
 
     const EMOJIS = { Mopas: 'ðŸ§¹', Carros: 'ðŸ›’', Escobas: 'ðŸ§º', Baldes: 'ðŸª£', Aromas: 'ðŸŒ¸' };
 
-    function renderProducts(list) {
+    function renderProducts(list, totalCount) {
       const grid = document.getElementById('products-grid');
       const emptyEl = document.getElementById('empty-state');
       const labelEl = document.getElementById('results-label');
       grid.innerHTML = '';
 
-      if (list.length === 0) {
+      const total = totalCount !== undefined ? totalCount : list.length;
+      if (total === 0) {
         emptyEl.style.display = 'block';
         labelEl.textContent = '0 productos encontrados';
         return;
       }
 
       emptyEl.style.display = 'none';
-      labelEl.textContent = `${list.length} producto${list.length !== 1 ? 's' : ''}`;
+      labelEl.textContent = `${total} producto${total !== 1 ? 's' : ''}`;
 
       list.forEach(p => {
         const card = document.createElement('article');
@@ -2271,6 +2318,52 @@
       });
     }
 
+    const PAGE_SIZE = () => window.innerWidth <= 720 ? 12 : 24;
+    let _currentPage = 1;
+    let _filteredList = [];
+
+    function renderCurrentPage() {
+      const ps = PAGE_SIZE();
+      const start = (_currentPage - 1) * ps;
+      renderProducts(_filteredList.slice(start, start + ps), _filteredList.length);
+      renderPagination();
+    }
+
+    function renderPagination() {
+      const wrap = document.getElementById('pagination-wrap');
+      if (!wrap) return;
+      wrap.innerHTML = '';
+      const totalPages = Math.ceil(_filteredList.length / PAGE_SIZE());
+      if (totalPages <= 1) return;
+      const mkBtn = (label, onClick, disabled, active) => {
+        const b = document.createElement('button');
+        b.className = 'pg-btn' + (active ? ' pg-active' : '');
+        b.textContent = label;
+        b.disabled = !!disabled;
+        if (!disabled) b.addEventListener('click', onClick);
+        return b;
+      };
+      wrap.appendChild(mkBtn('←', () => { _currentPage--; renderCurrentPage(); scrollToProducts(); }, _currentPage === 1));
+      for (let i = 1; i <= totalPages; i++) {
+        if (totalPages > 7 && i !== 1 && i !== totalPages &&
+            (i < _currentPage - 2 || i > _currentPage + 2)) {
+          if (i === _currentPage - 3 || i === _currentPage + 3) {
+            const d = document.createElement('span');
+            d.className = 'pg-dots'; d.textContent = '…';
+            wrap.appendChild(d);
+          }
+          continue;
+        }
+        wrap.appendChild(mkBtn(i, (function(p) { return () => { _currentPage = p; renderCurrentPage(); scrollToProducts(); }; })(i), false, i === _currentPage));
+      }
+      wrap.appendChild(mkBtn('→', () => { _currentPage++; renderCurrentPage(); scrollToProducts(); }, _currentPage === totalPages));
+    }
+
+    function scrollToProducts() {
+      const el = document.getElementById('productos');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
     function filterAndRender() {
       const q = document.getElementById('search-input').value.trim().toLowerCase();
       const cat = document.getElementById('cat-filter').value;
@@ -2284,7 +2377,9 @@
           return name.includes(q) || desc.includes(q);
         });
       }
-      renderProducts(sortDiscountFirst(list));
+      _filteredList = sortDiscountFirst(list);
+      _currentPage = 1;
+      renderCurrentPage();
     }
 
     function openCart() {
