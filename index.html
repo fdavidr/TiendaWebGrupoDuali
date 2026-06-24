@@ -46,12 +46,68 @@
         r.style.setProperty('--line', rgba(brd,0.24));
         r.style.setProperty('--line-strong', rgba(brd,0.44));
       }
-      try { var t=localStorage.getItem('_siteTheme'); if(t) applyTC(JSON.parse(t)); } catch(e){}
+      function buildHideAttr(vis) {
+        if (!vis) return '';
+        var h = [];
+        if (vis.branches === false) h.push('branches');
+        if (vis.catalog === false) h.push('catalog');
+        if (vis.confidence === false) h.push('confidence');
+        if (vis.buy === false) h.push('buy');
+        if (vis.info === false) h.push('info');
+        return h.join(' ');
+      }
+      function usableLogo(src) { return src && String(src).indexOf('firestore-asset:') !== 0; }
+      function applyBranding(cache) {
+        var n = cache.companyName, s = cache.slogan, el;
+        if (n) {
+          el = document.querySelector('.logo-wrap span');
+          if (el) el.textContent = n;
+          el = document.getElementById('clients-company-name');
+          if (el) el.textContent = n;
+          document.title = n + ' | Equipamiento Profesional de Limpieza';
+        }
+        if (s) { el = document.querySelector('.eyebrow'); if (el) el.textContent = s; }
+        if (n && s) { el = document.querySelector('.footer-copy'); if (el) el.textContent = '(c) 2026 ' + n + ' - ' + s; }
+        if (usableLogo(cache.logo)) {
+          el = document.querySelector('.logo-wrap img');
+          if (el) { el.src = cache.logo; if (n) el.alt = n; }
+        }
+      }
+      try {
+        var t = localStorage.getItem('_siteTheme');
+        if (t) {
+          var cache = JSON.parse(t);
+          applyTC(cache.themeColors || cache); /* backward compat: old cache had colors at root */
+          // Section visibility: set attribute synchronously so hidden sections never paint
+          document.documentElement.setAttribute('data-hide', buildHideAttr(cache.sectionVisibility));
+          if (cache.companyName || cache.slogan || usableLogo(cache.logo)) {
+            if (document.readyState === 'loading') {
+              document.addEventListener('DOMContentLoaded', function () { applyBranding(cache); });
+            } else {
+              applyBranding(cache);
+            }
+          }
+        }
+      } catch(e){}
     })();
   </script>
 
   <style id="theme-light-base">
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── Anti-FOUC: ocultar secciones desactivadas antes del primer pintado ── */
+    html[data-hide~="branches"] #header-btn-sucursales,
+    html[data-hide~="branches"] #footer-btn-sucursales,
+    html[data-hide~="branches"] #modal-sucursales,
+    html[data-hide~="catalog"] #header-btn-catalogo,
+    html[data-hide~="catalog"] #footer-btn-catalogo,
+    html[data-hide~="catalog"] #modal-catalogo,
+    html[data-hide~="confidence"] #header-link-confianza,
+    html[data-hide~="confidence"] #confianza,
+    html[data-hide~="buy"] #header-link-comprar,
+    html[data-hide~="buy"] #comprar,
+    html[data-hide~="info"] #info-testimonials-panel,
+    html[data-hide~="info"] #info-extra-sections { display: none !important; }
 
     /* ═══════════════════════════════════════════════════════════
      *  PALETA DE COLORES – index.html  (MODO CLARO)
@@ -1668,22 +1724,14 @@
 
     function applySectionVisibility() {
       const vis = normalizeSectionVisibility(_siteConfig.sectionVisibility);
-      setVisibilityById('header-btn-sucursales', vis.branches);
-      setVisibilityById('footer-btn-sucursales', vis.branches);
-      setVisibilityById('modal-sucursales', vis.branches);
-
-      setVisibilityById('header-btn-catalogo', vis.catalog);
-      setVisibilityById('footer-btn-catalogo', vis.catalog);
-      setVisibilityById('modal-catalogo', vis.catalog);
-
-      setVisibilityById('header-link-confianza', vis.confidence);
-      setVisibilityById('confianza', vis.confidence);
-
-      setVisibilityById('header-link-comprar', vis.buy);
-      setVisibilityById('comprar', vis.buy);
-
-      setVisibilityById('info-testimonials-panel', vis.info);
-      setVisibilityById('info-extra-sections', vis.info);
+      // Drive visibility through the data-hide attribute + CSS (no inline-style flash)
+      const hide = [];
+      if (!vis.branches) hide.push('branches');
+      if (!vis.catalog) hide.push('catalog');
+      if (!vis.confidence) hide.push('confidence');
+      if (!vis.buy) hide.push('buy');
+      if (!vis.info) hide.push('info');
+      document.documentElement.setAttribute('data-hide', hide.join(' '));
     }
 
     function renderBranches() {
@@ -1748,7 +1796,36 @@
             if (cfg && cfg.themeColors) {
               cachedColors = cfg.themeColors;
               applyThemeColors(cachedColors);
-              try { localStorage.setItem('_siteTheme', JSON.stringify(cachedColors)); } catch(_) {}
+              // Apply name/slogan from config.json immediately (no Firestore wait)
+              const cn = String(cfg.companyName || '').trim();
+              const sl = String(cfg.slogan || '').trim();
+              if (cn) {
+                const bt = document.querySelector('.logo-wrap span');
+                if (bt) bt.textContent = cn;
+                const ci = document.getElementById('clients-company-name');
+                if (ci) ci.textContent = cn;
+                document.title = cn + ' | Equipamiento Profesional de Limpieza';
+              }
+              if (sl) { const ew = document.querySelector('.eyebrow'); if (ew) ew.textContent = sl; }
+              if (cn && sl) { const ft = document.querySelector('.footer-copy'); if (ft) ft.textContent = `(c) 2026 ${cn} - ${sl}`; }
+              // Section visibility from config.json (prevents layout flash)
+              const sv = cfg.sectionVisibility || null;
+              if (sv) {
+                const hide = [];
+                if (sv.branches === false) hide.push('branches');
+                if (sv.catalog === false) hide.push('catalog');
+                if (sv.confidence === false) hide.push('confidence');
+                if (sv.buy === false) hide.push('buy');
+                if (sv.info === false) hide.push('info');
+                document.documentElement.setAttribute('data-hide', hide.join(' '));
+              }
+              // Logo from config.json (only direct paths/URLs, not Firestore asset refs)
+              const lg = String(cfg.logo || '').trim();
+              if (lg && lg.indexOf('firestore-asset:') !== 0) {
+                const li = document.querySelector('.logo-wrap img');
+                if (li) { li.src = lg; if (cn) li.alt = cn; }
+              }
+              try { localStorage.setItem('_siteTheme', JSON.stringify({ themeColors: cachedColors, companyName: cn, slogan: sl, sectionVisibility: sv, logo: lg })); } catch(_) {}
             }
           }
         } catch (_) { /* config.json may not exist yet on first deploy */ }
@@ -1791,8 +1868,8 @@
         if (footer) footer.textContent = `(c) 2026 ${companyName} - ${slogan}`;
 
         applyThemeColors(themeColors);
-        // Keep localStorage in sync with the authoritative Firestore value
-        try { localStorage.setItem('_siteTheme', JSON.stringify(themeColors)); } catch(_) {}
+        // Keep localStorage in sync with the authoritative Firestore value (colors + name + slogan + visibility + logo)
+        try { localStorage.setItem('_siteTheme', JSON.stringify({ themeColors, companyName, slogan, sectionVisibility: _siteConfig.sectionVisibility, logo: logoSource })); } catch(_) {}
         renderSiteInfo();
         renderBranches();
         renderSocialLinks();

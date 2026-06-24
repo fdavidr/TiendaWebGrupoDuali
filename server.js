@@ -86,7 +86,7 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
 const CONFIG_CACHE_PATH = path.join(ROOT_DIR, 'config.json');
 const ALLOWED_CONFIG_KEYS = new Set([
   'themeColors', 'companyName', 'slogan',
-  'whatsappUrl', 'socialLinks', 'sectionVisibility'
+  'whatsappUrl', 'socialLinks', 'sectionVisibility', 'logo'
 ]);
 
 app.post('/api/config', (req, res) => {
