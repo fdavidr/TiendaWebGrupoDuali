@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MI EMPRESA | Equipamiento Profesional de Limpieza</title>
-  <meta name="description" content="Tienda virtual MI EMPRESA Bolivia. Compra herramientas de limpieza industrial con atencion rapida y asesoria especializada." />
+  <title>Mi empresa | Equipamiento Profesional de Limpieza</title>
+  <meta name="description" content="Tienda virtual Mi empresa. este es el eslogan de tu empresa." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet" />
@@ -1171,8 +1171,8 @@
   <header>
     <div class="container topbar">
       <a href="index.html" class="logo-wrap">
-        <img src="logo.svg" alt="MI EMPRESA" />
-        <span>MI EMPRESA</span>
+        <img src="img/mi logo.png" alt="Mi empresa" />
+        <span>Mi empresa</span>
       </a>
       <nav class="nav-links">
         <button id="header-btn-sucursales" class="chip-btn" type="button">Sucursales</button>
@@ -1250,7 +1250,7 @@
         </article>
 
         <article class="info-panel reveal">
-          <h2 class="info-title">Clientes que recomiendan <span id="clients-company-name">MI EMPRESA</span></h2>
+          <h2 class="info-title">Clientes que recomiendan <span id="clients-company-name">Mi empresa</span></h2>
           <div class="steps" id="testimonials-list">
             <div class="testimonial">"Excelente atencion, me ayudaron a elegir el equipo correcto para mi restaurante."<br><strong>- M. Vargas</strong></div>
             <div class="testimonial">"Respuesta rapida y todo llego como acordamos. Muy profesionales."<br><strong>- C. Rojas</strong></div>
@@ -1328,7 +1328,7 @@
 
   <footer class="site-footer">
     <div class="container footer-inner">
-      <p class="footer-copy">(c) 2026 MI EMPRESA - Soluciones profesionales de limpieza</p>
+      <p class="footer-copy">(c) 2026 Mi empresa - este es el eslogan de tu empresa</p>
       <div class="footer-buttons">
         <button id="footer-btn-sucursales" class="f-btn" type="button">
           <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>
@@ -1414,9 +1414,9 @@
     let toastTimer;
     const _assetObjectUrlCache = new Map();
     let _branding = {
-      companyName: 'MI EMPRESA',
-      slogan: 'Soluciones profesionales de limpieza',
-      logo: 'logo.svg'
+      companyName: 'Mi empresa',
+      slogan: 'este es el eslogan de tu empresa',
+      logo: 'img/mi logo.png'
     };
     let _siteConfig = {
       socialLinks: { youtube: '', tiktok: '', instagram: '', facebook: '' },
@@ -1668,7 +1668,7 @@
     function renderSiteInfo() {
       const info = _siteConfig.siteInfo || defaultSiteInfo();
       const companyNameEl = document.getElementById('clients-company-name');
-      if (companyNameEl) companyNameEl.textContent = _branding.companyName || 'MI EMPRESA';
+      if (companyNameEl) companyNameEl.textContent = _branding.companyName || 'Mi empresa';
 
       const confidenceTitle = document.getElementById('confidence-title');
       const confidenceContent = document.getElementById('confidence-content');
@@ -1704,9 +1704,9 @@
       try {
         const snap = await CONFIG_DOC.get();
         const data = snap.exists ? snap.data() : {};
-        const companyName = String(data.companyName || data.username || 'MI EMPRESA').trim();
-        const slogan = String(data.slogan || 'Soluciones profesionales de limpieza').trim();
-        const logoSource = data.logoAssetId ? makeAssetRef(data.logoAssetId) : String(data.logo || 'logo.svg').trim();
+        const companyName = String(data.companyName || data.username || 'Mi empresa').trim();
+        const slogan = String(data.slogan || 'este es el eslogan de tu empresa').trim();
+        const logoSource = data.logoAssetId ? makeAssetRef(data.logoAssetId) : String(data.logo || 'img/mi logo.png').trim();
         const themeColors = normalizeThemeColors(data.themeColors);
         _siteConfig = {
           socialLinks: normalizeSocialLinks(data.socialLinks || {}),
@@ -1727,7 +1727,7 @@
           try {
             brandImg.src = await resolveAssetSourceToUrl(logoSource);
           } catch (_) {
-            brandImg.src = 'logo.svg';
+            brandImg.src = 'img/mi logo.png';
           }
           brandImg.alt = companyName;
         }
@@ -2146,7 +2146,7 @@
       const city = document.getElementById('buyer-city').value.trim();
       const note = document.getElementById('buyer-note').value.trim();
 
-      let msg = `Hola ${_branding.companyName || 'MI EMPRESA'}, quiero realizar este pedido:\n\n`;
+      let msg = `Hola ${_branding.companyName || 'Mi empresa'}, quiero realizar este pedido:\n\n`;
       let total = 0;
       cart.forEach(item => {
         const sub = item.price * item.qty;

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MI EMPRESA – Panel Admin</title>
+  <title>Mi empresa – Panel Admin</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -957,8 +957,8 @@
   <header>
     <div style="display:flex; align-items:center; gap:.9rem;">
       <a href="index.html" class="header-logo">
-        <img src="logo.svg" alt="MI EMPRESA" />
-        <span>MI EMPRESA</span>
+        <img src="img/mi logo.png" alt="Mi empresa" />
+        <span>Mi empresa</span>
       </a>
       <span class="header-title">Panel Admin</span>
     </div>
@@ -1237,7 +1237,7 @@
             <div style="display:grid; gap: 0.9rem; margin-bottom: 1.1rem;">
               <div class="field">
                 <label for="cfg-company-name">Nombre de empresa</label>
-                <input type="text" id="cfg-company-name" placeholder="MI EMPRESA" maxlength="60" />
+                <input type="text" id="cfg-company-name" placeholder="Mi empresa" maxlength="60" />
               </div>
 
               <div class="field">
@@ -1823,8 +1823,8 @@
     try {
       const snap = await CONFIG_DOC.get();
       const data = snap.exists ? snap.data() : {};
-      const companyName = String(data.companyName || data.username || 'MI EMPRESA').trim();
-      const slogan = String(data.slogan || 'Soluciones profesionales de limpieza').trim();
+      const companyName = String(data.companyName || data.username || 'Mi empresa').trim();
+      const slogan = String(data.slogan || 'este es el eslogan de tu empresa').trim();
       const logoSource = data.logoAssetId ? makeAssetRef(data.logoAssetId) : String(data.logo || '').trim();
       const socialLinks = normalizeSocialLinks(data.socialLinks || {});
       const themeColors = normalizeThemeColors(data.themeColors);
@@ -1880,7 +1880,7 @@
           const url = await resolveAssetSourceToUrl(logoSource);
           if (url) headerImg.src = url;
         } else {
-          headerImg.src = 'logo.svg';
+          headerImg.src = 'img/mi logo.png';
         }
       }
 
@@ -2016,8 +2016,8 @@
   }
 
   async function saveCompanyConfig() {
-    const companyName = document.getElementById('cfg-company-name').value.trim() || 'MI EMPRESA';
-    const slogan = document.getElementById('cfg-company-slogan').value.trim() || 'Soluciones profesionales de limpieza';
+    const companyName = document.getElementById('cfg-company-name').value.trim() || 'Mi empresa';
+    const slogan = document.getElementById('cfg-company-slogan').value.trim() || 'este es el eslogan de tu empresa';
     let logoSource = _brandingState.logo || '';
     const socialLinks = collectSocialLinks();
     const themeColors = collectThemeColors();
