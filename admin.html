@@ -2122,6 +2122,15 @@
       } catch(_) {}
     }
 
+    // Write config.json cache so index.html avoids FOUC on next load
+    try {
+      await fetch('/api/config', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ themeColors, companyName, slogan, whatsappUrl: whatsAppUrl, socialLinks, sectionVisibility })
+      });
+    } catch(_) { /* cache write is best-effort */ }
+
     showToast('✅ Ajustes actualizados');
     } catch(e) {
       console.error('Error guardando ajustes:', e);

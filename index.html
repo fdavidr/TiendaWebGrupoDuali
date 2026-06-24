@@ -13,6 +13,43 @@
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
   <script src="firebase-config.js"></script>
 
+  <!-- ── Anti-FOUC: apply cached theme colors before first paint ── -->
+  <script>
+    (function () {
+      function h2r(h) {
+        h = h.replace('#', '');
+        if (h.length === 3) h = h[0]+h[0]+h[1]+h[1]+h[2]+h[2];
+        var n = parseInt(h, 16);
+        return [(n>>16)&255,(n>>8)&255,n&255];
+      }
+      function rgba(h,a){var c=h2r(h);return 'rgba('+c[0]+','+c[1]+','+c[2]+','+a+')';}
+      function shade(h,p){var c=h2r(h),t=p<0?0:255,a=Math.abs(p);return '#'+((1<<24)+(Math.round((t-c[0])*a)+c[0]<<16)+(Math.round((t-c[1])*a)+c[1]<<8)+(Math.round((t-c[2])*a)+c[2])).toString(16).slice(1);}
+      function valid(v){return /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(String(v||''));}
+      function applyTC(tc) {
+        if (!tc) return;
+        var brand = valid(tc.brand)?tc.brand:'#14b51f';
+        var bg    = valid(tc.bg)?tc.bg:'#f4f5f6';
+        var panel = valid(tc.panel)?tc.panel:'#ffffff';
+        var text  = valid(tc.text)?tc.text:'#111111';
+        var muted = valid(tc.muted)?tc.muted:'#5d6168';
+        var brd   = valid(tc.border)?tc.border:'#14b51f';
+        var r = document.documentElement;
+        r.style.setProperty('--brand', brand);
+        r.style.setProperty('--brand-dark', shade(brand,-0.22));
+        r.style.setProperty('--brand-light', rgba(brand,0.14));
+        r.style.setProperty('--accent', brand);
+        r.style.setProperty('--ok', brand);
+        r.style.setProperty('--bg', bg);
+        r.style.setProperty('--panel', panel);
+        r.style.setProperty('--text', text);
+        r.style.setProperty('--muted', muted);
+        r.style.setProperty('--line', rgba(brd,0.24));
+        r.style.setProperty('--line-strong', rgba(brd,0.44));
+      }
+      try { var t=localStorage.getItem('_siteTheme'); if(t) applyTC(JSON.parse(t)); } catch(e){}
+    })();
+  </script>
+
   <style id="theme-light-base">
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -1702,6 +1739,21 @@
 
     async function loadBranding() {
       try {
+        // ── Phase 1: config.json (fast static file, eliminates FOUC) ──────────
+        let cachedColors = null;
+        try {
+          const cfgRes = await fetch('/config.json');
+          if (cfgRes.ok) {
+            const cfg = await cfgRes.json();
+            if (cfg && cfg.themeColors) {
+              cachedColors = cfg.themeColors;
+              applyThemeColors(cachedColors);
+              try { localStorage.setItem('_siteTheme', JSON.stringify(cachedColors)); } catch(_) {}
+            }
+          }
+        } catch (_) { /* config.json may not exist yet on first deploy */ }
+
+        // ── Phase 2: Firestore (authoritative – name, logo, branches, etc.) ──
         const snap = await CONFIG_DOC.get();
         const data = snap.exists ? snap.data() : {};
         const companyName = String(data.companyName || 'Mi empresa').trim();
@@ -1739,6 +1791,8 @@
         if (footer) footer.textContent = `(c) 2026 ${companyName} - ${slogan}`;
 
         applyThemeColors(themeColors);
+        // Keep localStorage in sync with the authoritative Firestore value
+        try { localStorage.setItem('_siteTheme', JSON.stringify(themeColors)); } catch(_) {}
         renderSiteInfo();
         renderBranches();
         renderSocialLinks();

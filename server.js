@@ -82,9 +82,33 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
   });
 });
 
+// ── Config cache: admin writes this on every branding save ──────────────────
+const CONFIG_CACHE_PATH = path.join(ROOT_DIR, 'config.json');
+const ALLOWED_CONFIG_KEYS = new Set([
+  'themeColors', 'companyName', 'slogan',
+  'whatsappUrl', 'socialLinks', 'sectionVisibility'
+]);
+
+app.post('/api/config', (req, res) => {
+  try {
+    const body = req.body || {};
+    const safe = {};
+    for (const key of ALLOWED_CONFIG_KEYS) {
+      if (Object.prototype.hasOwnProperty.call(body, key)) safe[key] = body[key];
+    }
+    fs.writeFileSync(CONFIG_CACHE_PATH, JSON.stringify(safe), 'utf8');
+    return res.json({ ok: true });
+  } catch (e) {
+    return res.status(500).json({ error: 'No se pudo guardar la configuración' });
+  }
+});
+
 app.use(express.static(ROOT_DIR, {
   setHeaders: (res, filePath) => {
     if (filePath.endsWith('.html')) {
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    }
+    if (filePath.endsWith('config.json')) {
       res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
     }
   }
