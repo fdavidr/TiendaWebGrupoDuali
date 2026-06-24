@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
@@ -875,6 +875,54 @@
       border-color: var(--line-strong);
     }
 
+    /* -- Settings collapsibles ----------------------------------------- */
+    details.settings-collapse {
+      background: rgba(255,255,255,.9);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      transition: box-shadow .25s ease, border-color .25s ease;
+    }
+    details.settings-collapse[open] {
+      box-shadow: var(--shadow-md);
+      border-color: var(--line-strong);
+    }
+    details.settings-collapse > summary.settings-collapse-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: .85rem 1rem;
+      cursor: pointer;
+      list-style: none;
+      user-select: none;
+      gap: .6rem;
+    }
+    details.settings-collapse > summary.settings-collapse-head::-webkit-details-marker { display: none; }
+    details.settings-collapse > summary.settings-collapse-head::marker { display: none; }
+    .settings-collapse-head strong {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: .74rem;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      flex: 1;
+    }
+    .settings-collapse-head:hover { background: var(--accent-light); }
+    .settings-collapse-chevron {
+      font-size: .6rem;
+      color: var(--muted);
+      transition: transform .25s ease;
+      flex-shrink: 0;
+      display: inline-block;
+    }
+    details.settings-collapse[open] .settings-collapse-chevron { transform: rotate(180deg); }
+    .settings-collapse-body {
+      padding: 0 1rem 1rem;
+      display: grid;
+      gap: .8rem;
+    }
+
     .product-row { animation: rowIn .35s ease both; }
 
     /* Brillo deslizante en botones primarios */
@@ -957,7 +1005,7 @@
   <header>
     <div style="display:flex; align-items:center; gap:.9rem;">
       <a href="index.html" class="header-logo">
-        <img src="img/mi logo.png" alt="Mi empresa" />
+        <img src="img/mi logo.svg" alt="Mi empresa" />
         <span>Mi empresa</span>
       </a>
       <span class="header-title">Panel Admin</span>
@@ -1235,147 +1283,166 @@
             <p class="cfg-help">Actualiza el branding, las redes sociales y administra las categorías sugeridas para productos.</p>
 
             <div style="display:grid; gap: 0.9rem; margin-bottom: 1.1rem;">
-              <div class="field">
-                <label for="cfg-company-name">Nombre de empresa</label>
-                <input type="text" id="cfg-company-name" placeholder="Mi empresa" maxlength="60" />
-              </div>
 
-              <div class="field">
-                <label for="cfg-company-slogan">Eslogan</label>
-                <input type="text" id="cfg-company-slogan" placeholder="Soluciones profesionales de limpieza" maxlength="100" />
-              </div>
+              <details class="settings-collapse" open>
+                <summary class="settings-collapse-head">
+                  <strong>🏢 Empresa</strong>
+                  <span class="settings-collapse-chevron">▼</span>
+                </summary>
+                <div class="settings-collapse-body">
+                  <div class="field">
+                    <label for="cfg-company-name">Nombre de empresa</label>
+                    <input type="text" id="cfg-company-name" placeholder="Mi empresa" maxlength="60" />
+                  </div>
+                  <div class="field">
+                    <label for="cfg-company-slogan">Eslogan</label>
+                    <input type="text" id="cfg-company-slogan" placeholder="este es el eslogan de tu empresa" maxlength="100" />
+                  </div>
+                  <div class="field">
+                    <label>Logo de la empresa</label>
+                    <div class="upload-row">
+                      <input type="file" id="cfg-logo-file" accept="image/*" />
+                      <button type="button" class="btn-pdf" id="btn-upload-logo">Subir logo</button>
+                      <small id="cfg-logo-name">Sin logo cargado</small>
+                    </div>
+                    <div class="img-preview" id="cfg-logo-preview" style="min-height:120px;"><span>Logo</span></div>
+                  </div>
+                </div>
+              </details>
 
-              <div class="field">
-                <label>Logo de la empresa</label>
-                <div class="upload-row">
-                  <input type="file" id="cfg-logo-file" accept="image/*" />
-                  <button type="button" class="btn-pdf" id="btn-upload-logo">Subir logo</button>
-                  <small id="cfg-logo-name">Sin logo cargado</small>
+              <details class="settings-collapse">
+                <summary class="settings-collapse-head">
+                  <strong>🌐 Redes sociales</strong>
+                  <span class="settings-collapse-chevron">▼</span>
+                </summary>
+                <div class="settings-collapse-body">
+                  <p class="inline-help">Si una URL queda vacía, su icono no aparecerá en la tienda.</p>
+                  <div class="field">
+                    <label for="cfg-whatsapp-url">Enlace WhatsApp (icono redondo)</label>
+                    <input type="url" id="cfg-whatsapp-url" placeholder="https://wa.me/591XXXXXXXX o https://api.whatsapp.com/send?phone=..." />
+                  </div>
+                  <div class="field">
+                    <label for="cfg-facebook">Facebook</label>
+                    <input type="url" id="cfg-facebook" placeholder="https://facebook.com/..." />
+                  </div>
+                  <div class="field">
+                    <label for="cfg-instagram">Instagram</label>
+                    <input type="url" id="cfg-instagram" placeholder="https://instagram.com/..." />
+                  </div>
+                  <div class="field">
+                    <label for="cfg-tiktok">TikTok</label>
+                    <input type="url" id="cfg-tiktok" placeholder="https://www.tiktok.com/@..." />
+                  </div>
+                  <div class="field">
+                    <label for="cfg-youtube">YouTube</label>
+                    <input type="url" id="cfg-youtube" placeholder="https://youtube.com/..." />
+                  </div>
                 </div>
-                <div class="img-preview" id="cfg-logo-preview" style="min-height:120px;"><span>Logo</span></div>
-              </div>
+              </details>
 
-              <div class="editor-card">
-                <div class="editor-card-head">
-                  <strong>Redes sociales</strong>
-                </div>
-                <p class="inline-help">Si una URL queda vacía, su icono no aparecerá en la tienda.</p>
-                <div class="field">
-                  <label for="cfg-whatsapp-url">Enlace WhatsApp (icono redondo)</label>
-                  <input type="url" id="cfg-whatsapp-url" placeholder="https://wa.me/591XXXXXXXX o https://api.whatsapp.com/send?phone=..." />
-                </div>
-                <div class="field">
-                  <label for="cfg-facebook">Facebook</label>
-                  <input type="url" id="cfg-facebook" placeholder="https://facebook.com/..." />
-                </div>
-                <div class="field">
-                  <label for="cfg-instagram">Instagram</label>
-                  <input type="url" id="cfg-instagram" placeholder="https://instagram.com/..." />
-                </div>
-                <div class="field">
-                  <label for="cfg-tiktok">TikTok</label>
-                  <input type="url" id="cfg-tiktok" placeholder="https://www.tiktok.com/@..." />
-                </div>
-                <div class="field">
-                  <label for="cfg-youtube">YouTube</label>
-                  <input type="url" id="cfg-youtube" placeholder="https://youtube.com/..." />
-                </div>
-              </div><!-- /.editor-card redes -->
-
-              <div class="editor-card">
-                <div class="editor-card-head">
+              <details class="settings-collapse">
+                <summary class="settings-collapse-head">
                   <strong>🎨 Colores de la tienda</strong>
+                  <span class="settings-collapse-chevron">▼</span>
+                </summary>
+                <div class="settings-collapse-body">
+                  <p class="inline-help">Personaliza los colores de la tienda por sección. Pulsa "Guardar ajustes" para que la tienda tome los nuevos colores.</p>
+                  <div class="color-grid">
+                    <div class="color-item">
+                      <input type="color" id="cfg-color-brand" value="#14b51f" />
+                      <div class="color-info">
+                        <strong>Marca</strong>
+                        <small>Botones, acentos y enlaces</small>
+                      </div>
+                    </div>
+                    <div class="color-item">
+                      <input type="color" id="cfg-color-bg" value="#f4f5f6" />
+                      <div class="color-info">
+                        <strong>Fondo general</strong>
+                        <small>Fondo de toda la página</small>
+                      </div>
+                    </div>
+                    <div class="color-item">
+                      <input type="color" id="cfg-color-panel" value="#ffffff" />
+                      <div class="color-info">
+                        <strong>Tarjetas y paneles</strong>
+                        <small>Fondo de productos y bloques</small>
+                      </div>
+                    </div>
+                    <div class="color-item">
+                      <input type="color" id="cfg-color-text" value="#111111" />
+                      <div class="color-info">
+                        <strong>Texto principal</strong>
+                        <small>Títulos y textos destacados</small>
+                      </div>
+                    </div>
+                    <div class="color-item">
+                      <input type="color" id="cfg-color-muted" value="#5d6168" />
+                      <div class="color-info">
+                        <strong>Texto secundario</strong>
+                        <small>Descripciones y detalles</small>
+                      </div>
+                    </div>
+                    <div class="color-item">
+                      <input type="color" id="cfg-color-border" value="#14b51f" />
+                      <div class="color-info">
+                        <strong>Bordes</strong>
+                        <small>Líneas y contornos</small>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="color-actions">
+                    <button type="button" class="btn-secondary" id="btn-reset-colors">↺ Restablecer colores</button>
+                  </div>
                 </div>
-                <p class="inline-help">Personaliza los colores de la tienda por sección. Pulsa "Guardar ajustes" para que la tienda tome los nuevos colores.</p>
-                <div class="color-grid">
-                  <div class="color-item">
-                    <input type="color" id="cfg-color-brand" value="#14b51f" />
-                    <div class="color-info">
-                      <strong>Marca</strong>
-                      <small>Botones, acentos y enlaces</small>
-                    </div>
-                  </div>
-                  <div class="color-item">
-                    <input type="color" id="cfg-color-bg" value="#f4f5f6" />
-                    <div class="color-info">
-                      <strong>Fondo general</strong>
-                      <small>Fondo de toda la página</small>
-                    </div>
-                  </div>
-                  <div class="color-item">
-                    <input type="color" id="cfg-color-panel" value="#ffffff" />
-                    <div class="color-info">
-                      <strong>Tarjetas y paneles</strong>
-                      <small>Fondo de productos y bloques</small>
-                    </div>
-                  </div>
-                  <div class="color-item">
-                    <input type="color" id="cfg-color-text" value="#111111" />
-                    <div class="color-info">
-                      <strong>Texto principal</strong>
-                      <small>Títulos y textos destacados</small>
-                    </div>
-                  </div>
-                  <div class="color-item">
-                    <input type="color" id="cfg-color-muted" value="#5d6168" />
-                    <div class="color-info">
-                      <strong>Texto secundario</strong>
-                      <small>Descripciones y detalles</small>
-                    </div>
-                  </div>
-                  <div class="color-item">
-                    <input type="color" id="cfg-color-border" value="#14b51f" />
-                    <div class="color-info">
-                      <strong>Bordes</strong>
-                      <small>Líneas y contornos</small>
-                    </div>
-                  </div>
-                </div>
-                <div class="color-actions">
-                  <button type="button" class="btn-secondary" id="btn-reset-colors">↺ Restablecer colores</button>
-                </div>
-              </div><!-- /.editor-card colores -->
+              </details>
 
-              <div class="editor-card">
-                <div class="editor-card-head">
-                  <strong>� Cuenta de administrador</strong>
+              <details class="settings-collapse">
+                <summary class="settings-collapse-head">
+                  <strong>👤 Cuenta de administrador</strong>
+                  <span class="settings-collapse-chevron">▼</span>
+                </summary>
+                <div class="settings-collapse-body">
+                  <p class="inline-help">Actualiza tu nombre de usuario o correo de recuperación. Para cambiar el correo o la contraseña debes ingresar la contraseña actual.</p>
+                  <div class="form-grid" style="margin-top:.4rem;">
+                    <div class="field">
+                      <label for="acc-username">Nombre de usuario</label>
+                      <input type="text" id="acc-username" placeholder="Nombre de usuario" maxlength="30" autocomplete="off" />
+                    </div>
+                    <div class="field">
+                      <label for="acc-email">Correo de recuperación</label>
+                      <input type="email" id="acc-email" placeholder="correo@ejemplo.com" autocomplete="off" />
+                    </div>
+                    <div class="field">
+                      <label for="acc-new-password">Nueva contraseña <span style="font-weight:400;text-transform:none;letter-spacing:0">(dejar vacío para no cambiar)</span></label>
+                      <input type="password" id="acc-new-password" placeholder="Mínimo 6 caracteres" minlength="6" autocomplete="new-password" />
+                    </div>
+                    <div class="field">
+                      <label for="acc-current-password">Contraseña actual <span style="font-weight:400;text-transform:none;letter-spacing:0">(requerida para cambiar correo o contraseña)</span></label>
+                      <input type="password" id="acc-current-password" placeholder="Tu contraseña actual" autocomplete="current-password" />
+                    </div>
+                  </div>
+                  <div class="form-actions" style="margin-top:.8rem;">
+                    <button class="btn-primary" id="btn-save-account" type="button">Guardar cuenta</button>
+                  </div>
+                  <p id="acc-msg" style="margin-top:.55rem;font-size:.78rem;min-height:1.1rem;"></p>
                 </div>
-                <p class="inline-help">Actualiza tu nombre de usuario o correo de recuperación. Para cambiar el correo o la contraseña debes ingresar la contraseña actual.</p>
-                <div class="form-grid" style="margin-top:.4rem;">
-                  <div class="field">
-                    <label for="acc-username">Nombre de usuario</label>
-                    <input type="text" id="acc-username" placeholder="Nombre de usuario" maxlength="30" autocomplete="off" />
-                  </div>
-                  <div class="field">
-                    <label for="acc-email">Correo de recuperación</label>
-                    <input type="email" id="acc-email" placeholder="correo@ejemplo.com" autocomplete="off" />
-                  </div>
-                  <div class="field">
-                    <label for="acc-new-password">Nueva contraseña <span style="font-weight:400;text-transform:none;letter-spacing:0">(dejar vacío para no cambiar)</span></label>
-                    <input type="password" id="acc-new-password" placeholder="Mínimo 6 caracteres" minlength="6" autocomplete="new-password" />
-                  </div>
-                  <div class="field">
-                    <label for="acc-current-password">Contraseña actual <span style="font-weight:400;text-transform:none;letter-spacing:0">(requerida para cambiar correo o contraseña)</span></label>
-                    <input type="password" id="acc-current-password" placeholder="Tu contraseña actual" autocomplete="current-password" />
-                  </div>
-                </div>
-                <div class="form-actions" style="margin-top:.8rem;">
-                  <button class="btn-primary" id="btn-save-account" type="button">Guardar cuenta</button>
-                </div>
-                <p id="acc-msg" style="margin-top:.55rem;font-size:.78rem;min-height:1.1rem;"></p>
-              </div><!-- /.editor-card cuenta -->
+              </details>
 
-              <div class="editor-card">
-                <div class="editor-card-head">
-                  <strong>�💾 Copia de seguridad</strong>
+              <details class="settings-collapse">
+                <summary class="settings-collapse-head">
+                  <strong>💾 Copia de seguridad</strong>
+                  <span class="settings-collapse-chevron">▼</span>
+                </summary>
+                <div class="settings-collapse-body">
+                  <p class="inline-help">Exporta todos los datos ingresados desde el panel (productos, configuración, sucursales, categorías y catálogos) o importa una copia guardada.</p>
+                  <div class="backup-actions">
+                    <button type="button" class="btn-pdf" id="btn-export-data">⬇ Exportar copia de seguridad</button>
+                    <label class="btn-pdf" for="cfg-import-file" style="cursor:pointer;">⬆ Importar datos</label>
+                    <input type="file" id="cfg-import-file" accept="application/json,.json" style="display:none;" />
+                  </div>
                 </div>
-                <p class="inline-help">Exporta todos los datos ingresados desde el panel (productos, configuración, sucursales, categorías y catálogos) o importa una copia guardada.</p>
-                <div class="backup-actions">
-                  <button type="button" class="btn-pdf" id="btn-export-data">⬇ Exportar copia de seguridad</button>
-                  <label class="btn-pdf" for="cfg-import-file" style="cursor:pointer;">⬆ Importar datos</label>
-                  <input type="file" id="cfg-import-file" accept="application/json,.json" style="display:none;" />
-                </div>
-              </div><!-- /.editor-card backup -->
+              </details>
 
               <div class="form-actions">
                 <button class="btn-primary" id="btn-save-branding" type="button">Guardar ajustes</button>
@@ -1880,7 +1947,7 @@
           const url = await resolveAssetSourceToUrl(logoSource);
           if (url) headerImg.src = url;
         } else {
-          headerImg.src = 'img/mi logo.png';
+          headerImg.src = 'img/mi logo.svg';
         }
       }
 

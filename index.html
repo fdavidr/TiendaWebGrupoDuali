@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
@@ -1171,7 +1171,7 @@
   <header>
     <div class="container topbar">
       <a href="index.html" class="logo-wrap">
-        <img src="img/mi logo.png" alt="Mi empresa" />
+        <img src="img/mi logo.svg" alt="Mi empresa" />
         <span>Mi empresa</span>
       </a>
       <nav class="nav-links">
@@ -1416,7 +1416,7 @@
     let _branding = {
       companyName: 'Mi empresa',
       slogan: 'este es el eslogan de tu empresa',
-      logo: 'img/mi logo.png'
+      logo: 'img/mi logo.svg'
     };
     let _siteConfig = {
       socialLinks: { youtube: '', tiktok: '', instagram: '', facebook: '' },
@@ -1704,9 +1704,9 @@
       try {
         const snap = await CONFIG_DOC.get();
         const data = snap.exists ? snap.data() : {};
-        const companyName = String(data.companyName || data.username || 'Mi empresa').trim();
+        const companyName = String(data.companyName || 'Mi empresa').trim();
         const slogan = String(data.slogan || 'este es el eslogan de tu empresa').trim();
-        const logoSource = data.logoAssetId ? makeAssetRef(data.logoAssetId) : String(data.logo || 'img/mi logo.png').trim();
+        const logoSource = data.logoAssetId ? makeAssetRef(data.logoAssetId) : String(data.logo || 'img/mi logo.svg').trim();
         const themeColors = normalizeThemeColors(data.themeColors);
         _siteConfig = {
           socialLinks: normalizeSocialLinks(data.socialLinks || {}),
@@ -1727,7 +1727,7 @@
           try {
             brandImg.src = await resolveAssetSourceToUrl(logoSource);
           } catch (_) {
-            brandImg.src = 'img/mi logo.png';
+            brandImg.src = 'img/mi logo.svg';
           }
           brandImg.alt = companyName;
         }
