@@ -1776,6 +1776,253 @@
       .hero-btn         { font-size: 0.72rem; min-height: 44px; }
       .hero-scroll-btn  { width: 42px; height: 42px; }
     }
+
+    /* ═══════════════════════════════════════════════════════════
+     *  SISTEMA DE MODALES PREMIUM
+     *  Fade + scale transitions. Reemplaza el sistema display:none anterior.
+     * ═══════════════════════════════════════════════════════════ */
+
+    /* ── Overlay ── */
+    .modal-overlay {
+      display: flex;
+      visibility: hidden;
+      opacity: 0;
+      pointer-events: none;
+      background: rgba(4, 20, 24, 0);
+      backdrop-filter: blur(0px);
+      -webkit-backdrop-filter: blur(0px);
+      transition:
+        opacity                  0.3s ease,
+        visibility               0.3s ease,
+        background               0.3s ease,
+        backdrop-filter          0.3s ease,
+        -webkit-backdrop-filter  0.3s ease;
+    }
+    .modal-overlay.open {
+      background: rgba(4, 20, 24, 0.64);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      opacity: 1;
+      visibility: visible;
+      pointer-events: all;
+    }
+
+    /* ── Caja del modal: scale + fade ── */
+    .modal {
+      width: min(700px, 100%);
+      max-height: 90vh;
+      border-radius: 22px;
+      padding: 2rem;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.05);
+      animation: none;
+      transform: scale(0.9) translateY(24px);
+      opacity: 0;
+      transition:
+        transform  0.36s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity    0.36s ease;
+    }
+    .modal-overlay.open .modal { transform: scale(1) translateY(0); opacity: 1; }
+    .modal::-webkit-scrollbar { width: 4px; }
+    .modal::-webkit-scrollbar-track { background: transparent; }
+    .modal::-webkit-scrollbar-thumb { background: var(--line-strong); border-radius: 4px; }
+    .modal.mdl-wide { width: min(820px, 100%); }
+
+    /* ── Botón X premium ── */
+    .modal-close {
+      position: absolute; top: 1rem; right: 1rem;
+      width: 34px; height: 34px; border-radius: 10px;
+      border: 1px solid var(--line); background: rgba(255,255,255,0.95);
+      color: var(--muted); font-size: 1.1rem; cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center;
+      line-height: 1; z-index: 5;
+      transition: color 0.2s, border-color 0.2s, transform 0.22s, background 0.2s;
+    }
+    .modal-close:hover { color: var(--text); border-color: var(--brand); background: #fff; transform: rotate(90deg); }
+
+    /* ── Encabezado del modal ── */
+    .mdl-header { padding-right: 2.8rem; margin-bottom: 1.5rem; }
+    .mdl-eyebrow {
+      font-size: 0.64rem; text-transform: uppercase; letter-spacing: 0.14em;
+      font-weight: 800; color: var(--brand); margin-bottom: 0.28rem;
+    }
+    .mdl-title {
+      font-family: 'Sora', sans-serif; font-size: 1.3rem; font-weight: 800;
+      color: var(--text); letter-spacing: -0.02em; line-height: 1.2;
+    }
+    .modal-title { padding-right: 2.8rem; }
+
+    /* ── Tarjetas de sucursales premium ── */
+    .branch-card {
+      border: 1px solid var(--line); border-radius: 18px;
+      padding: 1.2rem 1.35rem 1.1rem; margin-bottom: 0.85rem;
+      background: linear-gradient(145deg, #fafffe, #f0fbf7);
+      position: relative; overflow: hidden;
+      transition: border-color 0.22s ease, box-shadow 0.22s ease;
+    }
+    .branch-card:last-child { margin-bottom: 0; }
+    .branch-card:hover { border-color: var(--brand); box-shadow: var(--shadow-sm); }
+    .branch-card::before {
+      content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
+      background: linear-gradient(to bottom, var(--brand-dark), var(--brand));
+      border-radius: 4px 0 0 4px;
+    }
+    .branch-head { display: flex; align-items: center; gap: 0.7rem; margin-bottom: 0.9rem; }
+    .branch-icon {
+      width: 40px; height: 40px; border-radius: 12px;
+      background: var(--brand-light); border: 1px solid var(--line);
+      display: inline-flex; align-items: center; justify-content: center;
+      color: var(--brand-dark); flex-shrink: 0;
+    }
+    .branch-icon svg { width: 20px; height: 20px; fill: currentColor; }
+    .branch-name {
+      font-family: 'Sora', sans-serif; font-size: 0.98rem; font-weight: 800;
+      color: var(--text); letter-spacing: -0.01em; line-height: 1.2;
+      text-transform: none;
+    }
+    .branch-city { font-size: 0.68rem; color: var(--brand-dark); font-weight: 700; text-transform: uppercase; letter-spacing: 0.09em; margin-top: 0.1rem; }
+    .branch-info { display: grid; gap: 0.42rem; margin-bottom: 0.95rem; }
+    .branch-row {
+      display: flex; align-items: flex-start; gap: 0.46rem;
+      color: var(--muted); font-size: 0.82rem; line-height: 1.5; margin-bottom: 0;
+    }
+    .branch-row svg { width: 14px; height: 14px; fill: var(--brand); flex-shrink: 0; margin-top: 0.18rem; }
+    .branch-row a { color: var(--brand-dark); text-decoration: none; font-weight: 600; }
+    .branch-row a:hover { text-decoration: underline; }
+    .branch-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .branch-btn {
+      display: inline-flex; align-items: center; gap: 0.38rem;
+      border-radius: 999px; padding: 0.55rem 1rem;
+      font-family: 'Sora', sans-serif; font-size: 0.71rem; font-weight: 700;
+      letter-spacing: 0.07em; text-transform: uppercase; cursor: pointer;
+      text-decoration: none; border: 1px solid transparent; min-height: 38px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .branch-btn svg { width: 14px; height: 14px; fill: currentColor; flex-shrink: 0; }
+    .branch-btn-wa { background: linear-gradient(135deg, #13894e, #1fb366); color: #fff; box-shadow: 0 5px 14px rgba(31,179,102,0.3); }
+    .branch-btn-wa:hover { transform: translateY(-2px); box-shadow: 0 9px 20px rgba(31,179,102,0.42); }
+    .branch-btn-map { background: rgba(255,255,255,0.9); color: var(--brand-dark); border-color: var(--line); }
+    .branch-btn-map:hover { border-color: var(--brand); transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+
+    /* ── Catálogo: tarjetas + visor PDF ── */
+    .cat-cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .cat-card {
+      border: 1px solid var(--line); border-radius: 18px; padding: 1.4rem;
+      background: linear-gradient(145deg, #fafffe, #f0fbf7);
+      display: flex; flex-direction: column; gap: 0.65rem;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .cat-card:hover { border-color: var(--brand); box-shadow: var(--shadow-sm); }
+    .cat-card-icon {
+      width: 50px; height: 50px; border-radius: 14px;
+      background: var(--brand-light); border: 1px solid var(--line);
+      display: inline-flex; align-items: center; justify-content: center; color: var(--brand-dark);
+    }
+    .cat-card-icon svg { width: 26px; height: 26px; fill: currentColor; }
+    .cat-card-name { font-family: 'Sora', sans-serif; font-size: 0.98rem; font-weight: 800; color: var(--text); line-height: 1.2; }
+    .cat-card-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.55; flex: 1; }
+    .cat-card-actions { display: flex; flex-direction: column; gap: 0.48rem; margin-top: auto; }
+    .cat-btn-view {
+      width: 100%; padding: 0.72rem; border-radius: 11px; border: none;
+      background: linear-gradient(135deg, var(--brand-dark), var(--brand)); color: #fff;
+      font-family: 'Sora', sans-serif; font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.4rem;
+      box-shadow: 0 6px 16px rgba(12,138,123,0.25);
+      transition: transform 0.2s ease, box-shadow 0.2s ease; min-height: 42px;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .cat-btn-view:hover { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(12,138,123,0.36); }
+    .cat-btn-view svg { width: 14px; height: 14px; fill: currentColor; }
+    /* Override .btn-download dentro de las tarjetas de catálogo */
+    .cat-card-actions .btn-download {
+      width: 100%; padding: 0.65rem; border-radius: 11px;
+      border: 1px solid var(--line) !important; background: rgba(255,255,255,0.9) !important;
+      color: var(--brand-dark) !important; font-family: 'Sora', sans-serif; font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 0.07em; text-transform: uppercase; cursor: pointer;
+      display: flex !important; align-items: center; justify-content: center; gap: 0.4rem;
+      box-shadow: none !important; margin-top: 0 !important; min-height: 40px;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .cat-card-actions .btn-download:hover { border-color: var(--brand) !important; transform: translateY(-1px); box-shadow: var(--shadow-sm) !important; }
+    .cat-viewer-back {
+      display: inline-flex; align-items: center; gap: 0.4rem; border: none; background: none;
+      color: var(--brand-dark); font-family: 'Sora', sans-serif; font-size: 0.77rem; font-weight: 700;
+      cursor: pointer; padding: 0; margin-bottom: 1rem;
+      text-transform: uppercase; letter-spacing: 0.07em; transition: gap 0.2s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .cat-viewer-back:hover { gap: 0.6rem; }
+    .cat-viewer-back svg { width: 16px; height: 16px; fill: currentColor; }
+    .catalog-iframe-wrap { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: #f7fbfa; }
+    .catalog-iframe-wrap iframe { width: 100%; height: 68vh; border: none; display: block; }
+    .cat-viewer-dl {
+      margin-top: 0.8rem; display: inline-flex; align-items: center; justify-content: center; gap: 0.45rem;
+      width: 100%; padding: 0.72rem; border-radius: 11px;
+      border: 1px solid var(--line); background: rgba(255,255,255,0.9); color: var(--brand-dark);
+      font-family: 'Sora', sans-serif; font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; min-height: 42px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .cat-viewer-dl:hover { border-color: var(--brand); box-shadow: var(--shadow-sm); }
+    .cat-viewer-dl svg { width: 15px; height: 15px; fill: currentColor; }
+
+    /* ── Modal Confianza / Nosotros ── */
+    .mdl-cf-hero {
+      display: flex; align-items: center; gap: 1rem; margin-bottom: 1.6rem;
+      padding: 1.1rem 1.35rem; border-radius: 18px;
+      background: linear-gradient(135deg, var(--brand-dark), var(--brand)); color: #fff;
+    }
+    .mdl-cf-logo { width: 52px; height: 52px; object-fit: contain; border-radius: 12px; flex-shrink: 0; filter: brightness(0) invert(1); }
+    .mdl-cf-company { font-family: 'Sora', sans-serif; font-size: 1.2rem; font-weight: 800; letter-spacing: -0.02em; line-height: 1.15; }
+    .mdl-cf-slogan { font-size: 0.78rem; opacity: 0.85; margin-top: 0.18rem; }
+    .cf-section-title {
+      font-family: 'Sora', sans-serif; font-size: 0.67rem;
+      text-transform: uppercase; letter-spacing: 0.14em; font-weight: 800;
+      color: var(--brand); margin: 1.35rem 0 0.72rem;
+      display: flex; align-items: center; gap: 0.4rem;
+    }
+    .cf-section-title svg { width: 14px; height: 14px; fill: currentColor; }
+    .cf-cards { display: grid; gap: 0.62rem; }
+    .cf-two-col { grid-template-columns: 1fr 1fr; }
+    .cf-card {
+      display: flex; align-items: flex-start; gap: 0.72rem;
+      border: 1px solid var(--line); border-radius: 14px; padding: 0.88rem 1rem;
+      background: linear-gradient(145deg, #fafffe, #f3fbf8);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .cf-card:hover { border-color: var(--brand); box-shadow: var(--shadow-sm); }
+    .cf-card-icon {
+      width: 38px; height: 38px; border-radius: 10px;
+      background: var(--brand-light); border: 1px solid var(--line);
+      display: inline-flex; align-items: center; justify-content: center; color: var(--brand-dark); flex-shrink: 0;
+    }
+    .cf-card-icon svg { width: 18px; height: 18px; fill: currentColor; }
+    .cf-card-title { font-family: 'Sora', sans-serif; font-size: 0.83rem; font-weight: 800; color: var(--text); margin-bottom: 0.2rem; }
+    .cf-card-text { font-size: 0.79rem; color: var(--muted); line-height: 1.55; }
+
+    /* ── Responsive modales premium ── */
+    @media (max-width: 768px) {
+      .modal { padding: 1.5rem 1.25rem; border-radius: 18px; max-height: 92vh; }
+      .modal-close { top: 0.85rem; right: 0.85rem; }
+      .modal-title { font-size: 0.82rem; }
+      .cat-cards-grid { grid-template-columns: 1fr; }
+      .cf-two-col { grid-template-columns: 1fr; }
+      .catalog-iframe-wrap iframe { height: 55vh; }
+    }
+    @media (max-width: 480px) {
+      .modal { padding: 1.15rem 1rem; border-radius: 14px; max-height: 94vh; }
+      .mdl-cf-hero { flex-direction: column; text-align: center; }
+      .cat-card { padding: 1.1rem; }
+      .branch-card { padding: 1rem 1.1rem; }
+      .catalog-iframe-wrap iframe { height: 50vh; }
+    }
+    @media (max-width: 360px) {
+      .modal { padding: 1rem 0.85rem; }
+      .branch-actions { flex-direction: column; }
+      .branch-btn { width: 100%; justify-content: center; }
+    }
   </style>
 </head>
 <body>
@@ -1790,7 +2037,7 @@
       <nav class="nav-links">
         <button id="header-btn-sucursales" class="chip-btn" type="button">Sucursales</button>
         <button id="header-btn-catalogo" class="chip-btn" type="button">Catalogo</button>
-        <a class="chip-btn" id="header-link-confianza" href="#confianza">Confianza</a>
+        <button class="chip-btn" id="header-link-confianza" type="button">Confianza</button>
         <a class="chip-btn" id="header-link-comprar" href="#comprar">Como comprar</a>
         <button class="cart-btn" id="cart-btn" aria-label="Ver carrito">
           <svg viewBox="0 0 24 24"><path d="M7 18a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM1 2h2l.4 2M5 13h14l2-8H5.4M5 13L3.4 4H1M5 13l-1.4 6h15"/></svg>
@@ -1997,10 +2244,10 @@
           <svg viewBox="0 0 24 24"><path d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zm-7 14H7v-2h5v2zm5-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
           Catalogo
         </button>
-        <a class="f-btn" href="#confianza">
+        <button id="footer-btn-confianza" class="f-btn" type="button">
           <svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l7.1-1.01L12 2z"/></svg>
           Confianza
-        </a>
+        </button>
         <a class="f-btn" href="#comprar">
           <svg viewBox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zm0-2h10c.75 0 1.41-.41 1.75-1.03L21.7 7H6.21L5.27 5H2v2h2l3.6 7.59zM17 18c-1.1 0-1.99.9-1.99 2S15.9 22 17 22s2-.9 2-2-.9-2-2-2z"/></svg>
           Como comprar
@@ -2014,38 +2261,205 @@
     <img src="img/whatsapp icon.svg" alt="WhatsApp" style="width:24px;height:24px;object-fit:contain;" />
   </button>
 
-  <div class="modal-overlay" id="modal-sucursales" role="dialog" aria-modal="true" aria-label="Sucursales">
+  <div class="modal-overlay" id="modal-sucursales" role="dialog" aria-modal="true" aria-labelledby="modal-suc-title" aria-label="Sucursales">
     <div class="modal">
-      <button class="modal-close" id="modal-close-suc" aria-label="Cerrar">&times;</button>
-      <p class="modal-title">Nuestras sucursales</p>
+      <button class="modal-close" id="modal-close-suc" aria-label="Cerrar modal">&times;</button>
+      <div class="mdl-header">
+        <p class="mdl-eyebrow">Nuestras tiendas</p>
+        <h2 class="mdl-title" id="modal-suc-title">Sucursales</h2>
+      </div>
       <div id="branches-modal-list">
-      <div class="branch-card">
-        <div class="branch-name">Cochabamba</div>
-        <p class="branch-row">Calle Sucre #1948 - <a href="https://maps.app.goo.gl/t2bCfj5XDovuukgP7" target="_blank" rel="noopener noreferrer">Ver en mapa</a></p>
-        <p class="branch-row"><strong>Horario:</strong> Lunes a viernes 10am - 6pm - Sabados 9am - 2pm</p>
-        <p class="branch-row"><strong>WhatsApp:</strong> <a href="https://wa.me/59176924727" target="_blank" rel="noopener noreferrer">76924727</a></p>
-      </div>
-      <div class="branch-card" style="margin-bottom:0">
-        <div class="branch-name">Santa Cruz</div>
-        <p class="branch-row">Av. Mutualista y Bruno Racua - <a href="https://maps.app.goo.gl/uV4D7wNfLjd3mPgNA" target="_blank" rel="noopener noreferrer">Ver en mapa</a></p>
-        <p class="branch-row"><strong>Horario:</strong> Lunes a viernes 8:30am - 3:30pm - Sabados 8am - 1pm</p>
-        <p class="branch-row"><strong>WhatsApp:</strong> <a href="https://wa.me/59173691496" target="_blank" rel="noopener noreferrer">73691496</a></p>
-      </div>
+        <div class="branch-card">
+          <div class="branch-head">
+            <div class="branch-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>
+            </div>
+            <div>
+              <div class="branch-name">Cochabamba</div>
+              <div class="branch-city">Bolivia</div>
+            </div>
+          </div>
+          <div class="branch-info">
+            <div class="branch-row"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg><span>Calle Sucre #1948</span></div>
+            <div class="branch-row"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm4.24 16L12 15.45 7.77 18l1.12-4.81-3.73-3.23 4.92-.42L12 5l1.92 4.53 4.92.42-3.73 3.23L16.23 18z"/></svg><span>Lun&ndash;Vie 10am&ndash;6pm &middot; Sáb 9am&ndash;2pm</span></div>
+            <div class="branch-row"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg><span>76924727</span></div>
+          </div>
+          <div class="branch-actions">
+            <a href="https://wa.me/59176924727" class="branch-btn branch-btn-wa" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp Cochabamba"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg> WhatsApp</a>
+            <a href="https://maps.app.goo.gl/t2bCfj5XDovuukgP7" class="branch-btn branch-btn-map" target="_blank" rel="noopener noreferrer" aria-label="Ver mapa Cochabamba"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.11V5l6 2.11V19z"/></svg> Ver mapa</a>
+          </div>
+        </div>
+        <div class="branch-card">
+          <div class="branch-head">
+            <div class="branch-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>
+            </div>
+            <div>
+              <div class="branch-name">Santa Cruz</div>
+              <div class="branch-city">Bolivia</div>
+            </div>
+          </div>
+          <div class="branch-info">
+            <div class="branch-row"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg><span>Av. Mutualista y Bruno Racua</span></div>
+            <div class="branch-row"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm4.24 16L12 15.45 7.77 18l1.12-4.81-3.73-3.23 4.92-.42L12 5l1.92 4.53 4.92.42-3.73 3.23L16.23 18z"/></svg><span>Lun&ndash;Vie 8:30am&ndash;3:30pm &middot; Sáb 8am&ndash;1pm</span></div>
+            <div class="branch-row"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg><span>73691496</span></div>
+          </div>
+          <div class="branch-actions">
+            <a href="https://wa.me/59173691496" class="branch-btn branch-btn-wa" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp Santa Cruz"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg> WhatsApp</a>
+            <a href="https://maps.app.goo.gl/uV4D7wNfLjd3mPgNA" class="branch-btn branch-btn-map" target="_blank" rel="noopener noreferrer" aria-label="Ver mapa Santa Cruz"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.11V5l6 2.11V19z"/></svg> Ver mapa</a>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
-  <div class="modal-overlay" id="modal-catalogo" role="dialog" aria-modal="true" aria-label="Catalogo">
-    <div class="modal">
-      <button class="modal-close" id="modal-close-cat" aria-label="Cerrar">&times;</button>
-      <p class="modal-title">Catalogo de productos</p>
-      <div class="catalog-iframe-wrap">
-        <iframe src="Catalogo%20Ciam%20(2).pdf" title="Catalogo MI EMPRESA"></iframe>
+  <div class="modal-overlay" id="modal-catalogo" role="dialog" aria-modal="true" aria-labelledby="modal-cat-title" aria-label="Catálogos">
+    <div class="modal mdl-wide">
+      <button class="modal-close" id="modal-close-cat" aria-label="Cerrar modal">&times;</button>
+
+      <!-- Vista 1: Tarjetas de catálogos -->
+      <div id="cat-cards-view">
+        <div class="mdl-header">
+          <p class="mdl-eyebrow">Descarga o visualiza</p>
+          <h2 class="mdl-title" id="modal-cat-title">Nuestros Catálogos</h2>
+        </div>
+        <div class="cat-cards-grid">
+          <div class="cat-card">
+            <div class="cat-card-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM7 17v-2h10v2H7zm0-4v-2h10v2H7zm0-4V7h5v2H7z"/></svg>
+            </div>
+            <div class="cat-card-name">Catálogo Completo</div>
+            <div class="cat-card-desc">Explora todos nuestros productos, marcas y equipos disponibles con precios actualizados.</div>
+            <div class="cat-card-actions">
+              <button class="cat-btn-view" id="cat-view-main" type="button" aria-label="Ver catálogo completo">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5c-7 0-11 7-11 7s4 7 11 7 11-7 11-7-4-7-11-7zm0 12a5 5 0 1 1 0-10 5 5 0 0 1 0 10zm0-8a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/></svg>
+                Ver catálogo
+              </button>
+              <a class="btn-download" id="cat-dl-main" href="Catalogo%20Ciam%20(2).pdf" download="Catalogo-Completo.pdf" aria-label="Descargar catálogo completo">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16l-5-5h3V4h4v7h3l-5 5zm-7 2h14v2H5v-2z"/></svg>
+                Descargar PDF
+              </a>
+            </div>
+          </div>
+          <div class="cat-card">
+            <div class="cat-card-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l7.1-1.01L12 2z"/></svg>
+            </div>
+            <div class="cat-card-name">Catálogo de Ofertas</div>
+            <div class="cat-card-desc">Productos con descuentos especiales y promociones vigentes para esta temporada.</div>
+            <div class="cat-card-actions">
+              <button class="cat-btn-view" id="cat-view-ofertas" type="button" aria-label="Ver catálogo de ofertas">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5c-7 0-11 7-11 7s4 7 11 7 11-7 11-7-4-7-11-7zm0 12a5 5 0 1 1 0-10 5 5 0 0 1 0 10zm0-8a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/></svg>
+                Ver catálogo
+              </button>
+              <a class="btn-download f-btn-of" id="cat-dl-ofertas" href="#" download="Catalogo-Ofertas.pdf" aria-label="Descargar catálogo de ofertas">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16l-5-5h3V4h4v7h3l-5 5zm-7 2h14v2H5v-2z"/></svg>
+                Descargar PDF
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
-      <a href="Catalogo%20Ciam%20(2).pdf" download="Catalogo-MI EMPRESA.pdf" class="btn-download">
-        <svg viewBox="0 0 24 24"><path d="M12 16l-5-5h3V4h4v7h3l-5 5zm-7 2h14v2H5v-2z"/></svg>
-        Descargar catalogo PDF
-      </a>
+
+      <!-- Vista 2: Visor PDF (oculto inicialmente) -->
+      <div id="cat-viewer-view" style="display:none">
+        <button class="cat-viewer-back" id="cat-viewer-back" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+          Volver a catálogos
+        </button>
+        <div class="catalog-iframe-wrap">
+          <iframe src="" title="Visor de catálogo" loading="lazy"></iframe>
+        </div>
+        <a class="cat-viewer-dl" id="cat-viewer-dl" href="#" download>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16l-5-5h3V4h4v7h3l-5 5zm-7 2h14v2H5v-2z"/></svg>
+          Descargar PDF
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Confianza / Nosotros -->
+  <div class="modal-overlay" id="modal-confianza" role="dialog" aria-modal="true" aria-labelledby="modal-cf-title" aria-label="Sobre nosotros">
+    <div class="modal mdl-wide">
+      <button class="modal-close" id="modal-close-confianza" aria-label="Cerrar modal">&times;</button>
+
+      <!-- Hero empresa -->
+      <div class="mdl-cf-hero">
+        <img src="img/mi logo.svg" id="cf-logo-img" alt="Logo" class="mdl-cf-logo" width="52" height="52" loading="lazy" />
+        <div>
+          <div class="mdl-cf-company" id="cf-company-name">Mi empresa</div>
+          <div class="mdl-cf-slogan" id="cf-company-slogan">este es el eslogan de tu empresa</div>
+        </div>
+      </div>
+
+      <div class="mdl-header" style="margin-bottom:0.8rem">
+        <p class="mdl-eyebrow">Quiénes somos</p>
+        <h2 class="mdl-title" id="modal-cf-title">Nuestra empresa</h2>
+      </div>
+      <p id="cf-about-text" style="color:var(--muted);font-size:0.87rem;line-height:1.65">Somos una empresa especializada en equipamiento profesional de limpieza, comprometida con brindar productos de alta calidad y una atención personalizada a cada cliente.</p>
+
+      <p class="cf-section-title">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+        Misión &amp; Visión
+      </p>
+      <div class="cf-cards cf-two-col">
+        <div class="cf-card">
+          <div class="cf-card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l7.1-1.01L12 2z"/></svg></div>
+          <div>
+            <div class="cf-card-title">Misión</div>
+            <div class="cf-card-text">Ofrecer soluciones de limpieza profesional con productos de calidad, asesoramiento experto y atención personalizada que supere las expectativas de nuestros clientes.</div>
+          </div>
+        </div>
+        <div class="cf-card">
+          <div class="cf-card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/></svg></div>
+          <div>
+            <div class="cf-card-title">Visión</div>
+            <div class="cf-card-text">Ser la empresa líder en soluciones de limpieza profesional, reconocida por la excelencia de sus productos, innovación constante y compromiso con sus clientes.</div>
+          </div>
+        </div>
+      </div>
+
+      <p class="cf-section-title">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm4.24 16L12 15.45 7.77 18l1.12-4.81-3.73-3.23 4.92-.42L12 5l1.92 4.53 4.92.42-3.73 3.23L16.23 18z"/></svg>
+        Nuestros Valores
+      </p>
+      <div class="cf-cards cf-two-col">
+        <div class="cf-card">
+          <div class="cf-card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg></div>
+          <div><div class="cf-card-title">Calidad</div><div class="cf-card-text">Productos cuidadosamente seleccionados que cumplen los más altos estándares del sector.</div></div>
+        </div>
+        <div class="cf-card">
+          <div class="cf-card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div>
+          <div><div class="cf-card-title">Confianza</div><div class="cf-card-text">Relaciones duraderas basadas en transparencia, honestidad y cumplimiento en cada pedido.</div></div>
+        </div>
+        <div class="cf-card">
+          <div class="cf-card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></div>
+          <div><div class="cf-card-title">Compromiso</div><div class="cf-card-text">Garantizamos satisfacción total antes y después de cada compra con soporte continuo.</div></div>
+        </div>
+        <div class="cf-card">
+          <div class="cf-card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg></div>
+          <div><div class="cf-card-title">Innovación</div><div class="cf-card-text">Buscamos constantemente nuevas soluciones para mejorar nuestro catálogo y servicio.</div></div>
+        </div>
+      </div>
+
+      <p class="cf-section-title">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 4a3 3 0 1 1 0 6 3 3 0 0 1 0-6zm4 10H8v-1c0-1.33 2.67-2 4-2s4 .67 4 2v1z"/></svg>
+        Garantías y Compromisos
+      </p>
+      <div class="cf-cards">
+        <div class="cf-card">
+          <div class="cf-card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6h-2.18c.07-.44.18-.87.18-1.33C18 2.53 15.48 1 13.5 1c-1.3 0-2.4.58-3 1.5L12 4l-1.5-1.5C9.9 1.58 8.8 1 7.5 1 5.52 1 3 2.53 3 4.67c0 .46.11.89.18 1.33H1L2 17h20L20 6z"/></svg></div>
+          <div><div class="cf-card-title">Garantía en productos</div><div class="cf-card-text">Todos nuestros productos cuentan con garantía y respaldo del fabricante. Tu inversión siempre está protegida.</div></div>
+        </div>
+        <div class="cf-card">
+          <div class="cf-card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11.5 2C6.81 2 3 5.81 3 10.5S6.81 19 11.5 19h.5v3c4.86-2.34 8-7 8-11.5C20 5.81 16.19 2 11.5 2zm1 14.5h-2v-2h2v2zm0-4h-2c0-3.25 3-3 3-5 0-1.1-.9-2-2-2s-2 .9-2 2h-2c0-2.21 1.79-4 4-4s4 1.79 4 4c0 2.5-3 2.75-3 5z"/></svg></div>
+          <div><div class="cf-card-title">Asesoría experta</div><div class="cf-card-text">Nuestro equipo te orienta en la elección correcta para cada necesidad, antes y después de tu compra.</div></div>
+        </div>
+        <div class="cf-card">
+          <div class="cf-card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></div>
+          <div><div class="cf-card-title">Atención post-venta</div><div class="cf-card-text">Disponibles para apoyarte con cualquier consulta, reclamo o reposición después de tu pedido.</div></div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -2316,12 +2730,29 @@
         { title: 'Cochabamba', address: 'Calle Sucre #1948', gpsUrl: 'https://maps.app.goo.gl/t2bCfj5XDovuukgP7', schedule: 'Lunes a viernes 10am - 6pm - Sabados 9am - 2pm', phone: '76924727' },
         { title: 'Santa Cruz', address: 'Av. Mutualista y Bruno Racua', gpsUrl: 'https://maps.app.goo.gl/uV4D7wNfLjd3mPgNA', schedule: 'Lunes a viernes 8:30am - 3:30pm - Sabados 8am - 1pm', phone: '73691496' }
       ]);
-      container.innerHTML = branches.map((branch, index) => `
-        <div class="branch-card"${index === branches.length - 1 ? ' style="margin-bottom:0"' : ''}>
-          <div class="branch-name">${escapeHtml(branch.title || 'Sucursal')}</div>
-          <p class="branch-row">${escapeHtml(branch.address || 'Sin direccion')}${branch.gpsUrl ? ` - <a href="${escapeHtml(branch.gpsUrl)}" target="_blank" rel="noopener noreferrer">Ver en mapa</a>` : ''}</p>
-          <p class="branch-row"><strong>Horario:</strong> ${escapeHtml(branch.schedule || 'Sin horario')}</p>
-          <p class="branch-row"><strong>WhatsApp:</strong> ${branch.phone ? `<a href="https://wa.me/${escapeHtml(digitsOnly(branch.phone))}" target="_blank" rel="noopener noreferrer">${escapeHtml(branch.phone)}</a>` : 'No disponible'}</p>
+      const locSvg   = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>`;
+      const clockSvg = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm4.24 16L12 15.45 7.77 18l1.12-4.81-3.73-3.23 4.92-.42L12 5l1.92 4.53 4.92.42-3.73 3.23L16.23 18z"/></svg>`;
+      const phoneSvg = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>`;
+      const waSvg    = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>`;
+      const mapSvg   = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.11V5l6 2.11V19z"/></svg>`;
+      container.innerHTML = branches.map(branch => `
+        <div class="branch-card">
+          <div class="branch-head">
+            <div class="branch-icon">${locSvg}</div>
+            <div>
+              <div class="branch-name">${escapeHtml(branch.title || 'Sucursal')}</div>
+              <div class="branch-city">Bolivia</div>
+            </div>
+          </div>
+          <div class="branch-info">
+            ${branch.address  ? `<div class="branch-row">${locSvg}<span>${escapeHtml(branch.address)}</span></div>` : ''}
+            ${branch.schedule ? `<div class="branch-row">${clockSvg}<span>${escapeHtml(branch.schedule)}</span></div>` : ''}
+            ${branch.phone    ? `<div class="branch-row">${phoneSvg}<span>${escapeHtml(branch.phone)}</span></div>` : ''}
+          </div>
+          <div class="branch-actions">
+            ${branch.phone  ? `<a href="https://wa.me/${escapeHtml(digitsOnly(branch.phone))}" class="branch-btn branch-btn-wa" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp ${escapeHtml(branch.title || 'sucursal')}">${waSvg} WhatsApp</a>` : ''}
+            ${branch.gpsUrl ? `<a href="${escapeHtml(branch.gpsUrl)}" class="branch-btn branch-btn-map" target="_blank" rel="noopener noreferrer" aria-label="Ver mapa">${mapSvg} Ver mapa</a>` : ''}
+          </div>
         </div>
       `).join('');
     }
@@ -3024,19 +3455,85 @@
         if (qtyBtn) changeQty(Number(qtyBtn.dataset.id), Number(qtyBtn.dataset.delta));
       });
 
-      function openModal(id) { document.getElementById(id).classList.add('open'); }
-      function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+      /* Gestión de foco: devuelve el foco al elemento que abrió el modal */
+      var _lastFocused = null;
+      function openModal(id) {
+        _lastFocused = document.activeElement;
+        var overlay = document.getElementById(id);
+        overlay.classList.add('open');
+        var closeBtn = overlay.querySelector('.modal-close');
+        if (closeBtn) setTimeout(function() { closeBtn.focus(); }, 60);
+      }
+      function closeModal(id) {
+        document.getElementById(id).classList.remove('open');
+        if (_lastFocused) {
+          var el = _lastFocused;
+          _lastFocused = null;
+          setTimeout(function() { if (el && el.focus) el.focus(); }, 60);
+        }
+      }
 
+      /* Sucursales */
       document.getElementById('header-btn-sucursales').addEventListener('click', () => openModal('modal-sucursales'));
       document.getElementById('footer-btn-sucursales').addEventListener('click', () => openModal('modal-sucursales'));
       document.getElementById('modal-close-suc').addEventListener('click', () => closeModal('modal-sucursales'));
       document.getElementById('modal-sucursales').addEventListener('click', function(e) { if (e.target === this) closeModal('modal-sucursales'); });
 
+      /* Catálogo */
       document.getElementById('header-btn-catalogo').addEventListener('click', () => openModal('modal-catalogo'));
       document.getElementById('footer-btn-catalogo').addEventListener('click', () => openModal('modal-catalogo'));
-      document.getElementById('modal-close-cat').addEventListener('click', () => closeModal('modal-catalogo'));
-      document.getElementById('modal-catalogo').addEventListener('click', function(e) { if (e.target === this) closeModal('modal-catalogo'); });
 
+      function _closeCatalog() {
+        /* Restablecer vista de tarjetas antes de cerrar */
+        var viewer   = document.getElementById('cat-viewer-view');
+        var cards    = document.getElementById('cat-cards-view');
+        if (viewer) viewer.style.display = 'none';
+        if (cards)  cards.style.display  = '';
+        closeModal('modal-catalogo');
+      }
+      document.getElementById('modal-close-cat').addEventListener('click', _closeCatalog);
+      document.getElementById('modal-catalogo').addEventListener('click', function(e) { if (e.target === this) _closeCatalog(); });
+
+      /* Catálogo: visor PDF interno */
+      (function() {
+        var catIframe    = document.querySelector('#modal-catalogo iframe');
+        var catCardsView = document.getElementById('cat-cards-view');
+        var catViewerView= document.getElementById('cat-viewer-view');
+        var catViewerDl  = document.getElementById('cat-viewer-dl');
+
+        function showCatalogViewer(url) {
+          if (!url || url === '#' || url.endsWith('#')) return;
+          if (catIframe)    catIframe.src    = url;
+          if (catViewerDl)  catViewerDl.href = url;
+          if (catCardsView) catCardsView.style.display = 'none';
+          if (catViewerView)catViewerView.style.display = '';
+        }
+
+        var btnMain    = document.getElementById('cat-view-main');
+        var btnOfertas = document.getElementById('cat-view-ofertas');
+        var btnBack    = document.getElementById('cat-viewer-back');
+
+        if (btnMain) btnMain.addEventListener('click', function() {
+          var dl = document.getElementById('cat-dl-main');
+          if (dl) showCatalogViewer(dl.href);
+        });
+        if (btnOfertas) btnOfertas.addEventListener('click', function() {
+          var dl = document.querySelector('a.f-btn-of');
+          if (dl) showCatalogViewer(dl.href);
+        });
+        if (btnBack) btnBack.addEventListener('click', function() {
+          if (catViewerView) catViewerView.style.display = 'none';
+          if (catCardsView)  catCardsView.style.display  = '';
+        });
+      })();
+
+      /* Confianza / Nosotros */
+      document.getElementById('header-link-confianza').addEventListener('click', () => openModal('modal-confianza'));
+      document.getElementById('footer-btn-confianza').addEventListener('click', () => openModal('modal-confianza'));
+      document.getElementById('modal-close-confianza').addEventListener('click', () => closeModal('modal-confianza'));
+      document.getElementById('modal-confianza').addEventListener('click', function(e) { if (e.target === this) closeModal('modal-confianza'); });
+
+      /* WhatsApp flotante */
       document.getElementById('floating-wa').addEventListener('click', () => {
         const url = getConfiguredWhatsAppUrl();
         if (!url) return;
@@ -3048,7 +3545,8 @@
           closeCart();
           closeProductDetail();
           closeModal('modal-sucursales');
-          closeModal('modal-catalogo');
+          _closeCatalog();
+          closeModal('modal-confianza');
         }
       });
     }
@@ -3082,6 +3580,19 @@
         try {
           var logoUrl = await resolveAssetSourceToUrl(_branding.logo);
           if (logoUrl) { heroLogoEl.src = logoUrl; heroLogoEl.alt = _branding.companyName || 'Logo'; }
+        } catch (e) {}
+      }
+
+      /* Sincronizar modal Confianza con branding cargado desde Firestore */
+      var cfCompanyEl = document.getElementById('cf-company-name');
+      if (cfCompanyEl) cfCompanyEl.textContent = _branding.companyName || 'Mi empresa';
+      var cfSloganEl = document.getElementById('cf-company-slogan');
+      if (cfSloganEl) cfSloganEl.textContent = _branding.slogan || '';
+      var cfLogoEl = document.getElementById('cf-logo-img');
+      if (cfLogoEl && _branding.logo) {
+        try {
+          var logoUrl2 = await resolveAssetSourceToUrl(_branding.logo);
+          if (logoUrl2) { cfLogoEl.src = logoUrl2; cfLogoEl.alt = _branding.companyName || 'Logo'; }
         } catch (e) {}
       }
 
