@@ -72,6 +72,14 @@
         return h.join(' ');
       }
       function usableLogo(src) { return src && String(src).indexOf('firestore-asset:') !== 0; }
+      // Returns a displayable URL from cache: uses pre-resolved data URL (for Firestore assets)
+      // or the direct URL; never returns raw firestore-asset: refs.
+      function getCachedLogoUrl(cache) {
+        var resolved = String(cache.logoResolved || '');
+        if (resolved) return resolved;
+        var raw = String(cache.logo || '');
+        return (raw && raw.indexOf('firestore-asset:') !== 0) ? raw : '';
+      }
       function applyBranding(cache) {
         var n = cache.companyName, s = cache.slogan, el;
         if (n) {
@@ -83,9 +91,11 @@
         }
         if (s) { el = document.querySelector('.eyebrow'); if (el) el.textContent = s; }
         if (n && s) { el = document.querySelector('.footer-copy'); if (el) el.textContent = '(c) 2026 ' + n + ' - ' + s; }
-        if (usableLogo(cache.logo)) {
+        var logoUrl = getCachedLogoUrl(cache);
+        if (logoUrl) {
           el = document.querySelector('.logo-wrap img');
-          if (el) { el.src = cache.logo; if (n) el.alt = n; }
+          // Restore visibility (was hidden to prevent FOUC) and set correct src
+          if (el) { el.src = logoUrl; el.style.visibility = ''; if (n) el.alt = n; }
         }
       }
       try {
@@ -95,11 +105,23 @@
           applyTC(cache.themeColors || cache); /* backward compat: old cache had colors at root */
           // Section visibility: set attribute synchronously so hidden sections never paint
           document.documentElement.setAttribute('data-hide', buildHideAttr(cache.sectionVisibility));
-          if (cache.companyName || cache.slogan || usableLogo(cache.logo)) {
-            if (document.readyState === 'loading') {
-              document.addEventListener('DOMContentLoaded', function () { applyBranding(cache); });
-            } else {
+          var __hasLogo = !!getCachedLogoUrl(cache);
+          if (cache.companyName || cache.slogan || __hasLogo) {
+            var __logoCss;
+            if (__hasLogo) {
+              // Hide default logo src before body renders – prevents FOUC entirely
+              __logoCss = document.createElement('style');
+              __logoCss.textContent = '.logo-wrap img{visibility:hidden}';
+              document.head.appendChild(__logoCss);
+            }
+            var __applyAndReveal = function() {
               applyBranding(cache);
+              if (__logoCss && __logoCss.parentNode) __logoCss.parentNode.removeChild(__logoCss);
+            };
+            if (document.readyState === 'loading') {
+              document.addEventListener('DOMContentLoaded', __applyAndReveal);
+            } else {
+              __applyAndReveal();
             }
           }
         }
@@ -1089,18 +1111,18 @@
       transform: translateX(100%);
       transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
       z-index: 151;
-      background: #0f2f31;
-      color: #fff;
-      border-left: 1px solid rgba(255, 255, 255, 0.12);
+      background: var(--panel);
+      color: var(--text);
+      border-left: 1px solid var(--line);
       display: flex;
       flex-direction: column;
-      box-shadow: -20px 0 48px rgba(4, 24, 24, 0.45);
+      box-shadow: var(--shadow-md);
     }
 
     .cart-drawer.open { transform: translateX(0); }
 
     .cart-header {
-      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      border-bottom: 1px solid var(--line);
       padding: 1rem;
       display: flex;
       align-items: center;
@@ -1115,12 +1137,12 @@
     }
 
     .cart-close {
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      border: 1px solid var(--line-strong);
       width: 30px;
       height: 30px;
       border-radius: 8px;
       background: transparent;
-      color: rgba(255, 255, 255, 0.85);
+      color: var(--text);
       font-size: 1.1rem;
       cursor: pointer;
     }
@@ -1141,17 +1163,17 @@
       align-items: center;
       justify-content: center;
       gap: 0.6rem;
-      color: rgba(255, 255, 255, 0.58);
+      color: var(--muted);
       text-align: center;
       padding: 1.2rem;
     }
 
-    .cart-empty svg { width: 42px; height: 42px; fill: rgba(255, 255, 255, 0.36); }
+    .cart-empty svg { width: 42px; height: 42px; fill: var(--muted); opacity: 0.5; }
 
     .cart-item {
-      border: 1px solid rgba(255, 255, 255, 0.16);
+      border: 1px solid var(--line);
       border-radius: 12px;
-      background: rgba(255, 255, 255, 0.07);
+      background: var(--bg);
       padding: 0.64rem;
       display: grid;
       grid-template-columns: 55px 1fr auto;
@@ -1164,7 +1186,7 @@
       height: 55px;
       border-radius: 10px;
       overflow: hidden;
-      background: rgba(255, 255, 255, 0.13);
+      background: var(--bg);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -1174,7 +1196,7 @@
     .cart-item-img img { width: 100%; height: 100%; object-fit: cover; }
 
     .cart-item-name { font-size: 0.82rem; font-weight: 700; }
-    .cart-item-price { font-size: 0.75rem; color: rgba(255, 255, 255, 0.72); margin-top: 0.12rem; }
+    .cart-item-price { font-size: 0.75rem; color: var(--muted); margin-top: 0.12rem; }
 
     .cart-item-qty { margin-top: 0.35rem; display: inline-flex; align-items: center; gap: 0.3rem; }
 
@@ -1182,9 +1204,9 @@
       width: 22px;
       height: 22px;
       border-radius: 7px;
-      border: 1px solid rgba(255, 255, 255, 0.22);
-      background: rgba(255, 255, 255, 0.16);
-      color: #fff;
+      border: 1px solid var(--line-strong);
+      background: var(--bg);
+      color: var(--text);
       cursor: pointer;
     }
 
@@ -1193,41 +1215,41 @@
     .cart-item-remove {
       border: none;
       background: transparent;
-      color: rgba(255, 255, 255, 0.52);
+      color: var(--muted);
       cursor: pointer;
       padding: 0.15rem;
       font-size: 0.84rem;
     }
 
-    .cart-item-remove:hover { color: #ffc9c9; }
+    .cart-item-remove:hover { color: #e53e3e; }
 
     .cart-footer {
-      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      border-top: 1px solid var(--line);
       padding: 0.9rem;
       display: grid;
       gap: 0.7rem;
-      background: rgba(0, 0, 0, 0.1);
+      background: var(--bg);
     }
 
     .cart-total { display: flex; justify-content: space-between; align-items: center; }
-    .cart-total span { color: rgba(255, 255, 255, 0.72); font-size: 0.83rem; }
+    .cart-total span { color: var(--muted); font-size: 0.83rem; }
     .cart-total strong { font-family: 'Space Grotesk', sans-serif; font-size: 1.24rem; }
 
     .checkout-fields { display: grid; gap: 0.45rem; }
 
     .checkout-fields input, .checkout-fields textarea {
       width: 100%;
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      border: 1px solid var(--line-strong);
       border-radius: 9px;
-      background: rgba(255, 255, 255, 0.1);
-      color: #fff;
+      background: var(--bg);
+      color: var(--text);
       padding: 0.53rem 0.65rem;
       font-size: 0.78rem;
       outline: none;
       font-family: 'Manrope', sans-serif;
     }
 
-    .checkout-fields input::placeholder, .checkout-fields textarea::placeholder { color: rgba(255, 255, 255, 0.56); }
+    .checkout-fields input::placeholder, .checkout-fields textarea::placeholder { color: var(--muted); }
     .checkout-fields textarea { min-height: 58px; resize: vertical; }
 
     .btn-whatsapp, .btn-clear {
@@ -1249,9 +1271,9 @@
     }
 
     .btn-clear {
-      color: rgba(255, 255, 255, 0.78);
+      color: var(--muted);
       background: transparent;
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      border: 1px solid var(--line-strong);
     }
 
     #toast {
@@ -2832,7 +2854,12 @@
                 const li = document.querySelector('.logo-wrap img');
                 if (li) { li.src = lg; if (cn) li.alt = cn; }
               }
-              try { localStorage.setItem('_siteTheme', JSON.stringify({ themeColors: cachedColors, companyName: cn, slogan: sl, sectionVisibility: sv, logo: lg })); } catch(_) {}
+              try {
+                // Preserve existing logoResolved in cache if the logo ref hasn't changed
+                let _prev = {}; try { _prev = JSON.parse(localStorage.getItem('_siteTheme') || '{}'); } catch(e2) {}
+                const _logoRes1 = (_prev.logo === lg && _prev.logoResolved) ? _prev.logoResolved : (lg.indexOf('firestore-asset:') !== 0 ? lg : '');
+                localStorage.setItem('_siteTheme', JSON.stringify({ themeColors: cachedColors, companyName: cn, slogan: sl, sectionVisibility: sv, logo: lg, logoResolved: _logoRes1 }));
+              } catch(e1) {}
             }
           }
         } catch (_) { /* config.json may not exist yet on first deploy */ }
@@ -2876,7 +2903,26 @@
 
         applyThemeColors(themeColors);
         // Keep localStorage in sync with the authoritative Firestore value (colors + name + slogan + visibility + logo)
-        try { localStorage.setItem('_siteTheme', JSON.stringify({ themeColors, companyName, slogan, sectionVisibility: _siteConfig.sectionVisibility, logo: logoSource })); } catch(_) {}
+        // For direct URLs logoResolved == logoSource; for Firestore assets it is set async below
+        const _logoResolved2 = isAssetRef(logoSource) ? '' : logoSource;
+        try { localStorage.setItem('_siteTheme', JSON.stringify({ themeColors, companyName, slogan, sectionVisibility: _siteConfig.sectionVisibility, logo: logoSource, logoResolved: _logoResolved2 })); } catch(_) {}
+        // Async: convert Firestore-asset blob → data URL and persist in cache so next
+        // page load can display the logo without waiting for Firestore (eliminates FOUC)
+        if (isAssetRef(logoSource)) {
+          const _asId = assetIdFromRef(logoSource);
+          const _obUrl = _assetObjectUrlCache.get(_asId);
+          if (_obUrl) {
+            fetch(_obUrl).then(r => r.blob())
+              .then(b => new Promise(res => { const fr = new FileReader(); fr.onload = e => res(e.target.result); fr.readAsDataURL(b); }))
+              .then(dataUrl => {
+                try {
+                  const _st = JSON.parse(localStorage.getItem('_siteTheme') || '{}');
+                  // Guard: only write if the logo ref hasn't changed since this load
+                  if (_st.logo === logoSource) { _st.logoResolved = dataUrl; localStorage.setItem('_siteTheme', JSON.stringify(_st)); }
+                } catch(e3) {}
+              }).catch(() => {});
+          }
+        }
         renderSiteInfo();
         renderBranches();
         renderSocialLinks();
