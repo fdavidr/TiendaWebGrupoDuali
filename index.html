@@ -9,6 +9,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
+  <!-- Preload hero portada para reducir LCP y evitar CLS -->
+  <link rel="preload" as="image" href="img/portadaescritorio.png" fetchpriority="high" />
+
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
   <script src="firebase-config.js"></script>
@@ -1465,6 +1468,262 @@
       .product-name { font-size: 0.78rem; }
       .pg-btn       { min-width: 34px; height: 34px; padding: 0 0.45rem; }
     }
+
+    /* ═══════════════════════════════════════════════════════════
+     *  HERO FULLSCREEN SLIDER
+     *  Capa visual completa 100 vh con slider fade automático.
+     * ═══════════════════════════════════════════════════════════ */
+
+    .hero-fullscreen {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      min-height: 520px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      contain: layout style paint;
+    }
+
+    /* ── Slider de imágenes ── */
+    .hero-slider {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+
+    .hero-slide {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center center;
+      background-repeat: no-repeat;
+      opacity: 0;
+      transition: opacity 1.4s ease-in-out;
+      will-change: opacity;
+    }
+
+    .hero-slide--active { opacity: 1; }
+
+    /* ── Capa oscura para legibilidad ── */
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: linear-gradient(
+        160deg,
+        rgba(0, 0, 0, 0.54) 0%,
+        rgba(0, 0, 0, 0.30) 52%,
+        rgba(0, 0, 0, 0.64) 100%
+      );
+      pointer-events: none;
+    }
+
+    /* ── Contenido centrado ── */
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 1.1rem;
+      padding: 2rem 1.5rem 5.5rem;
+      max-width: 740px;
+      width: 100%;
+      animation: heroContentIn 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    @keyframes heroContentIn {
+      from { opacity: 0; transform: translateY(32px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Logo en el hero ── */
+    .hero-logo-img {
+      width: 78px;
+      height: 78px;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 22px rgba(0,0,0,0.55)) brightness(1.06);
+      border-radius: 18px;
+      flex-shrink: 0;
+    }
+
+    /* ── Nombre de la empresa ── */
+    .hero-company {
+      font-family: 'Sora', sans-serif;
+      font-size: clamp(2.1rem, 5.5vw, 3.6rem);
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -0.025em;
+      line-height: 1.07;
+      text-shadow: 0 3px 24px rgba(0,0,0,0.55);
+      margin: 0;
+    }
+
+    /* ── Eslogan: sobrescribir el estilo pill del .eyebrow original ── */
+    .hero-fullscreen .eyebrow {
+      display: block;
+      border: none;
+      background: none;
+      border-radius: 0;
+      padding: 0;
+      font-size: clamp(0.88rem, 2.2vw, 1.06rem);
+      text-transform: none;
+      letter-spacing: 0.02em;
+      color: rgba(255, 255, 255, 0.88);
+      font-weight: 500;
+      margin-bottom: 0;
+      text-shadow: 0 1px 12px rgba(0,0,0,0.6);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      max-width: 50ch;
+      line-height: 1.55;
+    }
+
+    /* ── Grupo de botones CTA ── */
+    .hero-cta-group {
+      display: flex;
+      gap: 0.9rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 0.35rem;
+    }
+
+    /* ── Botones del hero ── */
+    .hero-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      border-radius: 999px;
+      padding: 0.9rem 1.9rem;
+      font-family: 'Sora', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      cursor: pointer;
+      min-height: 52px;
+      text-decoration: none;
+      border: none;
+      transition: transform 0.22s ease, box-shadow 0.22s ease, background 0.22s ease, border-color 0.22s ease;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+
+    .hero-btn svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+      flex-shrink: 0;
+    }
+
+    .hero-btn-primary {
+      background: var(--brand, #14b51f);
+      color: #fff;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.42);
+    }
+
+    .hero-btn-primary:hover,
+    .hero-btn-primary:focus-visible {
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 16px 42px rgba(0, 0, 0, 0.52);
+      background: var(--brand-dark, #0d8f16);
+      outline: none;
+    }
+
+    .hero-btn-secondary {
+      background: rgba(255, 255, 255, 0.14);
+      color: #fff;
+      border: 2px solid rgba(255, 255, 255, 0.62);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .hero-btn-secondary:hover,
+    .hero-btn-secondary:focus-visible {
+      background: rgba(255, 255, 255, 0.26);
+      border-color: rgba(255, 255, 255, 0.9);
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.38);
+      outline: none;
+    }
+
+    /* ── Botón scroll-down con rebote infinito ── */
+    .hero-scroll-btn {
+      position: absolute;
+      bottom: 1.9rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.62);
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      animation: heroBounce 2.2s ease-in-out infinite;
+      transition: background 0.2s ease, border-color 0.2s ease;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+
+    .hero-scroll-btn:hover,
+    .hero-scroll-btn:focus-visible {
+      background: rgba(255, 255, 255, 0.26);
+      border-color: rgba(255, 255, 255, 0.9);
+      outline: none;
+    }
+
+    .hero-scroll-btn svg {
+      width: 22px;
+      height: 22px;
+      fill: none;
+      stroke: #fff;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    @keyframes heroBounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50%       { transform: translateX(-50%) translateY(11px); }
+    }
+
+    /* ── Responsive: hero-fullscreen ── */
+    @media (max-width: 768px) {
+      .hero-fullscreen  { height: 100svh; min-height: 540px; }
+      .hero-logo-img    { width: 62px; height: 62px; }
+      .hero-content     { padding: 1.5rem 1.2rem 5rem; gap: 0.9rem; }
+      .hero-btn         { padding: 0.82rem 1.55rem; font-size: 0.8rem; min-height: 48px; }
+      .hero-scroll-btn  { bottom: 1.4rem; width: 46px; height: 46px; }
+    }
+
+    @media (max-width: 480px) {
+      .hero-logo-img    { width: 54px; height: 54px; }
+      .hero-cta-group   { flex-direction: column; width: 100%; max-width: 296px; }
+      .hero-btn         { width: 100%; }
+      .hero-company     { font-size: clamp(1.75rem, 8vw, 2.4rem); }
+    }
+
+    @media (max-width: 390px) {
+      .hero-company     { font-size: clamp(1.55rem, 9vw, 2.1rem); }
+      .hero-logo-img    { width: 48px; height: 48px; }
+      .hero-btn         { font-size: 0.76rem; min-height: 46px; }
+    }
+
+    @media (max-width: 360px) {
+      .hero-logo-img    { width: 44px; height: 44px; }
+      .hero-content     { gap: 0.75rem; }
+      .hero-btn         { font-size: 0.72rem; min-height: 44px; }
+      .hero-scroll-btn  { width: 42px; height: 42px; }
+    }
   </style>
 </head>
 <body>
@@ -1491,35 +1750,80 @@
   </header>
 
   <main>
-    <section class="hero container reveal">
-      <div class="hero-shell">
-        <div class="hero-main">
-          <span class="eyebrow">Curado premium - Respuesta inmediata - Asesoria experta</span>
-          <h1>Una experiencia de compra limpia, potente y memorable.</h1>
-          <p>Explora un catalogo con presencia premium, sombras profundas y una navegación pensada para convertir visitas en pedidos con rapidez.</p>
-          <div class="hero-actions">
-            <a href="#productos" class="btn-solid">Explorar catalogo</a>
-            <button id="hero-open-cart" class="btn-outline" type="button">Abrir pedido</button>
-          </div>
-        </div>
-        <div class="hero-cards">
-          <article class="kpi-card">
-            <span class="kpi-title">Impacto comercial</span>
-            <strong class="kpi-value">Alto</strong>
-            <p class="kpi-desc">Diseño visual más sofisticado para destacar el catalogo.</p>
-          </article>
-          <article class="kpi-card">
-            <span class="kpi-title">Sensacion premium</span>
-            <strong class="kpi-value">Alta</strong>
-            <p class="kpi-desc">Sombras, brillo controlado y contraste elegante.</p>
-          </article>
-          <article class="kpi-card">
-            <span class="kpi-title">Experiencia</span>
-            <strong class="kpi-value">Dinámica</strong>
-            <p class="kpi-desc">Animaciones sutiles y jerarquía visual más clara.</p>
-          </article>
+    <!-- ═══════════════════════════════════════════════════════════
+         HERO FULLSCREEN SLIDER
+         100 vh · slider fade automático · overlay · scroll arrow
+    ══════════════════════════════════════════════════════════════ -->
+    <section class="hero-fullscreen" id="hero" aria-label="Portada principal">
+
+      <!-- Imágenes de portada: añadir más .hero-slide para ampliar el slider -->
+      <div class="hero-slider" role="img" aria-label="Portada de la tienda">
+        <div class="hero-slide hero-slide--active"
+             style="background-image:url('img/portadaescritorio.png')"></div>
+        <div class="hero-slide"
+             style="background-image:url('img/portamobile.png')"></div>
+      </div>
+
+      <!-- Capa oscura semitransparente -->
+      <div class="hero-overlay" aria-hidden="true"></div>
+
+      <!-- Contenido central -->
+      <div class="hero-content">
+        <img
+          id="hero-logo-img"
+          src="img/mi logo.svg"
+          alt="Logo de Mi empresa"
+          class="hero-logo-img"
+          width="78" height="78"
+          loading="eager"
+        />
+        <h1 class="hero-company">Mi empresa</h1>
+        <span class="eyebrow">este es el eslogan de tu empresa</span>
+
+        <div class="hero-cta-group" role="group" aria-label="Acciones principales">
+          <!-- Botón Catálogo -->
+          <button
+            class="hero-btn hero-btn-primary"
+            id="hero-catalog-btn"
+            type="button"
+            aria-label="Ver catálogo de productos"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zm-7 14H7v-2h5v2zm5-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+            </svg>
+            Catálogo
+          </button>
+
+          <!-- Botón Carrito -->
+          <button
+            class="hero-btn hero-btn-secondary"
+            id="hero-open-cart"
+            type="button"
+            aria-label="Abrir carrito de compras"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M7 18a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM1 2h2l.4 2M5 13h14l2-8H5.4M5 13L3.4 4H1M5 13l-1.4 6h15"/>
+            </svg>
+            Carrito
+          </button>
         </div>
       </div>
+
+      <!-- Flecha scroll hacia productos -->
+      <button
+        class="hero-scroll-btn"
+        id="hero-scroll-down"
+        type="button"
+        aria-label="Desplazarse hacia el catálogo de productos"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </button>
+    </section>
+    <!-- fin hero-fullscreen -->
+
+    <section class="hero container reveal">
 
       <div class="trust-strip" id="confianza">
         <div class="trust-item"><span class="trust-dot"></span>Pago y coordinacion segura</div>
@@ -2607,6 +2911,15 @@
       document.getElementById('cart-btn').addEventListener('click', openCart);
       document.getElementById('hero-open-cart').addEventListener('click', openCart);
       document.getElementById('cta-open-cart').addEventListener('click', openCart);
+
+      /* ── Nuevos botones del hero fullscreen ── */
+      document.getElementById('hero-catalog-btn').addEventListener('click', function () {
+        openModal('modal-catalogo');
+      });
+      document.getElementById('hero-scroll-down').addEventListener('click', function () {
+        var target = document.getElementById('productos');
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
       document.getElementById('cart-close').addEventListener('click', closeCart);
       document.getElementById('cart-overlay').addEventListener('click', closeCart);
 
@@ -2672,11 +2985,38 @@
       });
     }
 
+    /* Inicializa el slider automático de portadas (fade cada 5 s) */
+    function initHeroSlider() {
+      var slides = document.querySelectorAll('.hero-slide');
+      if (!slides || slides.length < 2) return;
+      var current = 0;
+      setInterval(function () {
+        slides[current].classList.remove('hero-slide--active');
+        current = (current + 1) % slides.length;
+        slides[current].classList.add('hero-slide--active');
+      }, 5000);
+    }
+
     async function init() {
       updateCartUI();
       initRevealAnimations();
+      initHeroSlider();
       bindEvents();
       await loadBranding();
+
+      /* Sincronizar hero con branding cargado desde Firestore */
+      var heroCompanyEl = document.querySelector('.hero-company');
+      if (heroCompanyEl) heroCompanyEl.textContent = _branding.companyName || 'Mi empresa';
+      var heroSloganEl = document.querySelector('.hero-fullscreen .eyebrow');
+      if (heroSloganEl) heroSloganEl.textContent = _branding.slogan || '';
+      var heroLogoEl = document.getElementById('hero-logo-img');
+      if (heroLogoEl && _branding.logo) {
+        try {
+          var logoUrl = await resolveAssetSourceToUrl(_branding.logo);
+          if (logoUrl) { heroLogoEl.src = logoUrl; heroLogoEl.alt = _branding.companyName || 'Logo'; }
+        } catch (e) {}
+      }
+
       await loadProducts();
       buildCategoryFilter();
       filterAndRender();
