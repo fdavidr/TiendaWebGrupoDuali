@@ -6,7 +6,7 @@
   <title>Mi empresa – Panel Admin</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
@@ -51,7 +51,7 @@
 
     body {
       min-height: 100vh;
-      font-family: 'Manrope', sans-serif;
+      font-family: 'Plus Jakarta Sans', sans-serif;
       color: var(--text);
       background:
         radial-gradient(circle at 8% 12%,  rgba(124, 58, 237, 0.24) 0, transparent 44%),
@@ -251,6 +251,144 @@
     .btn-link.primary:hover { color: var(--accent2); background: #fff; box-shadow: 0 16px 32px rgba(76, 29, 149, 0.38); }
     .btn-link.primary:hover::after { left: 130%; }
 
+    /* ── Encabezado: bloque izquierdo + hamburguesa ── */
+    .header-left { display: flex; align-items: center; gap: .9rem; position: relative; z-index: 1; }
+
+    .hamburger-btn {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      gap: 4px;
+      width: 40px; height: 40px;
+      padding: 0 9px;
+      border-radius: 11px;
+      border: 1px solid rgba(255,255,255,.32);
+      background: rgba(255,255,255,.16);
+      cursor: pointer;
+      transition: background .2s, border-color .2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .hamburger-btn:hover { background: rgba(255,255,255,.26); border-color: rgba(255,255,255,.5); }
+    .hamburger-btn:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+    .hamburger-btn span {
+      display: block;
+      height: 2px;
+      width: 100%;
+      border-radius: 2px;
+      background: #fff;
+      transition: transform .3s ease, opacity .2s ease;
+    }
+    body.drawer-open .hamburger-btn span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+    body.drawer-open .hamburger-btn span:nth-child(2) { opacity: 0; }
+    body.drawer-open .hamburger-btn span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+    /* ── Botón único "Guardar cambios" (sticky header) ── */
+    .save-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      padding: .5rem 1.05rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.5);
+      background: rgba(255,255,255,.94);
+      color: var(--accent2);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: .66rem;
+      font-weight: 700;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 22px rgba(76, 29, 149, 0.30);
+      transition: transform .2s, box-shadow .2s, background .25s, color .25s, border-color .25s, opacity .2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .save-pill:hover { transform: translateY(-1px); box-shadow: 0 16px 30px rgba(76, 29, 149, 0.4); }
+    .save-pill:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+    .save-pill .save-icon {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 16px; height: 16px; flex-shrink: 0; position: relative;
+    }
+    .save-pill .save-icon svg { width: 15px; height: 15px; display: none; }
+    .save-pill .save-spinner {
+      display: none;
+      width: 14px; height: 14px;
+      border: 2px solid currentColor;
+      border-top-color: transparent;
+      border-radius: 50%;
+      opacity: .85;
+      animation: adminSpin .7s linear infinite;
+    }
+    @keyframes adminSpin { to { transform: rotate(360deg); } }
+
+    /* Estado limpio (sin cambios) */
+    .save-pill[data-state="clean"] { opacity: .92; }
+    .save-pill[data-state="clean"] .ic-check { display: block; }
+
+    /* Estado con cambios pendientes */
+    .save-pill[data-state="dirty"] {
+      background: linear-gradient(135deg, #dc2626, #ef4444);
+      color: #fff;
+      border-color: rgba(255,255,255,.55);
+      box-shadow: 0 12px 26px rgba(220, 38, 38, .4);
+      animation: savePulse 2s ease-in-out infinite;
+    }
+    .save-pill[data-state="dirty"] .ic-warn { display: block; }
+    @keyframes savePulse {
+      0%, 100% { box-shadow: 0 12px 26px rgba(220, 38, 38, .4); }
+      50%      { box-shadow: 0 12px 30px rgba(220, 38, 38, .62); }
+    }
+
+    /* Estado guardando */
+    .save-pill[data-state="saving"] { opacity: .9; cursor: wait; }
+    .save-pill[data-state="saving"] .save-spinner { display: block; }
+
+    /* Estado guardado con éxito */
+    .save-pill[data-state="saved"] {
+      background: linear-gradient(135deg, #15803d, #16a34a);
+      color: #fff;
+      border-color: rgba(255,255,255,.55);
+      animation: saveSuccessPop .5s cubic-bezier(.22,1,.36,1);
+    }
+    .save-pill[data-state="saved"] .ic-check { display: block; }
+    @keyframes saveSuccessPop {
+      0%   { transform: scale(.9); }
+      45%  { transform: scale(1.08); }
+      100% { transform: scale(1); }
+    }
+
+    /* ── Off-canvas (drawer) + backdrop ── */
+    .drawer-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 198;
+      background: rgba(46, 16, 101, .5);
+      backdrop-filter: blur(3px);
+      -webkit-backdrop-filter: blur(3px);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity .3s ease, visibility .3s ease;
+    }
+    body.drawer-open .drawer-backdrop { opacity: 1; visibility: visible; }
+
+    .drawer-close {
+      display: none;
+      position: absolute;
+      top: .7rem; right: .7rem;
+      width: 32px; height: 32px;
+      border-radius: 9px;
+      border: 1px solid rgba(255,255,255,.32);
+      background: rgba(255,255,255,.16);
+      color: #fff;
+      font-size: 1.25rem; line-height: 1;
+      cursor: pointer;
+      z-index: 3;
+      transition: background .2s, border-color .2s;
+    }
+    .drawer-close:hover { background: rgba(255,255,255,.28); }
+    .drawer-close:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+
     /* Personalización de colores de la tienda */
     .color-grid {
       display: grid;
@@ -431,7 +569,7 @@
       background: var(--panel-soft);
       color: var(--text);
       font-size: .86rem;
-      font-family: 'Manrope', sans-serif;
+      font-family: 'Plus Jakarta Sans', sans-serif;
       outline: none;
       transition: border-color .2s, box-shadow .2s;
     }
@@ -935,6 +1073,34 @@
       gap: .8rem;
     }
 
+    /* Interruptor "Visible en tienda" reutilizable */
+    .switch-label {
+      display: inline-flex;
+      align-items: center;
+      gap: .45rem;
+      font-size: .78rem;
+      font-weight: 600;
+      text-transform: none;
+      letter-spacing: normal;
+      color: var(--muted);
+      cursor: pointer;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .switch-label input[type="checkbox"] {
+      width: 17px; height: 17px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+    .visibility-row {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      padding: .5rem .7rem;
+      border-radius: 10px;
+      background: var(--accent-light);
+      border: 1px solid var(--border);
+    }
+
     .product-row { animation: rowIn .35s ease both; }
 
     /* Brillo deslizante en botones primarios */
@@ -981,24 +1147,73 @@
     }
 
     @media (max-width: 930px) {
+      /* Menú lateral se convierte en off-canvas (drawer) */
+      .hamburger-btn { display: inline-flex; }
       .admin-shell { grid-template-columns: 1fr; }
-      .sidebar { position: static; }
-      .side-menu { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
-      .side-link { text-align: center; padding: .58rem .38rem; letter-spacing: .05em; }
+      .drawer-close { display: block; }
+      .sidebar {
+        position: fixed;
+        top: 0; left: 0; bottom: 0;
+        width: 270px;
+        max-width: 84vw;
+        border-radius: 0 22px 22px 0;
+        z-index: 199;
+        overflow-y: auto;
+        transform: translateX(-106%);
+        transition: transform .32s cubic-bezier(.4, 0, .2, 1);
+        animation: none;
+        padding-top: 3.3rem;
+      }
+      body.drawer-open .sidebar { transform: translateX(0); }
+      .side-menu { display: flex; flex-direction: column; gap: .5rem; }
+      .side-link { text-align: left; padding: .74rem .85rem; letter-spacing: .08em; }
     }
 
-    @media (max-width: 640px) {
+    @media (max-width: 720px) {
+      header { padding: .7rem 1rem; gap: .6rem; }
+      .header-title { display: none; }
       .layout { padding: 1rem; }
       .form-row { grid-template-columns: 1fr; }
-      .stats-bar { grid-template-columns: 1fr; }
-      .side-menu { grid-template-columns: 1fr; }
       .panel { padding: 1rem; }
       .pdf-input-row { flex-direction: column; }
+    }
+
+    @media (max-width: 560px) {
+      header { padding: .65rem .85rem; }
+      .header-links { gap: .45rem; }
+      .header-logo span { font-size: 1.02rem; letter-spacing: .06em; }
+      .btn-link { padding: .44rem .72rem; font-size: .6rem; }
+      .save-pill { padding: .46rem .82rem; font-size: .6rem; }
+      .stats-bar { grid-template-columns: 1fr; }
       .confirm-actions { flex-direction: column; }
       .btn-danger, .btn-cancel { width: 100%; }
-      header { padding: .8rem 1rem; }
-      .header-links { width: 100%; }
-      .btn-link { flex: 1; justify-content: center; }
+      .color-grid { grid-template-columns: 1fr; }
+      .form-actions { flex-wrap: wrap; }
+    }
+
+    @media (max-width: 414px) {
+      .layout { padding: .8rem; }
+      .panel { padding: .85rem; border-radius: 14px; }
+      .header-logo img { width: 30px; height: 30px; }
+      .header-logo span { font-size: .95rem; }
+      .form-modal { padding: .6rem; }
+      .stat-num { font-size: 1.12rem; }
+    }
+
+    @media (max-width: 380px) {
+      header { padding: .6rem .68rem; gap: .45rem; }
+      .header-logo span { font-size: .88rem; }
+      .btn-link.primary { padding: .42rem .62rem; }
+      .save-pill { padding: .44rem .72rem; }
+      .panel-title { font-size: .66rem; }
+      .hamburger-btn { width: 38px; height: 38px; }
+    }
+
+    @media (max-width: 340px) {
+      .header-logo span { max-width: 86px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .btn-link span, .save-pill .save-label { font-size: .56rem; }
+      .layout { padding: .65rem; }
+      .sidebar { width: 240px; }
     }
   </style>
 </head>
@@ -1015,7 +1230,10 @@
 
   <!-- ── HEADER ── -->
   <header>
-    <div style="display:flex; align-items:center; gap:.9rem;">
+    <div class="header-left">
+      <button id="btn-hamburger" class="hamburger-btn" type="button" aria-label="Abrir menú de secciones" aria-expanded="false" aria-controls="admin-drawer">
+        <span></span><span></span><span></span>
+      </button>
       <a href="index.html" class="header-logo">
         <img src="img/mi logo.svg" alt="Mi empresa" />
         <span>Mi empresa</span>
@@ -1023,24 +1241,35 @@
       <span class="header-title">Panel Admin</span>
     </div>
     <div class="header-links">
+      <button id="btn-save-all" class="save-pill" type="button" data-state="clean" aria-label="Guardar cambios">
+        <span class="save-icon">
+          <svg class="ic-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+          <svg class="ic-warn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 9v4M12 17h.01M10.3 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.7 3.86a2 2 0 0 0-3.4 0z"/></svg>
+          <span class="save-spinner" aria-hidden="true"></span>
+        </span>
+        <span class="save-label">Guardar cambios</span>
+      </button>
       <a href="index.html" class="btn-link primary">
-        🛍 Ver Tienda
+        🛍 <span>Ver Tienda</span>
       </a>
-      <button id="btn-logout" class="btn-link" style="cursor:pointer;display:none">Cerrar sesión</button>
+      <button id="btn-logout" class="btn-link" style="cursor:pointer;display:none"><span>Cerrar sesión</span></button>
     </div>
   </header>
+
+  <!-- Backdrop del menú off-canvas -->
+  <div class="drawer-backdrop" id="drawer-backdrop" aria-hidden="true"></div>
 
   <!-- ── MAIN LAYOUT ── -->
   <div class="layout">
     <div class="admin-shell">
-      <aside class="sidebar">
+      <aside class="sidebar" id="admin-drawer">
+        <button class="drawer-close" id="drawer-close" type="button" aria-label="Cerrar menú">×</button>
         <div class="sidebar-deco-1" aria-hidden="true"></div>
         <div class="sidebar-deco-2" aria-hidden="true"></div>
         <div class="sidebar-title">Secciones</div>
         <div class="side-menu" id="side-menu">
           <button class="side-link active" data-section="products">Productos</button>
           <button class="side-link" data-section="branches">Sucursales</button>
-          <button class="side-link" data-section="catalogs">Catalogos</button>
           <button class="side-link" data-section="info">Informaciones</button>
           <button class="side-link" data-section="settings">Ajustes</button>
         </div>
@@ -1058,6 +1287,18 @@
 
             <div class="products-list" id="products-list">
               <div class="no-products">Cargando productos…</div>
+            </div>
+          </div>
+
+          <div class="panel category-manager">
+            <div class="panel-title">🏷️ Categorías</div>
+            <p class="cfg-help">Crea y elimina las categorías sugeridas al registrar productos. Se guardan automáticamente y aparecen como sugerencias en el formulario de producto.</p>
+            <div class="cfg-add-row">
+              <input type="text" id="cfg-category-input" placeholder="Ej: Limpieza pesada" maxlength="40" aria-label="Nueva categoría" />
+              <button class="btn-pdf" id="btn-add-category" type="button">Agregar</button>
+            </div>
+            <div class="cfg-list" id="cfg-categories-list">
+              <p class="cfg-empty">No hay categorías configuradas.</p>
             </div>
           </div>
 
@@ -1163,128 +1404,139 @@
 
         <section class="section-panel" id="section-branches">
           <div class="panel">
-            <div class="panel-title" style="display:flex;align-items:center;justify-content:space-between;">
+            <div class="panel-title" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;">
               <span>📍 Sucursales</span>
-              <label style="display:flex;align-items:center;gap:.45rem;font-size:.8rem;font-weight:500;text-transform:none;letter-spacing:normal;cursor:pointer;">
+              <label class="switch-label">
                 <input type="checkbox" id="vis-branches" checked /> Visible en tienda
               </label>
             </div>
-            <p class="cfg-help">Agrega y edita las sucursales que se mostrarán en la tienda pública.</p>
+            <p class="cfg-help">Agrega y edita las sucursales que se mostrarán en la tienda pública. Pulsa <strong>Guardar cambios</strong> en la cabecera para aplicar.</p>
 
             <div class="form-actions" style="margin-bottom:1rem;">
-              <button class="btn-secondary" id="btn-add-branch" type="button">Agregar sucursal</button>
-              <button class="btn-primary" id="btn-save-branches" type="button">Guardar sucursales</button>
+              <button class="btn-secondary" id="btn-add-branch" type="button">+ Agregar sucursal</button>
             </div>
 
             <div class="editor-stack" id="branches-editor-list"></div>
           </div>
         </section>
 
-        <section class="section-panel" id="section-catalogs">
-          <div class="panel">
-            <div class="panel-title" style="display:flex;align-items:center;justify-content:space-between;">
-              <span>📄 Catalogos</span>
-              <label style="display:flex;align-items:center;gap:.45rem;font-size:.8rem;font-weight:500;text-transform:none;letter-spacing:normal;cursor:pointer;">
-                <input type="checkbox" id="vis-catalog" checked /> Visible en tienda
-              </label>
-            </div>
-
-            <div class="pdf-row">
-              <label>Catálogo PDF</label>
-              <div class="pdf-input-row">
-                <input type="hidden" id="pdf-catalogo-url" />
-                <input type="file" id="pdf-catalogo-file" accept="application/pdf" />
-                <button class="btn-pdf" id="btn-save-catalogo" type="button">Subir PDF</button>
-              </div>
-              <div class="pdf-current">Actual: <a id="pdf-catalogo-link" href="#" target="_blank" rel="noopener">Ver PDF</a></div>
-            </div>
-
-            <div class="pdf-row">
-              <label>Ofertas PDF</label>
-              <div class="pdf-input-row">
-                <input type="hidden" id="pdf-ofertas-url" />
-                <input type="file" id="pdf-ofertas-file" accept="application/pdf" />
-                <button class="btn-pdf" id="btn-save-ofertas" type="button">Subir PDF</button>
-              </div>
-              <div class="pdf-current">Actual: <a id="pdf-ofertas-link" href="#" target="_blank" rel="noopener">Ver PDF</a></div>
-            </div>
-          </div>
-        </section>
-
         <section class="section-panel" id="section-info">
           <div class="panel">
-            <div class="panel-title" style="display:flex;align-items:center;justify-content:space-between;">
+            <div class="panel-title" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;">
               <span>📝 Informaciones</span>
-              <label style="display:flex;align-items:center;gap:.45rem;font-size:.8rem;font-weight:500;text-transform:none;letter-spacing:normal;cursor:pointer;">
+              <label class="switch-label">
                 <input type="checkbox" id="vis-info" checked /> Visible en tienda
               </label>
             </div>
-            <p class="cfg-help">Controla los textos y bloques informativos visibles en la página principal.</p>
+            <p class="cfg-help">Controla los textos y bloques informativos visibles en la página principal. Abre cada bloque para editarlo y pulsa <strong>Guardar cambios</strong> en la cabecera.</p>
 
             <div class="editor-stack">
-              <div class="editor-card">
-                <div class="editor-card-head" style="display:flex;align-items:center;justify-content:space-between;">
-                  <strong>Nosotros / Confianza</strong>
-                  <label style="display:flex;align-items:center;gap:.4rem;font-size:.78rem;font-weight:500;text-transform:none;letter-spacing:normal;cursor:pointer;">
-                    <input type="checkbox" id="vis-confidence" checked /> Visible
-                  </label>
-                </div>
-                <div class="field">
-                  <label for="info-about-title">Titulo</label>
-                  <input type="text" id="info-about-title" maxlength="80" placeholder="Nosotros / Confianza" />
-                </div>
-                <div class="field">
-                  <label for="info-about-content">Contenido</label>
-                  <textarea id="info-about-content" class="textarea-lg" placeholder="Describe por qué confiar en la empresa..."></textarea>
-                </div>
-              </div>
 
-              <div class="editor-card">
-                <div class="editor-card-head" style="display:flex;align-items:center;justify-content:space-between;">
-                  <strong>Como comprar</strong>
-                  <label style="display:flex;align-items:center;gap:.4rem;font-size:.78rem;font-weight:500;text-transform:none;letter-spacing:normal;cursor:pointer;">
-                    <input type="checkbox" id="vis-buy" checked /> Visible
-                  </label>
+              <details class="settings-collapse" open>
+                <summary class="settings-collapse-head">
+                  <strong>🤝 Nosotros / Confianza</strong>
+                  <span class="settings-collapse-chevron">▼</span>
+                </summary>
+                <div class="settings-collapse-body">
+                  <div class="visibility-row">
+                    <label class="switch-label"><input type="checkbox" id="vis-confidence" checked /> Mostrar este bloque en la tienda</label>
+                  </div>
+                  <div class="field">
+                    <label for="info-about-title">Titulo</label>
+                    <input type="text" id="info-about-title" maxlength="80" placeholder="Nosotros / Confianza" />
+                  </div>
+                  <div class="field">
+                    <label for="info-about-content">Contenido</label>
+                    <textarea id="info-about-content" class="textarea-lg" placeholder="Describe por qué confiar en la empresa..."></textarea>
+                  </div>
                 </div>
-                <p class="limit-note">Configura hasta 3 pasos.</p>
-                <div class="field"><label for="info-buy-step-1">Paso 1</label><input type="text" id="info-buy-step-1" maxlength="140" /></div>
-                <div class="field"><label for="info-buy-step-2">Paso 2</label><input type="text" id="info-buy-step-2" maxlength="140" /></div>
-                <div class="field"><label for="info-buy-step-3">Paso 3</label><input type="text" id="info-buy-step-3" maxlength="140" /></div>
-              </div>
+              </details>
 
-              <div class="editor-card">
-                <div class="editor-card-head">
-                  <strong>Clientes que recomiendan</strong>
+              <details class="settings-collapse">
+                <summary class="settings-collapse-head">
+                  <strong>🛒 Cómo comprar</strong>
+                  <span class="settings-collapse-chevron">▼</span>
+                </summary>
+                <div class="settings-collapse-body">
+                  <div class="visibility-row">
+                    <label class="switch-label"><input type="checkbox" id="vis-buy" checked /> Mostrar este bloque en la tienda</label>
+                  </div>
+                  <p class="limit-note">Configura hasta 3 pasos.</p>
+                  <div class="field"><label for="info-buy-step-1">Paso 1</label><input type="text" id="info-buy-step-1" maxlength="140" /></div>
+                  <div class="field"><label for="info-buy-step-2">Paso 2</label><input type="text" id="info-buy-step-2" maxlength="140" /></div>
+                  <div class="field"><label for="info-buy-step-3">Paso 3</label><input type="text" id="info-buy-step-3" maxlength="140" /></div>
                 </div>
-                <p class="limit-note">Puedes mostrar hasta 3 recomendaciones.</p>
-                <div class="field"><label for="info-client-1-quote">Testimonio 1</label><textarea id="info-client-1-quote" placeholder="Comentario del cliente..."></textarea></div>
-                <div class="field"><label for="info-client-1-name">Nombre 1</label><input type="text" id="info-client-1-name" maxlength="60" placeholder="Ej: M. Vargas" /></div>
-                <div class="field"><label for="info-client-2-quote">Testimonio 2</label><textarea id="info-client-2-quote" placeholder="Comentario del cliente..."></textarea></div>
-                <div class="field"><label for="info-client-2-name">Nombre 2</label><input type="text" id="info-client-2-name" maxlength="60" placeholder="Ej: C. Rojas" /></div>
-                <div class="field"><label for="info-client-3-quote">Testimonio 3</label><textarea id="info-client-3-quote" placeholder="Comentario del cliente..."></textarea></div>
-                <div class="field"><label for="info-client-3-name">Nombre 3</label><input type="text" id="info-client-3-name" maxlength="60" placeholder="Ej: J. Aramayo" /></div>
-              </div>
+              </details>
 
-              <div class="editor-card">
-                <div class="editor-card-head">
-                  <strong>Preguntas frecuentes</strong>
+              <details class="settings-collapse">
+                <summary class="settings-collapse-head">
+                  <strong>💬 Clientes que recomiendan</strong>
+                  <span class="settings-collapse-chevron">▼</span>
+                </summary>
+                <div class="settings-collapse-body">
+                  <p class="limit-note">Puedes mostrar hasta 3 recomendaciones.</p>
+                  <div class="field"><label for="info-client-1-quote">Testimonio 1</label><textarea id="info-client-1-quote" placeholder="Comentario del cliente..."></textarea></div>
+                  <div class="field"><label for="info-client-1-name">Nombre 1</label><input type="text" id="info-client-1-name" maxlength="60" placeholder="Ej: M. Vargas" /></div>
+                  <div class="field"><label for="info-client-2-quote">Testimonio 2</label><textarea id="info-client-2-quote" placeholder="Comentario del cliente..."></textarea></div>
+                  <div class="field"><label for="info-client-2-name">Nombre 2</label><input type="text" id="info-client-2-name" maxlength="60" placeholder="Ej: C. Rojas" /></div>
+                  <div class="field"><label for="info-client-3-quote">Testimonio 3</label><textarea id="info-client-3-quote" placeholder="Comentario del cliente..."></textarea></div>
+                  <div class="field"><label for="info-client-3-name">Nombre 3</label><input type="text" id="info-client-3-name" maxlength="60" placeholder="Ej: J. Aramayo" /></div>
                 </div>
-                <p class="limit-note">Puedes mostrar hasta 5 preguntas y respuestas.</p>
-                <div class="field"><label for="info-faq-1-q">Pregunta 1</label><input type="text" id="info-faq-1-q" maxlength="120" /></div>
-                <div class="field"><label for="info-faq-1-a">Respuesta 1</label><textarea id="info-faq-1-a"></textarea></div>
-                <div class="field"><label for="info-faq-2-q">Pregunta 2</label><input type="text" id="info-faq-2-q" maxlength="120" /></div>
-                <div class="field"><label for="info-faq-2-a">Respuesta 2</label><textarea id="info-faq-2-a"></textarea></div>
-                <div class="field"><label for="info-faq-3-q">Pregunta 3</label><input type="text" id="info-faq-3-q" maxlength="120" /></div>
-                <div class="field"><label for="info-faq-3-a">Respuesta 3</label><textarea id="info-faq-3-a"></textarea></div>
-                <div class="field"><label for="info-faq-4-q">Pregunta 4</label><input type="text" id="info-faq-4-q" maxlength="120" /></div>
-                <div class="field"><label for="info-faq-4-a">Respuesta 4</label><textarea id="info-faq-4-a"></textarea></div>
-                <div class="field"><label for="info-faq-5-q">Pregunta 5</label><input type="text" id="info-faq-5-q" maxlength="120" /></div>
-                <div class="field"><label for="info-faq-5-a">Respuesta 5</label><textarea id="info-faq-5-a"></textarea></div>
-              </div>
+              </details>
 
-              <div class="form-actions">
-                <button class="btn-primary" id="btn-save-info" type="button">Guardar informaciones</button>
-              </div>
+              <details class="settings-collapse">
+                <summary class="settings-collapse-head">
+                  <strong>❓ Preguntas frecuentes</strong>
+                  <span class="settings-collapse-chevron">▼</span>
+                </summary>
+                <div class="settings-collapse-body">
+                  <p class="limit-note">Puedes mostrar hasta 5 preguntas y respuestas.</p>
+                  <div class="field"><label for="info-faq-1-q">Pregunta 1</label><input type="text" id="info-faq-1-q" maxlength="120" /></div>
+                  <div class="field"><label for="info-faq-1-a">Respuesta 1</label><textarea id="info-faq-1-a"></textarea></div>
+                  <div class="field"><label for="info-faq-2-q">Pregunta 2</label><input type="text" id="info-faq-2-q" maxlength="120" /></div>
+                  <div class="field"><label for="info-faq-2-a">Respuesta 2</label><textarea id="info-faq-2-a"></textarea></div>
+                  <div class="field"><label for="info-faq-3-q">Pregunta 3</label><input type="text" id="info-faq-3-q" maxlength="120" /></div>
+                  <div class="field"><label for="info-faq-3-a">Respuesta 3</label><textarea id="info-faq-3-a"></textarea></div>
+                  <div class="field"><label for="info-faq-4-q">Pregunta 4</label><input type="text" id="info-faq-4-q" maxlength="120" /></div>
+                  <div class="field"><label for="info-faq-4-a">Respuesta 4</label><textarea id="info-faq-4-a"></textarea></div>
+                  <div class="field"><label for="info-faq-5-q">Pregunta 5</label><input type="text" id="info-faq-5-q" maxlength="120" /></div>
+                  <div class="field"><label for="info-faq-5-a">Respuesta 5</label><textarea id="info-faq-5-a"></textarea></div>
+                </div>
+              </details>
+
+              <details class="settings-collapse">
+                <summary class="settings-collapse-head">
+                  <strong>📄 Catálogos (PDF)</strong>
+                  <span class="settings-collapse-chevron">▼</span>
+                </summary>
+                <div class="settings-collapse-body">
+                  <div class="visibility-row">
+                    <label class="switch-label"><input type="checkbox" id="vis-catalog" checked /> Mostrar catálogos en la tienda</label>
+                  </div>
+                  <p class="inline-help">Cada PDF se sube de inmediato al pulsar su botón. El interruptor se aplica al pulsar Guardar cambios.</p>
+
+                  <div class="pdf-row">
+                    <label>Catálogo PDF</label>
+                    <div class="pdf-input-row">
+                      <input type="hidden" id="pdf-catalogo-url" />
+                      <input type="file" id="pdf-catalogo-file" accept="application/pdf" />
+                      <button class="btn-pdf" id="btn-save-catalogo" type="button">Subir PDF</button>
+                    </div>
+                    <div class="pdf-current">Actual: <a id="pdf-catalogo-link" href="#" target="_blank" rel="noopener">Ver PDF</a></div>
+                  </div>
+
+                  <div class="pdf-row">
+                    <label>Ofertas PDF</label>
+                    <div class="pdf-input-row">
+                      <input type="hidden" id="pdf-ofertas-url" />
+                      <input type="file" id="pdf-ofertas-file" accept="application/pdf" />
+                      <button class="btn-pdf" id="btn-save-ofertas" type="button">Subir PDF</button>
+                    </div>
+                    <div class="pdf-current">Actual: <a id="pdf-ofertas-link" href="#" target="_blank" rel="noopener">Ver PDF</a></div>
+                  </div>
+                </div>
+              </details>
+
             </div>
           </div>
         </section>
@@ -1292,7 +1544,7 @@
         <section class="section-panel" id="section-settings">
           <div class="panel">
             <div class="panel-title">⚙ Ajustes</div>
-            <p class="cfg-help">Actualiza el branding, las redes sociales y administra las categorías sugeridas para productos.</p>
+            <p class="cfg-help">Actualiza el branding, las redes sociales y los colores de la tienda. Pulsa <strong>Guardar cambios</strong> en la cabecera para aplicar (la cuenta de administrador se guarda con su propio botón).</p>
 
             <div style="display:grid; gap: 0.9rem; margin-bottom: 1.1rem;">
 
@@ -1495,17 +1747,6 @@
                 </div>
               </details>
 
-              <div class="form-actions">
-                <button class="btn-primary" id="btn-save-branding" type="button">Guardar ajustes</button>
-              </div>
-            </div>
-
-            <div class="cfg-add-row">
-              <input type="text" id="cfg-category-input" placeholder="Ej: Limpieza pesada" maxlength="40" />
-              <button class="btn-pdf" id="btn-add-category">Agregar</button>
-            </div>
-            <div class="cfg-list" id="cfg-categories-list">
-              <p class="cfg-empty">No hay categorías configuradas.</p>
             </div>
           </div>
         </section>
@@ -2145,82 +2386,146 @@
     }
   }
 
-  async function saveCompanyConfig() {
+  // ─────────────────────────────────────────────
+  //  UNSAVED-CHANGES TRACKING + SINGLE SAVE BUTTON
+  // ─────────────────────────────────────────────
+  let _dirty = false;
+  let _savingAll = false;
+  let _saveStateTimer = null;
+
+  function getSaveBtn() { return document.getElementById('btn-save-all'); }
+
+  function setSaveState(state) {
+    const btn = getSaveBtn();
+    if (!btn) return;
+    btn.dataset.state = state;
+    const label = btn.querySelector('.save-label');
+    const labels = {
+      clean:  'Cambios guardados',
+      dirty:  'Tienes cambios sin guardar',
+      saving: 'Guardando…',
+      saved:  'Cambios guardados'
+    };
+    if (label) label.textContent = labels[state] || 'Guardar cambios';
+    btn.disabled = (state === 'saving');
+  }
+
+  function markDirty() {
+    if (_savingAll) return;
+    if (!_dirty) {
+      _dirty = true;
+      setSaveState('dirty');
+    }
+  }
+
+  function markClean(showSaved) {
+    _dirty = false;
+    if (showSaved) {
+      setSaveState('saved');
+      clearTimeout(_saveStateTimer);
+      _saveStateTimer = setTimeout(() => { if (!_dirty) setSaveState('clean'); }, 2200);
+    } else {
+      setSaveState('clean');
+    }
+  }
+
+  // Marca como sucio cualquier edición dentro de las secciones guardables
+  function isTrackedField(el) {
+    if (!el || typeof el.matches !== 'function') return false;
+    if (!el.matches('input, textarea, select')) return false;
+    if (el.type === 'file') return false;
+    const id = el.id || '';
+    if (id.startsWith('acc-')) return false;        // cuenta admin: botón propio
+    if (id.startsWith('f-')) return false;          // formulario de producto: flujo propio
+    if (id === 'admin-quick-search') return false;  // búsqueda
+    if (id === 'cfg-category-input') return false;  // categorías: guardado inmediato
+    if (el.closest('.category-manager')) return false;
+    return Boolean(el.closest('#section-branches, #section-info, #section-settings'));
+  }
+
+  document.addEventListener('input', (e) => { if (isTrackedField(e.target)) markDirty(); });
+  document.addEventListener('change', (e) => { if (isTrackedField(e.target)) markDirty(); });
+
+  async function saveAllChanges() {
+    if (_savingAll) return;
+
+    // 1) Validar sucursales e informaciones antes de escribir nada
+    const branches = collectBranchesFromEditor();
+    if (branches === null) { activateSection('branches'); return; }
+    const siteInfo = collectInfoForm();
+    if (!siteInfo) { activateSection('info'); return; }
+
+    // 2) Recolectar el resto de la configuración
     const companyName = document.getElementById('cfg-company-name').value.trim() || 'Mi empresa';
     const slogan = document.getElementById('cfg-company-slogan').value.trim() || 'este es el eslogan de tu empresa';
-    let logoSource = _brandingState.logo || '';
+    const logoSource = _brandingState.logo || '';
     const socialLinks = collectSocialLinks();
     const themeColors = collectThemeColors();
     const whatsAppUrl = collectWhatsAppUrl();
     const sectionVisibility = collectSectionVisibilityInputs();
-    const btn = document.getElementById('btn-save-branding');
-    btn.disabled = true;
-    btn.textContent = 'Guardando...';
-    try {
-    await CONFIG_DOC.set({
-      companyName,
-      slogan,
-      logo: logoSource,
-      logoAssetId: '',
-      logoFileName: _brandingState.logoName || '',
-      socialLinks,
-      themeColors,
-      whatsappUrl: whatsAppUrl,
-      sectionVisibility
-    }, { merge: true });
-    _brandingState.companyName = companyName;
-    _brandingState.slogan = slogan;
-    _socialLinks = socialLinks;
-    _themeColors = themeColors;
-    _whatsAppUrl = whatsAppUrl;
-    _sectionVisibility = sectionVisibility;
 
-    const headerSpan2 = document.querySelector('.header-logo span');
-    if (headerSpan2) headerSpan2.textContent = companyName;
-    const headerImg = document.querySelector('.header-logo img');
-    if (headerImg && logoSource) {
+    _savingAll = true;
+    setSaveState('saving');
+    try {
+      // Una sola escritura atómica con todos los cambios del panel
+      await CONFIG_DOC.set({
+        companyName,
+        slogan,
+        logo: logoSource,
+        logoAssetId: '',
+        logoFileName: _brandingState.logoName || '',
+        socialLinks,
+        themeColors,
+        whatsappUrl: whatsAppUrl,
+        sectionVisibility,
+        branches,
+        siteInfo,
+        categories: _customCategories
+      }, { merge: true });
+
+      // Actualizar estado en memoria
+      _brandingState.companyName = companyName;
+      _brandingState.slogan = slogan;
+      _socialLinks = socialLinks;
+      _themeColors = themeColors;
+      _whatsAppUrl = whatsAppUrl;
+      _sectionVisibility = sectionVisibility;
+      _branches = branches;
+      _infoContent = siteInfo;
+
+      // Reflejar branding en la cabecera del panel
+      const headerSpan = document.querySelector('.header-logo span');
+      if (headerSpan) headerSpan.textContent = companyName;
+      const headerImg = document.querySelector('.header-logo img');
+      if (headerImg && logoSource) {
+        try {
+          const url = await resolveAssetSourceToUrl(logoSource);
+          if (url) headerImg.src = url;
+        } catch (_) {}
+      }
+
+      // Caché best-effort para que index.html evite parpadeo (FOUC)
       try {
-        const url = await resolveAssetSourceToUrl(logoSource);
-        if (url) headerImg.src = url;
-      } catch(_) {}
-    }
+        await fetch('/api/config', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ themeColors, companyName, slogan, whatsappUrl: whatsAppUrl, socialLinks, sectionVisibility, logo: logoSource })
+        });
+      } catch (_) { /* best-effort */ }
 
-    // Write config.json cache so index.html avoids FOUC on next load
-    try {
-      await fetch('/api/config', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ themeColors, companyName, slogan, whatsappUrl: whatsAppUrl, socialLinks, sectionVisibility, logo: logoSource })
-      });
-    } catch(_) { /* cache write is best-effort */ }
+      renderBranchesEditor();
+      fillInfoForm(siteInfo);
 
-    showToast('✅ Ajustes actualizados');
-    } catch(e) {
-      console.error('Error guardando ajustes:', e);
+      _savingAll = false;
+      markClean(true);
+      showToast('✅ Todos los cambios fueron guardados');
+    } catch (e) {
+      console.error('Error guardando cambios:', e);
+      _savingAll = false;
+      setSaveState('dirty');
       const isPermission = e && e.code === 'permission-denied';
       showToast(isPermission ? '❌ Sin permiso en Firestore' : `❌ Error al guardar: ${e && e.message ? e.message : 'intenta de nuevo'}`);
-    } finally {
-      btn.disabled = false;
-      btn.textContent = 'Guardar ajustes';
     }
-  }
-
-  async function saveBranchesConfig() {
-    const branches = collectBranchesFromEditor();
-    if (branches === null) return;
-    await CONFIG_DOC.set({ branches }, { merge: true });
-    _branches = branches;
-    renderBranchesEditor();
-    showToast('✅ Sucursales actualizadas');
-  }
-
-  async function saveInfoConfig() {
-    const siteInfo = collectInfoForm();
-    if (!siteInfo) return;
-    await CONFIG_DOC.set({ siteInfo }, { merge: true });
-    _infoContent = siteInfo;
-    fillInfoForm(siteInfo);
-    showToast('✅ Informaciones actualizadas');
   }
 
   // ─────────────────────────────────────────────
@@ -3052,6 +3357,7 @@
     if (source) {
       const preview = document.getElementById('cfg-logo-preview');
       await hydrateLogoPreview(source, preview);
+      markDirty();
     }
   });
 
@@ -3061,24 +3367,25 @@
   });
 
   document.getElementById('btn-save-account').addEventListener('click', saveAccountSettings);
-  document.getElementById('btn-save-branding').addEventListener('click', saveCompanyConfig);
+  document.getElementById('btn-save-all').addEventListener('click', saveAllChanges);
   document.getElementById('btn-reset-colors').addEventListener('click', function() {
     fillThemeColorInputs(DEFAULT_THEME_COLORS);
-    showToast('Colores restablecidos. Guarda los cambios para aplicarlos.');
+    markDirty();
+    showToast('Colores restablecidos. Pulsa Guardar cambios para aplicarlos.');
   });
   document.getElementById('btn-export-data').addEventListener('click', exportAllData);
   document.getElementById('cfg-import-file').addEventListener('change', importAllData);
-  document.getElementById('btn-save-branches').addEventListener('click', saveBranchesConfig);
-  document.getElementById('btn-save-info').addEventListener('click', saveInfoConfig);
   document.getElementById('btn-add-branch').addEventListener('click', () => {
     _branches.push(normalizeBranch({}));
     renderBranchesEditor();
+    markDirty();
   });
   document.getElementById('branches-editor-list').addEventListener('click', function(e) {
     const btn = e.target.closest('.btn-remove-branch');
     if (!btn) return;
     _branches = _branches.filter((_, index) => index !== Number(btn.dataset.branchIndex));
     renderBranchesEditor();
+    markDirty();
   });
 
   document.getElementById('cfg-category-input').addEventListener('keydown', function(e) {
@@ -3092,14 +3399,40 @@
     if (!btn) return;
     removeCategoryFromConfig(btn.dataset.category);
   });
-  document.getElementById('side-menu').addEventListener('click', function(e) {
-    const btn = e.target.closest('.side-link');
-    if (!btn) return;
-    const section = btn.dataset.section;
-    document.querySelectorAll('.side-link').forEach(el => el.classList.toggle('active', el === btn));
+  // ─────────────────────────────────────────────
+  //  NAVEGACIÓN DE SECCIONES + MENÚ OFF-CANVAS
+  // ─────────────────────────────────────────────
+  function activateSection(section) {
+    document.querySelectorAll('.side-link').forEach(el => el.classList.toggle('active', el.dataset.section === section));
     document.querySelectorAll('.section-panel').forEach(el => el.classList.remove('active'));
     const target = document.getElementById(`section-${section}`);
     if (target) target.classList.add('active');
+  }
+
+  function openDrawer() {
+    document.body.classList.add('drawer-open');
+    const burger = document.getElementById('btn-hamburger');
+    if (burger) burger.setAttribute('aria-expanded', 'true');
+  }
+  function closeDrawer() {
+    document.body.classList.remove('drawer-open');
+    const burger = document.getElementById('btn-hamburger');
+    if (burger) burger.setAttribute('aria-expanded', 'false');
+  }
+  function toggleDrawer() {
+    if (document.body.classList.contains('drawer-open')) closeDrawer();
+    else openDrawer();
+  }
+
+  document.getElementById('btn-hamburger').addEventListener('click', toggleDrawer);
+  document.getElementById('drawer-close').addEventListener('click', closeDrawer);
+  document.getElementById('drawer-backdrop').addEventListener('click', closeDrawer);
+
+  document.getElementById('side-menu').addEventListener('click', function(e) {
+    const btn = e.target.closest('.side-link');
+    if (!btn) return;
+    activateSection(btn.dataset.section);
+    closeDrawer();
   });
 
   document.addEventListener('keydown', e => {
@@ -3107,7 +3440,13 @@
       closeConfirm();
       clearForm();
       closeProductFormPanel();
+      closeDrawer();
     }
+  });
+
+  // Avisar si se intenta salir con cambios sin guardar
+  window.addEventListener('beforeunload', (e) => {
+    if (_dirty) { e.preventDefault(); e.returnValue = ''; }
   });
 
   // ─────────────────────────────────────────────
