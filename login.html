@@ -25,32 +25,37 @@
       --surface:       #ffffff;
       --text:          #1f1535;
       --muted:         #6f6488;
-      --border:        rgba(124, 58, 237, 0.22);
+      --border:        rgba(124, 58, 237, 0.20);
+      --border-focus:  rgba(124, 58, 237, 0.55);
       --line-strong:   rgba(124, 58, 237, 0.44);
       --danger:        #dc2626;
       --success:       #16a34a;
-      --shadow-sm:     0 8px 24px rgba(76, 29, 149, 0.12);
-      --shadow-md:     0 20px 60px rgba(76, 29, 149, 0.20);
-      --shadow-lg:     0 32px 90px rgba(76, 29, 149, 0.28);
+      --shadow-sm:     0 4px 16px rgba(76, 29, 149, 0.10);
+      --shadow-md:     0 16px 48px rgba(76, 29, 149, 0.18);
+      --shadow-lg:     0 28px 80px rgba(76, 29, 149, 0.24);
     }
 
-    html, body {
-      height: 100%;
-      overflow: hidden;
+    html {
+      min-height: 100%;
+      -webkit-text-size-adjust: 100%;
     }
 
     body {
       font-family: 'Manrope', sans-serif;
       color: var(--text);
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
+      min-height: 100dvh;
       min-height: 100vh;
+      padding: 1.5rem 1rem;
+      overflow-x: hidden;
       background:
-        radial-gradient(circle at 8% 12%, rgba(124, 58, 237, 0.24) 0, transparent 44%),
-        radial-gradient(circle at 90% 5%,  rgba(236, 72, 153, 0.18) 0, transparent 38%),
-        radial-gradient(circle at 75% 90%, rgba(124, 58, 237, 0.16) 0, transparent 40%),
-        radial-gradient(circle at 15% 80%, rgba(168, 85, 247, 0.12) 0, transparent 35%),
+        radial-gradient(circle at 8% 12%, rgba(124, 58, 237, 0.22) 0, transparent 44%),
+        radial-gradient(circle at 90% 5%,  rgba(236, 72, 153, 0.16) 0, transparent 38%),
+        radial-gradient(circle at 75% 90%, rgba(124, 58, 237, 0.14) 0, transparent 40%),
+        radial-gradient(circle at 15% 80%, rgba(168, 85, 247, 0.10) 0, transparent 35%),
         linear-gradient(135deg, #f5f0fe 0%, #fdf8ff 50%, #f0ebff 100%);
     }
 
@@ -63,29 +68,34 @@
       z-index: 0;
     }
     .bg-orb-1 {
-      width: 420px; height: 420px;
-      top: -100px; left: -100px;
-      background: radial-gradient(circle, rgba(124,58,237,.40), transparent 65%);
+      width: 480px; height: 480px;
+      top: -130px; left: -130px;
+      background: radial-gradient(circle, rgba(124,58,237,.36), transparent 65%);
       animation: orbFloat 16s ease-in-out infinite;
     }
     .bg-orb-2 {
-      width: 340px; height: 340px;
-      bottom: -100px; right: -80px;
-      background: radial-gradient(circle, rgba(236,72,153,.38), transparent 65%);
+      width: 380px; height: 380px;
+      bottom: -120px; right: -100px;
+      background: radial-gradient(circle, rgba(236,72,153,.34), transparent 65%);
       animation: orbFloat 20s ease-in-out infinite reverse;
     }
     .bg-orb-3 {
-      width: 260px; height: 260px;
-      top: 50%; right: 8%;
-      transform: translateY(-50%);
-      background: radial-gradient(circle, rgba(168,85,247,.28), transparent 65%);
-      animation: orbFloat 24s ease-in-out infinite 4s;
+      width: 280px; height: 280px;
+      top: 50%; right: 6%;
+      background: radial-gradient(circle, rgba(168,85,247,.26), transparent 65%);
+      animation: orbFloat3 24s ease-in-out infinite 4s;
     }
 
     @keyframes orbFloat {
       0%, 100% { transform: translate(0, 0) scale(1); }
-      33%       { transform: translate(24px, 18px) scale(1.06); }
-      66%       { transform: translate(-16px, 28px) scale(.96); }
+      33%       { transform: translate(20px, 16px) scale(1.05); }
+      66%       { transform: translate(-14px, 24px) scale(.97); }
+    }
+    /* Orbe 3: incluye translateY para no perder el centrado vertical */
+    @keyframes orbFloat3 {
+      0%, 100% { transform: translateY(-50%) translate(0, 0); }
+      33%       { transform: translateY(-50%) translate(20px, 16px); }
+      66%       { transform: translateY(-50%) translate(-14px, 24px); }
     }
 
     /* ── Partículas flotantes ── */
@@ -105,34 +115,34 @@
     }
     @keyframes particleRise {
       0%   { opacity: 0; transform: translateY(0) scale(.6); }
-      20%  { opacity: .55; }
-      80%  { opacity: .25; }
-      100% { opacity: 0; transform: translateY(-120vh) scale(1.4); }
+      20%  { opacity: .45; }
+      80%  { opacity: .2; }
+      100% { opacity: 0; transform: translateY(-120vh) scale(1.3); }
     }
 
-    /* ── Layout de dos columnas ── */
+    /* ── Wrapper de dos columnas ── */
     .login-wrapper {
       position: relative;
       z-index: 1;
       display: flex;
-      width: min(920px, 96vw);
-      min-height: 540px;
-      border-radius: 28px;
+      width: min(900px, 100%);
+      min-height: 560px;
+      border-radius: 26px;
       overflow: hidden;
       box-shadow: var(--shadow-lg);
-      animation: wrapperIn .7s cubic-bezier(.22,1,.36,1) both;
+      animation: wrapperIn .65s cubic-bezier(.22,1,.36,1) both;
     }
 
     @keyframes wrapperIn {
-      from { opacity: 0; transform: translateY(28px) scale(.97); }
-      to   { opacity: 1; transform: translateY(0)   scale(1); }
+      from { opacity: 0; transform: translateY(22px) scale(.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
     }
 
     /* ── Panel izquierdo: branding ── */
     .login-brand {
       flex: 0 0 42%;
-      background: linear-gradient(150deg, var(--accent2) 0%, var(--accent) 50%, var(--accent3) 100%);
-      padding: 3rem 2.4rem;
+      background: linear-gradient(148deg, var(--accent2) 0%, var(--accent) 52%, var(--accent3) 100%);
+      padding: 2.8rem 2.2rem;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -146,175 +156,169 @@
       position: absolute;
       inset: 0;
       background:
-        radial-gradient(circle at 20% 20%, rgba(255,255,255,.18) 0, transparent 50%),
-        radial-gradient(circle at 80% 80%, rgba(0,0,0,.12) 0, transparent 50%);
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,.16) 0, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(0,0,0,.10) 0, transparent 50%);
       pointer-events: none;
     }
 
-    /* Círculos decorativos en el panel de marca */
     .brand-deco-1,
     .brand-deco-2,
     .brand-deco-3 {
       position: absolute;
       border-radius: 50%;
-      border: 1px solid rgba(255,255,255,.18);
+      border: 1px solid rgba(255,255,255,.16);
       pointer-events: none;
     }
     .brand-deco-1 { width: 220px; height: 220px; top: -60px; right: -60px; }
     .brand-deco-2 { width: 160px; height: 160px; bottom: 40px; left: -50px; }
-    .brand-deco-3 { width: 100px; height: 100px; top: 50%; right: 30px; transform: translateY(-50%); animation: rotateDeco 20s linear infinite; }
+    .brand-deco-3 { width: 100px; height: 100px; top: 50%; right: 30px; transform: translateY(-50%); animation: rotateDeco 22s linear infinite; }
     @keyframes rotateDeco { to { transform: translateY(-50%) rotate(360deg); } }
 
     .brand-top { position: relative; z-index: 1; }
-    .brand-logo-wrap {
-      display: flex;
-      align-items: center;
-      gap: .85rem;
-      margin-bottom: 2.2rem;
-    }
+    .brand-logo-wrap { display: flex; align-items: center; gap: .8rem; margin-bottom: 2rem; }
     .brand-logo-img {
-      width: 46px; height: 46px;
+      width: 44px; height: 44px;
       object-fit: contain;
       border-radius: 12px;
-      background: rgba(255,255,255,.22);
+      background: rgba(255,255,255,.20);
       padding: 6px;
     }
     .brand-logo-name {
       font-family: 'Space Grotesk', sans-serif;
       font-weight: 700;
-      font-size: 1.3rem;
-      letter-spacing: .1em;
+      font-size: 1.25rem;
+      letter-spacing: .08em;
       color: #fff;
     }
-
     .brand-headline {
       font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.85rem;
+      font-size: 1.72rem;
       font-weight: 700;
       line-height: 1.25;
       color: #fff;
-      margin-bottom: .9rem;
+      margin-bottom: .85rem;
     }
-
-    .brand-sub {
-      font-size: .88rem;
-      color: rgba(255,255,255,.78);
-      line-height: 1.65;
-    }
-
-    .brand-features {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      flex-direction: column;
-      gap: .65rem;
-    }
-
-    .brand-feature {
-      display: flex;
-      align-items: center;
-      gap: .6rem;
-      font-size: .8rem;
-      color: rgba(255,255,255,.88);
-    }
-
+    .brand-sub { font-size: .85rem; color: rgba(255,255,255,.76); line-height: 1.65; }
+    .brand-features { position: relative; z-index: 1; display: flex; flex-direction: column; gap: .58rem; }
+    .brand-feature { display: flex; align-items: center; gap: .55rem; font-size: .79rem; color: rgba(255,255,255,.88); }
     .brand-feature-icon {
       width: 28px; height: 28px;
       border-radius: 8px;
-      background: rgba(255,255,255,.2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: .95rem;
-      flex-shrink: 0;
+      background: rgba(255,255,255,.18);
+      display: flex; align-items: center; justify-content: center;
+      font-size: .9rem; flex-shrink: 0;
     }
 
     /* ── Panel derecho: formulario ── */
     .login-form-panel {
       flex: 1;
       background: var(--surface);
-      padding: 2.8rem 2.6rem;
+      padding: 2.6rem 2.4rem;
       display: flex;
       flex-direction: column;
       justify-content: center;
       overflow-y: auto;
     }
 
-    .login-tabs {
-      display: flex;
-      gap: .4rem;
-      background: #f4f0fd;
-      border-radius: 12px;
-      padding: .28rem;
-      margin-bottom: 1.8rem;
+    /* ── Header compacto para móvil (visible sólo en pantallas pequeñas) ── */
+    .mobile-brand-header {
+      display: none;
+      align-items: center;
+      gap: .7rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .mobile-brand-logo {
+      width: 40px; height: 40px;
+      object-fit: contain;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent2), var(--accent3));
+      padding: 6px;
+      flex-shrink: 0;
+    }
+    .mobile-brand-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--text);
+      letter-spacing: .03em;
+      line-height: 1.2;
+    }
+    .mobile-brand-tag {
+      font-size: .63rem;
+      color: var(--muted);
+      font-weight: 600;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      margin-top: .08rem;
     }
 
+    /* ── Tabs ── */
+    .login-tabs {
+      display: flex;
+      gap: .35rem;
+      background: #f2eeff;
+      border-radius: 12px;
+      padding: .26rem;
+      margin-bottom: 1.7rem;
+    }
     .login-tab {
       flex: 1;
-      padding: .52rem .6rem;
+      padding: .5rem .55rem;
       border: none;
       border-radius: 9px;
       background: transparent;
       font-family: 'Space Grotesk', sans-serif;
-      font-size: .7rem;
+      font-size: .68rem;
       font-weight: 700;
       letter-spacing: .08em;
       text-transform: uppercase;
       color: var(--muted);
       cursor: pointer;
-      transition: background .25s, color .25s, box-shadow .25s;
+      transition: background .22s, color .22s, box-shadow .22s;
     }
-
+    .login-tab:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     .login-tab.active {
       background: #fff;
       color: var(--accent2);
-      box-shadow: 0 2px 10px rgba(124,58,237,.18);
+      box-shadow: 0 2px 10px rgba(124,58,237,.16);
     }
 
-    .form-view {
-      display: none;
-    }
+    .form-view { display: none; }
     .form-view.active {
       display: block;
-      animation: fadeSlide .35s cubic-bezier(.22,1,.36,1);
+      animation: fadeSlide .3s cubic-bezier(.22,1,.36,1);
     }
-
     @keyframes fadeSlide {
-      from { opacity: 0; transform: translateX(12px); }
+      from { opacity: 0; transform: translateX(10px); }
       to   { opacity: 1; transform: translateX(0); }
     }
 
     .form-title {
       font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.28rem;
+      font-size: 1.22rem;
       font-weight: 700;
       color: var(--text);
-      margin-bottom: .28rem;
+      margin-bottom: .24rem;
     }
+    .form-subtitle { font-size: .81rem; color: var(--muted); margin-bottom: 1.4rem; line-height: 1.55; }
 
-    .form-subtitle {
-      font-size: .82rem;
-      color: var(--muted);
-      margin-bottom: 1.5rem;
-      line-height: 1.5;
-    }
-
-    .auth-field { margin-bottom: 1rem; }
-
+    /* ── Campos del formulario ── */
+    .auth-field { margin-bottom: .95rem; }
     .auth-field label {
       display: block;
-      font-size: .68rem;
+      font-size: .65rem;
       font-weight: 700;
       letter-spacing: .07em;
       text-transform: uppercase;
       color: var(--muted);
       font-family: 'Space Grotesk', sans-serif;
-      margin-bottom: .3rem;
+      margin-bottom: .28rem;
     }
-
     .auth-field input {
       width: 100%;
-      padding: .72rem .9rem;
+      padding: .74rem .9rem;
       border-radius: 11px;
       border: 1.5px solid var(--border);
       background: #faf8ff;
@@ -322,47 +326,48 @@
       font-size: .88rem;
       font-family: 'Manrope', sans-serif;
       outline: none;
+      -webkit-appearance: none;
       transition: border-color .2s, box-shadow .2s, background .2s;
     }
-
+    .auth-field input::placeholder { color: rgba(111,100,136,.42); }
     .auth-field input:focus {
       border-color: var(--accent);
       background: #fff;
-      box-shadow: 0 0 0 4px rgba(124, 58, 237, .14);
+      box-shadow: 0 0 0 3.5px rgba(124,58,237,.12);
+    }
+    .auth-field input:focus-visible { outline: none; }
+    .auth-field input:not(:placeholder-shown):not(:focus):valid {
+      border-color: rgba(124,58,237,.46);
     }
 
-    .auth-field input:not(:placeholder-shown):valid {
-      border-color: rgba(124,58,237,.5);
-    }
-
-    .password-wrap {
-      position: relative;
-    }
-
-    .password-wrap input {
-      padding-right: 3rem;
-    }
-
+    /* ── Campo contraseña ── */
+    .password-wrap { position: relative; }
+    .password-wrap input { padding-right: 2.9rem; }
     .password-toggle {
       position: absolute;
-      top: 50%;
-      right: .55rem;
+      top: 50%; right: .45rem;
       transform: translateY(-50%);
-      border: none;
-      background: transparent;
-      color: var(--muted);
-      cursor: pointer;
-      font-size: 1.1rem;
-      line-height: 1;
-      padding: .2rem;
-      transition: color .2s;
+      width: 34px; height: 34px;
+      border: none; background: transparent;
+      color: var(--muted); cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center;
+      border-radius: 8px;
+      transition: color .2s, background .2s;
+      -webkit-tap-highlight-color: transparent;
     }
+    .password-toggle svg {
+      width: 17px; height: 17px;
+      stroke: currentColor; fill: none;
+      stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+      pointer-events: none; display: block;
+    }
+    .password-toggle:hover { color: var(--accent); background: rgba(124,58,237,.07); }
+    .password-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-    .password-toggle:hover { color: var(--accent); }
-
+    /* ── Botón principal ── */
     .btn-auth {
       width: 100%;
-      padding: .82rem;
+      padding: .84rem;
       margin-top: .3rem;
       border: none;
       border-radius: 12px;
@@ -370,130 +375,197 @@
       background: linear-gradient(135deg, var(--accent2) 0%, var(--accent) 55%, var(--accent3) 100%);
       font-family: 'Space Grotesk', sans-serif;
       font-weight: 700;
-      font-size: .8rem;
+      font-size: .79rem;
       letter-spacing: .1em;
       text-transform: uppercase;
       cursor: pointer;
       position: relative;
       overflow: hidden;
-      box-shadow: 0 10px 24px rgba(124, 58, 237, .34);
+      box-shadow: 0 8px 22px rgba(124,58,237,.32);
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .48rem;
       transition: transform .2s, box-shadow .2s, opacity .2s;
+      -webkit-tap-highlight-color: transparent;
     }
-
     .btn-auth::after {
       content: '';
-      position: absolute;
-      top: 0; left: -110%;
-      width: 55%;
-      height: 100%;
-      background: linear-gradient(100deg, transparent, rgba(255,255,255,.42), transparent);
+      position: absolute; top: 0; left: -110%;
+      width: 55%; height: 100%;
+      background: linear-gradient(100deg, transparent, rgba(255,255,255,.38), transparent);
       transform: skewX(-18deg);
-      transition: left .55s ease;
+      transition: left .52s ease;
       pointer-events: none;
     }
-
-    .btn-auth:hover { transform: translateY(-2px); box-shadow: 0 16px 36px rgba(124, 58, 237, .46); }
+    .btn-auth:hover { transform: translateY(-2px); box-shadow: 0 14px 32px rgba(124,58,237,.44); }
     .btn-auth:hover::after { left: 130%; }
     .btn-auth:active { transform: translateY(0); }
-    .btn-auth:disabled { opacity: .6; cursor: not-allowed; transform: none; box-shadow: none; }
+    .btn-auth:focus-visible { outline: 2px solid var(--accent3); outline-offset: 3px; }
+    .btn-auth:disabled { opacity: .55; cursor: not-allowed; transform: none; box-shadow: none; }
+    .btn-auth:disabled::after { display: none; }
+    .btn-text { pointer-events: none; }
 
+    /* Spinner de carga */
+    .btn-spinner {
+      display: none;
+      width: 15px; height: 15px;
+      border: 2px solid rgba(255,255,255,.35);
+      border-top-color: rgba(255,255,255,.95);
+      border-radius: 50%;
+      flex-shrink: 0;
+      animation: spin .7s linear infinite;
+    }
+    .btn-auth.loading .btn-spinner { display: block; }
+    .btn-auth.loading .btn-text { opacity: .85; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Botón de texto ── */
     .btn-text-auth {
       background: none;
       border: none;
       color: var(--accent2);
-      font-size: .78rem;
+      font-size: .77rem;
       font-family: 'Manrope', sans-serif;
       cursor: pointer;
       text-decoration: underline;
-      text-decoration-color: rgba(124,58,237,.35);
-      padding: .1rem 0;
+      text-decoration-color: rgba(124,58,237,.32);
+      padding: .15rem 0;
+      min-height: 32px;
       transition: color .2s, text-decoration-color .2s;
       display: block;
-      margin: .55rem auto 0;
+      margin: .5rem auto 0;
       text-align: center;
     }
+    .btn-text-auth:hover { color: var(--accent); text-decoration-color: var(--accent); }
+    .btn-text-auth:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+    .btn-text-auth:disabled { opacity: .45; cursor: not-allowed; }
 
-    .btn-text-auth:hover {
-      color: var(--accent);
-      text-decoration-color: var(--accent);
-    }
+    /* ── Divisor ── */
+    .auth-divider { border: none; border-top: 1px solid var(--border); margin: .9rem 0; }
 
-    .btn-text-auth:disabled {
-      opacity: .45;
-      cursor: not-allowed;
-    }
-
-    .auth-divider {
-      border: none;
-      border-top: 1px solid var(--border);
-      margin: 1rem 0;
-    }
-
+    /* ── Mensajes de error / éxito ── */
     .auth-error {
-      margin-top: .7rem;
-      font-size: .78rem;
+      margin-top: .6rem;
+      font-size: .77rem;
       color: var(--danger);
-      min-height: 1.1rem;
-      line-height: 1.4;
+      min-height: 1rem;
+      line-height: 1.45;
       text-align: center;
+      transition: all .2s;
+    }
+    .auth-error:not(:empty) {
+      padding: .5rem .8rem;
+      border-radius: 9px;
+      background: rgba(220, 38, 38, .06);
+      border: 1px solid rgba(220, 38, 38, .18);
+    }
+    .auth-error.success-msg { color: var(--success); }
+    .auth-error.success-msg:not(:empty) {
+      background: rgba(22, 163, 74, .06);
+      border: 1px solid rgba(22, 163, 74, .18);
     }
 
-    .auth-error.success-msg {
-      color: var(--success);
-    }
+    /* ── Barra de fortaleza ── */
+    .strength-bar-wrap { height: 3px; background: #e8e0f7; border-radius: 4px; margin-top: .38rem; overflow: hidden; }
+    .strength-bar { height: 100%; width: 0; border-radius: 4px; transition: width .3s ease, background .3s ease; }
+    .input-hint { font-size: .68rem; color: var(--muted); margin-top: .22rem; }
 
-    .strength-bar-wrap {
-      height: 4px;
-      background: #e9e2f9;
-      border-radius: 4px;
-      margin-top: .4rem;
-      overflow: hidden;
-    }
-
-    .strength-bar {
-      height: 100%;
-      width: 0;
-      border-radius: 4px;
-      transition: width .35s ease, background .35s ease;
-    }
-
-    .input-hint {
-      font-size: .7rem;
-      color: var(--muted);
-      margin-top: .28rem;
-    }
-
+    /* ── Volver a la tienda ── */
     .back-to-store {
       display: inline-flex;
       align-items: center;
-      gap: .35rem;
-      font-size: .72rem;
+      gap: .3rem;
+      font-size: .69rem;
       color: var(--muted);
       text-decoration: none;
       font-family: 'Space Grotesk', sans-serif;
       font-weight: 600;
       letter-spacing: .06em;
       text-transform: uppercase;
-      margin-top: 1.4rem;
+      margin-top: 1.3rem;
+      min-height: 32px;
       transition: color .2s;
     }
-
     .back-to-store:hover { color: var(--accent2); }
+    .back-to-store:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+    .back-to-store svg { width: 13px; height: 13px; flex-shrink: 0; }
 
+    /* ── Shake de error ── */
     @keyframes shake {
       0%, 100% { transform: translateX(0); }
-      20%, 60%  { transform: translateX(-6px); }
-      40%, 80%  { transform: translateX(6px); }
+      20%, 60%  { transform: translateX(-5px); }
+      40%, 80%  { transform: translateX(5px); }
+    }
+    .shake { animation: shake .36s ease; }
+
+    /* ── RESPONSIVE ─────────────────────────────────────────────── */
+
+    /* Tablet grande: reducir ancho del wrapper */
+    @media (max-width: 860px) {
+      .login-wrapper { width: min(720px, 100%); min-height: 520px; }
+      .login-brand { flex-basis: 40%; padding: 2.4rem 1.8rem; }
+      .brand-headline { font-size: 1.55rem; }
+      .brand-sub { font-size: .83rem; }
     }
 
-    .shake { animation: shake .38s ease; }
-
+    /* Tablet / móvil grande: ocultar panel de marca, mostrar header compacto */
     @media (max-width: 680px) {
+      body { align-items: flex-start; padding-top: 2rem; padding-bottom: 2rem; }
       .login-brand { display: none; }
-      .login-wrapper { border-radius: 20px; min-height: unset; }
-      .login-form-panel { padding: 2rem 1.5rem; }
+      .mobile-brand-header { display: flex; }
+      .login-wrapper {
+        border-radius: 20px;
+        min-height: unset;
+        width: min(440px, 100%);
+        margin: 0 auto;
+      }
+      .login-form-panel { padding: 2rem 1.8rem; }
     }
 
+    /* Móvil mediano (414px y menores) */
+    @media (max-width: 440px) {
+      body { padding: .75rem; padding-top: 1.5rem; padding-bottom: 1.5rem; }
+      .login-wrapper { border-radius: 18px; width: 100%; }
+      .login-form-panel { padding: 1.75rem 1.5rem; }
+    }
+
+    /* Móvil estándar (375px – 390px) */
+    @media (max-width: 400px) {
+      .login-form-panel { padding: 1.5rem 1.25rem; }
+      .form-title { font-size: 1.15rem; }
+      .login-tabs { margin-bottom: 1.35rem; }
+      .auth-field input { padding: .7rem .85rem; font-size: .86rem; }
+      .btn-auth { min-height: 46px; }
+    }
+
+    /* Móvil pequeño (360px) */
+    @media (max-width: 370px) {
+      body { padding: .6rem; padding-top: 1.25rem; }
+      .login-form-panel { padding: 1.35rem 1.1rem; }
+      .login-tabs { gap: .22rem; }
+      .login-tab { font-size: .63rem; padding: .46rem .4rem; }
+      .form-title { font-size: 1.1rem; }
+      .auth-field { margin-bottom: .85rem; }
+      .back-to-store { font-size: .64rem; }
+    }
+
+    /* Móvil muy pequeño (320px) */
+    @media (max-width: 330px) {
+      .login-form-panel { padding: 1.2rem .95rem; }
+      .auth-field input { padding: .65rem .78rem; }
+      .login-tab { font-size: .6rem; padding: .44rem .35rem; }
+    }
+
+    /* Pantalla baja (landscape phones) */
+    @media (max-height: 600px) {
+      body { justify-content: flex-start; padding-top: 1rem; }
+      .login-wrapper { min-height: unset; }
+      .brand-features { display: none; }
+    }
+
+    /* Reducir movimiento */
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
         animation-duration: .001ms !important;
@@ -552,6 +624,16 @@
 
   <!-- Panel derecho: formulario -->
   <div class="login-form-panel">
+
+    <!-- Header compacto para móvil -->
+    <div class="mobile-brand-header">
+      <img class="mobile-brand-logo" src="img/mi logo.svg" alt="" id="mobile-logo-img" />
+      <div>
+        <div class="mobile-brand-name" id="mobile-brand-name">Mi empresa</div>
+        <div class="mobile-brand-tag">Panel de administración</div>
+      </div>
+    </div>
+
     <!-- Tabs -->
     <div class="login-tabs" id="login-tabs">
       <button class="login-tab active" id="tab-login" type="button">Iniciar sesión</button>
@@ -571,15 +653,23 @@
         <label for="l-password">Contraseña</label>
         <div class="password-wrap">
           <input type="password" id="l-password" placeholder="••••••" autocomplete="current-password" />
-          <button type="button" class="password-toggle" data-target="l-password" aria-label="Mostrar contraseña">👁</button>
+          <button type="button" class="password-toggle" data-target="l-password" aria-label="Mostrar contraseña">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
         </div>
       </div>
 
-      <button class="btn-auth" id="btn-login" type="button">Iniciar sesión</button>
+      <button class="btn-auth" id="btn-login" type="button">
+        <span class="btn-spinner" aria-hidden="true"></span>
+        <span class="btn-text">Iniciar sesión</span>
+      </button>
       <button class="btn-text-auth" id="btn-forgot" type="button">¿Olvidaste tu contraseña?</button>
 
-      <p class="auth-error" id="login-error"></p>
-      <a href="index.html" class="back-to-store">← Ver tienda</a>
+      <p class="auth-error" id="login-error" role="alert" aria-live="assertive"></p>
+      <a href="index.html" class="back-to-store">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        Ver tienda
+      </a>
     </div>
 
     <!-- Vista: Registro -->
@@ -599,15 +689,23 @@
         <label for="r-password">Contraseña</label>
         <div class="password-wrap">
           <input type="password" id="r-password" placeholder="Mínimo 6 caracteres" minlength="6" autocomplete="new-password" />
-          <button type="button" class="password-toggle" data-target="r-password" aria-label="Mostrar contraseña">👁</button>
+          <button type="button" class="password-toggle" data-target="r-password" aria-label="Mostrar contraseña">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
         </div>
         <div class="strength-bar-wrap"><div class="strength-bar" id="strength-bar"></div></div>
         <div class="input-hint" id="strength-hint"></div>
       </div>
 
-      <button class="btn-auth" id="btn-register" type="button">Crear cuenta</button>
-      <p class="auth-error" id="register-error"></p>
-      <a href="index.html" class="back-to-store">← Ver tienda</a>
+      <button class="btn-auth" id="btn-register" type="button">
+        <span class="btn-spinner" aria-hidden="true"></span>
+        <span class="btn-text">Crear cuenta</span>
+      </button>
+      <p class="auth-error" id="register-error" role="alert" aria-live="assertive"></p>
+      <a href="index.html" class="back-to-store">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        Ver tienda
+      </a>
     </div>
   </div>
 </div>
@@ -700,14 +798,16 @@
     hint.style.color = lv.bg;
   });
 
-  // ── Mostrar/ocultar contraseña ──
+  // ── Mostrar/ocultar contraseña con iconos SVG ──
+  const _eyeOpenSvg = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+  const _eyeOffSvg  = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
   document.querySelectorAll('.password-toggle').forEach(btn => {
     btn.addEventListener('click', () => {
       const input = document.getElementById(btn.dataset.target);
       if (!input) return;
       const show = input.type === 'password';
       input.type = show ? 'text' : 'password';
-      btn.textContent = show ? '🙈' : '👁';
+      btn.innerHTML = show ? _eyeOffSvg : _eyeOpenSvg;
       btn.setAttribute('aria-label', show ? 'Ocultar contraseña' : 'Mostrar contraseña');
     });
   });
@@ -798,10 +898,8 @@
       if (snap.exists && snap.data().created) {
         _adminAccountCreated = true;
         _adminAccountMeta    = snap.data();
-        const username = snap.data().username || '';
-        if (username) {
-          document.getElementById('login-hint-msg').textContent = `Hola, ${username}. Ingresa tu contraseña.`;
-        }
+        // Mensaje neutro: no revelar el nombre del usuario por privacidad
+        document.getElementById('login-hint-msg').textContent = 'Ingresa tu contraseña para continuar.';
         // Deshabilitar tab de registro visualmente
         const regTab = document.getElementById('tab-register');
         regTab.disabled = true;
@@ -821,13 +919,13 @@
     const btn = document.getElementById('btn-login');
     document.getElementById('login-error').textContent = '';
     if (!username || !password) { showLoginError('Ingresa usuario y contraseña.'); return; }
-    btn.disabled = true; btn.textContent = 'Ingresando…';
+    btn.disabled = true; btn.classList.add('loading'); btn.querySelector('.btn-text').textContent = 'Ingresando…';
     try {
       const email = await resolveLoginEmail(username);
       await _auth.signInWithEmailAndPassword(email, password);
       // onAuthStateChanged redirige
     } catch (e) {
-      btn.disabled = false; btn.textContent = 'Iniciar sesión';
+      btn.disabled = false; btn.classList.remove('loading'); btn.querySelector('.btn-text').textContent = 'Iniciar sesión';
       showLoginError(authMsg(e.code || e.message));
     }
   });
@@ -844,7 +942,7 @@
     if (!username) { showRegisterError('El usuario es requerido.'); return; }
     if (!email)    { showRegisterError('El correo es requerido.'); return; }
     if (password.length < 6) { showRegisterError('La contraseña debe tener al menos 6 caracteres.'); return; }
-    btn.disabled = true; btn.textContent = 'Creando cuenta…';
+    btn.disabled = true; btn.classList.add('loading'); btn.querySelector('.btn-text').textContent = 'Creando cuenta…';
     try {
       const existsSnap = await CONFIG_DOC.get();
       if (existsSnap.exists && existsSnap.data().created) {
@@ -864,7 +962,7 @@
       _adminAccountMeta = { created: true, username, usernameKey: normalizeUsername(username), recoveryEmail: email };
       // onAuthStateChanged redirige
     } catch (e) {
-      btn.disabled = false; btn.textContent = 'Crear cuenta';
+      btn.disabled = false; btn.classList.remove('loading'); btn.querySelector('.btn-text').textContent = 'Crear cuenta';
       if (e.code === 'auth/email-already-in-use' && !_adminAccountCreated) {
         showRegisterError('Este correo ya tiene una cuenta de acceso. Ve a "Iniciar sesión" e ingresa tu correo y contraseña.');
         switchTab('login');
@@ -921,9 +1019,13 @@
       if (d.companyName) {
         document.getElementById('brand-name').textContent = d.companyName;
         document.title = `Acceso Admin – ${d.companyName}`;
+        const mobileNameEl = document.getElementById('mobile-brand-name');
+        if (mobileNameEl) mobileNameEl.textContent = d.companyName;
       }
       if (d.logo && !d.logoAssetId) {
         document.getElementById('brand-logo-img').src = d.logo;
+        const mobileLogoEl = document.getElementById('mobile-logo-img');
+        if (mobileLogoEl) mobileLogoEl.src = d.logo;
       }
     } catch (_e) {}
   })();
