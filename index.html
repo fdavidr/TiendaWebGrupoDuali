@@ -2981,7 +2981,8 @@
 
       /* ── Nuevos botones del hero fullscreen ── */
       document.getElementById('hero-catalog-btn').addEventListener('click', function () {
-        openModal('modal-catalogo');
+        var target = document.getElementById('productos');
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
       document.getElementById('hero-scroll-down').addEventListener('click', function () {
         var target = document.getElementById('productos');
