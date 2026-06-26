@@ -1536,6 +1536,9 @@
                   <span class="settings-collapse-chevron">▼</span>
                 </summary>
                 <div class="settings-collapse-body">
+                  <div class="visibility-row">
+                    <label class="switch-label"><input type="checkbox" id="vis-testimonials" checked /> Mostrar este bloque en la tienda</label>
+                  </div>
                   <p class="limit-note">Puedes mostrar hasta 3 recomendaciones.</p>
                   <div class="field"><label for="info-client-1-quote">Testimonio 1</label><textarea id="info-client-1-quote" placeholder="Comentario del cliente..."></textarea></div>
                   <div class="field"><label for="info-client-1-name">Nombre 1</label><input type="text" id="info-client-1-name" maxlength="60" placeholder="Ej: M. Vargas" /></div>
@@ -1552,6 +1555,9 @@
                   <span class="settings-collapse-chevron">▼</span>
                 </summary>
                 <div class="settings-collapse-body">
+                  <div class="visibility-row">
+                    <label class="switch-label"><input type="checkbox" id="vis-faq" checked /> Mostrar este bloque en la tienda</label>
+                  </div>
                   <p class="limit-note">Puedes mostrar hasta 5 preguntas y respuestas.</p>
                   <div class="field"><label for="info-faq-1-q">Pregunta 1</label><input type="text" id="info-faq-1-q" maxlength="120" /></div>
                   <div class="field"><label for="info-faq-1-a">Respuesta 1</label><textarea id="info-faq-1-a"></textarea></div>
@@ -2202,6 +2208,8 @@
       catalog: src.catalog !== false,
       confidence: src.confidence !== false,
       buy: src.buy !== false,
+      testimonials: src.testimonials !== false,
+      faq: src.faq !== false,
       info: src.info !== false
     };
   }
@@ -2211,6 +2219,8 @@
     document.getElementById('vis-catalog').checked = visibility.catalog;
     document.getElementById('vis-confidence').checked = visibility.confidence;
     document.getElementById('vis-buy').checked = visibility.buy;
+    document.getElementById('vis-testimonials').checked = visibility.testimonials;
+    document.getElementById('vis-faq').checked = visibility.faq;
     document.getElementById('vis-info').checked = visibility.info;
   }
 
@@ -2220,6 +2230,8 @@
       catalog: document.getElementById('vis-catalog').checked,
       confidence: document.getElementById('vis-confidence').checked,
       buy: document.getElementById('vis-buy').checked,
+      testimonials: document.getElementById('vis-testimonials').checked,
+      faq: document.getElementById('vis-faq').checked,
       info: document.getElementById('vis-info').checked
     });
   }
@@ -2664,7 +2676,7 @@
 
   function renderCategoryConfig() {
     const container = document.getElementById('cfg-categories-list');
-    const cats = getCategoryUniverse();
+    const cats = _customCategories;
     if (!cats.length) {
       container.innerHTML = '<p class="cfg-empty">No hay categorías configuradas.</p>';
       return;
