@@ -251,6 +251,9 @@
     .btn-link.primary:hover { color: var(--accent2); background: #fff; box-shadow: 0 16px 32px rgba(76, 29, 149, 0.38); }
     .btn-link.primary:hover::after { left: 130%; }
 
+    /* Icono visible solo en móvil – oculto por defecto en escritorio */
+    .btn-mobile-icon { display: none; }
+
     /* ── Encabezado: bloque izquierdo + hamburguesa ── */
     .header-left { display: flex; align-items: center; gap: .9rem; position: relative; z-index: 1; }
 
@@ -1148,7 +1151,7 @@
 
     @media (max-width: 930px) {
       /* Menú lateral se convierte en off-canvas (drawer) */
-      .hamburger-btn { display: inline-flex; }
+      .hamburger-btn { display: inline-flex; flex-shrink: 0; }
       .admin-shell { grid-template-columns: 1fr; }
       .drawer-close { display: block; }
       .sidebar {
@@ -1167,6 +1170,18 @@
       body.drawer-open .sidebar { transform: translateX(0); }
       .side-menu { display: flex; flex-direction: column; gap: .5rem; }
       .side-link { text-align: left; padding: .74rem .85rem; letter-spacing: .08em; }
+
+      /* ── Cambio 1: hamburguesa al extremo derecho ──
+         El botón es ahora último hijo directo de <header>.
+         Con justify-content: space-between, se ubica automáticamente
+         en el extremo derecho. header-left se expande para
+         ocupar el espacio disponible entre logo y botones. */
+      .header-left { flex: 1; }
+
+      /* ── Cambio 2: iconos en lugar de texto en móvil ── */
+      .btn-label { display: none; }
+      .btn-mobile-icon { display: inline; }
+      .save-pill .save-label { display: none; }
     }
 
     @media (max-width: 720px) {
@@ -1231,9 +1246,6 @@
   <!-- ── HEADER ── -->
   <header>
     <div class="header-left">
-      <button id="btn-hamburger" class="hamburger-btn" type="button" aria-label="Abrir menú de secciones" aria-expanded="false" aria-controls="admin-drawer">
-        <span></span><span></span><span></span>
-      </button>
       <a href="index.html" class="header-logo">
         <img src="img/mi logo.svg" alt="Mi empresa" />
         <span>Mi empresa</span>
@@ -1249,11 +1261,17 @@
         </span>
         <span class="save-label">Guardar cambios</span>
       </button>
-      <a href="index.html" class="btn-link primary">
-        🛍 <span>Ver Tienda</span>
+      <a href="index.html" class="btn-link primary" aria-label="Ver Tienda">
+        🛍 <span class="btn-label">Ver Tienda</span>
       </a>
-      <button id="btn-logout" class="btn-link" style="cursor:pointer;display:none"><span>Cerrar sesión</span></button>
+      <button id="btn-logout" class="btn-link" style="cursor:pointer;display:none" aria-label="Cerrar sesión">
+        <span class="btn-mobile-icon" aria-hidden="true">🚪</span>
+        <span class="btn-label">Cerrar sesión</span>
+      </button>
     </div>
+    <button id="btn-hamburger" class="hamburger-btn" type="button" aria-label="Abrir menú de secciones" aria-expanded="false" aria-controls="admin-drawer">
+      <span></span><span></span><span></span>
+    </button>
   </header>
 
   <!-- Backdrop del menú off-canvas -->
