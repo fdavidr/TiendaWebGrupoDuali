@@ -282,9 +282,8 @@
       background: #fff;
       transition: transform .3s ease, opacity .2s ease;
     }
-    body.drawer-open .hamburger-btn span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
-    body.drawer-open .hamburger-btn span:nth-child(2) { opacity: 0; }
-    body.drawer-open .hamburger-btn span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+    /* El menú se cierra con el botón único «×» del panel; la hamburguesa
+       no se transforma en X para evitar que aparezca una segunda X. */
 
     /* ── Botón único "Guardar cambios" (sticky header) ── */
     .save-pill {
@@ -491,6 +490,8 @@
     }
 
     .side-menu { display: flex; flex-direction: column; gap: .45rem; position: relative; z-index: 1; }
+    /* Pie del menú móvil: oculto en escritorio, visible solo dentro del drawer */
+    .drawer-footer { display: none; }
     .side-link {
       width: 100%;
       text-align: left;
@@ -1157,17 +1158,41 @@
         position: fixed;
         inset: 0;
         width: 100vw;
+        display: flex;
+        flex-direction: column;
         border-radius: 0;
         z-index: 199;
         overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
         transform: translateX(100%);
         transition: transform .32s cubic-bezier(.4, 0, .2, 1);
         animation: none;
         padding-top: 3.3rem;
       }
       body.drawer-open .sidebar { transform: translateX(0); }
+      /* Una sola X: al abrir el menú se oculta la hamburguesa del header */
+      body.drawer-open .hamburger-btn { display: none; }
       .side-menu { display: flex; flex-direction: column; gap: .5rem; }
-      .side-link { text-align: left; padding: .74rem .85rem; letter-spacing: .08em; }
+      .side-link { text-align: left; padding: .9rem 1rem; letter-spacing: .08em; font-size: .72rem; }
+
+      /* ── Acciones secundarias reubicadas al pie del menú móvil ── */
+      .drawer-footer {
+        display: flex;
+        flex-direction: column;
+        gap: .55rem;
+        margin-top: auto;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(255,255,255,.22);
+        position: relative;
+        z-index: 1;
+      }
+      .drawer-footer .btn-link {
+        width: 100%;
+        justify-content: center;
+        padding: .85rem 1rem;
+        font-size: .68rem;
+      }
+      .drawer-footer .btn-label { display: inline; }
 
       /* ── Cambio 1: hamburguesa al extremo derecho ──
          El botón es ahora último hijo directo de <header>.
@@ -1224,9 +1249,8 @@
 
     @media (max-width: 340px) {
       .header-logo span { max-width: 86px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-      .btn-link span, .save-pill .save-label { font-size: .56rem; }
+      .save-pill .save-label { font-size: .56rem; }
       .layout { padding: .65rem; }
-      .sidebar { width: 240px; }
     }
   </style>
 </head>
@@ -1259,7 +1283,7 @@
         </span>
         <span class="save-label">Guardar cambios</span>
       </button>
-      <a href="index.html" class="btn-link primary" aria-label="Ver Tienda">
+      <a href="index.html" id="btn-view-store" class="btn-link primary" aria-label="Ver Tienda">
         🛍 <span class="btn-label">Ver Tienda</span>
       </a>
       <button id="btn-logout" class="btn-link" style="cursor:pointer;display:none" aria-label="Cerrar sesión">
@@ -1289,6 +1313,8 @@
           <button class="side-link" data-section="info">Informaciones</button>
           <button class="side-link" data-section="settings">Ajustes</button>
         </div>
+        <!-- Pie del menú móvil: aquí se reubican «Ver Tienda» y «Cerrar sesión» -->
+        <div class="drawer-footer" id="drawer-footer"></div>
       </aside>
 
       <div class="content-sections">
@@ -3450,6 +3476,30 @@
     activateSection(btn.dataset.section);
     closeDrawer();
   });
+
+  /* ── Reubicar acciones secundarias (Ver Tienda / Cerrar sesión) ──
+     En móvil se mueven al pie del menú; en escritorio vuelven al header.
+     Se mueve el mismo nodo, conservando sus listeners y funcionalidad. */
+  (function relocateSecondaryActions() {
+    const mq           = window.matchMedia('(max-width: 930px)');
+    const headerLinks  = document.querySelector('.header-links');
+    const drawerFooter = document.getElementById('drawer-footer');
+    const viewStore    = document.getElementById('btn-view-store');
+    const logoutBtn    = document.getElementById('btn-logout');
+    if (!headerLinks || !drawerFooter || !viewStore || !logoutBtn) return;
+    function place(e) {
+      if (e.matches) {
+        drawerFooter.appendChild(viewStore);
+        drawerFooter.appendChild(logoutBtn);
+      } else {
+        headerLinks.appendChild(viewStore);
+        headerLinks.appendChild(logoutBtn);
+      }
+    }
+    place(mq);
+    if (mq.addEventListener) mq.addEventListener('change', place);
+    else if (mq.addListener) mq.addListener(place);
+  })();
 
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
