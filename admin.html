@@ -1231,6 +1231,15 @@
       .form-actions { flex-wrap: wrap; }
     }
 
+    @media (max-width: 480px) {
+      /* ── upload-row: apilar input de archivo y botón en columna única ── */
+      .upload-row { grid-template-columns: 1fr; }
+      /* ── product-row: envolver en móvil muy estrecho ── */
+      .product-row { flex-wrap: wrap; gap: .4rem; padding: .55rem .65rem; }
+      .row-actions { order: 2; margin-left: auto; }
+      .row-price   { order: 3; width: 100%; padding-left: calc(44px + .4rem); white-space: normal; }
+    }
+
     @media (max-width: 414px) {
       .layout { padding: .8rem; }
       .panel { padding: .85rem; border-radius: 14px; }
