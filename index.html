@@ -2105,100 +2105,6 @@
       .branch-actions { flex-direction: column; }
       .branch-btn { width: 100%; justify-content: center; }
     }
-
-    /* ── Menú hamburguesa móvil ── */
-    .mobile-nav-btn {
-      display: none;
-      flex-direction: column;
-      justify-content: center;
-      gap: 5px;
-      width: 38px; height: 38px;
-      padding: 0 8px;
-      border-radius: 10px;
-      border: 1px solid var(--line);
-      background: transparent;
-      color: var(--text);
-      cursor: pointer;
-      flex-shrink: 0;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .mobile-nav-btn span {
-      display: block;
-      height: 2px;
-      background: currentColor;
-      border-radius: 2px;
-    }
-    header:not(.header--scrolled) .mobile-nav-btn {
-      color: rgba(255,255,255,.9);
-      border-color: rgba(255,255,255,.3);
-    }
-    .mobile-nav-panel {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 0.9rem;
-      position: fixed;
-      inset: 0;
-      z-index: 90;
-      background: var(--panel);
-      padding: 1.5rem;
-      transform: translateX(100%);
-      transition: transform .32s cubic-bezier(.4,0,.2,1);
-    }
-    .mobile-nav-panel.nav-open {
-      transform: translateX(0);
-    }
-    .mobile-nav-close {
-      position: absolute;
-      top: 1rem; right: 1rem;
-      width: 36px; height: 36px;
-      border-radius: 50%;
-      border: 1px solid var(--line);
-      background: transparent;
-      font-size: 1.3rem;
-      line-height: 1;
-      cursor: pointer;
-      color: var(--text);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .mobile-nav-link {
-      width: 100%;
-      max-width: 340px;
-      padding: 0.9rem 1.5rem;
-      border: 1px solid var(--line);
-      background: transparent;
-      color: var(--text);
-      border-radius: 12px;
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 0.95rem;
-      font-weight: 600;
-      text-align: center;
-      text-decoration: none;
-      cursor: pointer;
-      display: block;
-      transition: background .18s, border-color .18s;
-    }
-    .mobile-nav-link:hover, .mobile-nav-link:focus-visible {
-      background: rgba(0,0,0,.05);
-      border-color: var(--line-strong);
-    }
-    .mobile-nav-backdrop {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 89;
-      background: rgba(0,0,0,.45);
-    }
-    .mobile-nav-backdrop.nav-open { display: block; }
-    @media (max-width: 720px) {
-      .mobile-nav-btn { display: flex; }
-    }
-    @media (min-width: 721px) {
-      .mobile-nav-panel, .mobile-nav-backdrop { display: none !important; }
-    }
   </style>
 </head>
 <body>
@@ -2215,9 +2121,6 @@
         <button id="header-btn-catalogo" class="chip-btn" type="button">Catalogo</button>
         <button class="chip-btn" id="header-link-confianza" type="button">Confianza</button>
         <a class="chip-btn" id="header-link-comprar" href="#comprar">Como comprar</a>
-        <button id="mobile-nav-btn" class="mobile-nav-btn" type="button" aria-label="Abrir menú" aria-expanded="false">
-          <span></span><span></span><span></span>
-        </button>
         <button class="cart-btn" id="cart-btn" aria-label="Ver carrito">
           <svg viewBox="0 0 24 24"><path d="M7 18a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM1 2h2l.4 2M5 13h14l2-8H5.4M5 13L3.4 4H1M5 13l-1.4 6h15"/></svg>
           Carrito
@@ -2226,16 +2129,6 @@
       </nav>
     </div>
   </header>
-
-  <!-- ── Menú móvil de navegación ── -->
-  <div class="mobile-nav-panel" id="mobile-nav-panel" aria-hidden="true">
-    <button class="mobile-nav-close" id="mobile-nav-close" type="button" aria-label="Cerrar menú">&#x2715;</button>
-    <button class="mobile-nav-link" id="mobile-btn-sucursales" type="button">Sucursales</button>
-    <button class="mobile-nav-link" id="mobile-btn-catalogo" type="button">Catalogo</button>
-    <button class="mobile-nav-link" id="mobile-btn-confianza" type="button">Confianza</button>
-    <a class="mobile-nav-link" href="#comprar" id="mobile-link-comprar">Como comprar</a>
-  </div>
-  <div class="mobile-nav-backdrop" id="mobile-nav-backdrop" aria-hidden="true"></div>
 
   <main>
     <!-- ═══════════════════════════════════════════════════════════
@@ -3753,46 +3646,6 @@
         window.open(url, '_blank', 'noopener,noreferrer');
       });
 
-      /* ── Menú hamburguesa móvil ── */
-      var _closeMobileNav = function() {};
-      (function() {
-        var panel    = document.getElementById('mobile-nav-panel');
-        var backdrop = document.getElementById('mobile-nav-backdrop');
-        var mBtn     = document.getElementById('mobile-nav-btn');
-        var mClose   = document.getElementById('mobile-nav-close');
-        if (!panel || !mBtn) return;
-        function openNav() {
-          panel.classList.add('nav-open');
-          backdrop.classList.add('nav-open');
-          mBtn.setAttribute('aria-expanded', 'true');
-          panel.setAttribute('aria-hidden', 'false');
-          backdrop.setAttribute('aria-hidden', 'false');
-        }
-        function closeNav() {
-          panel.classList.remove('nav-open');
-          backdrop.classList.remove('nav-open');
-          mBtn.setAttribute('aria-expanded', 'false');
-          panel.setAttribute('aria-hidden', 'true');
-          backdrop.setAttribute('aria-hidden', 'true');
-        }
-        _closeMobileNav = closeNav;
-        mBtn.addEventListener('click', function() {
-          if (panel.classList.contains('nav-open')) closeNav(); else openNav();
-        });
-        mClose.addEventListener('click', closeNav);
-        backdrop.addEventListener('click', closeNav);
-        document.getElementById('mobile-btn-sucursales').addEventListener('click', function() {
-          closeNav(); openModal('modal-sucursales');
-        });
-        document.getElementById('mobile-btn-catalogo').addEventListener('click', function() {
-          closeNav(); openModal('modal-catalogo');
-        });
-        document.getElementById('mobile-btn-confianza').addEventListener('click', function() {
-          closeNav(); openModal('modal-confianza');
-        });
-        document.getElementById('mobile-link-comprar').addEventListener('click', closeNav);
-      })();
-
       document.addEventListener('keydown', e => {
         if (e.key === 'Escape') {
           closeCart();
@@ -3800,7 +3653,6 @@
           closeModal('modal-sucursales');
           _closeCatalog();
           closeModal('modal-confianza');
-          _closeMobileNav();
         }
       });
     }
