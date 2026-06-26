@@ -114,7 +114,7 @@
     /* ── Animación de entrada para el panel principal ── */
     @keyframes adminFadeIn {
       from { opacity: 0; transform: translateY(16px); }
-      to   { opacity: 1; transform: translateY(0); }
+      to   { opacity: 1; transform: none; }
     }
     .admin-shell { animation: adminFadeIn .55s cubic-bezier(.22,1,.36,1) both; }
     .sidebar     { animation: adminFadeIn .55s cubic-bezier(.22,1,.36,1) .08s both; }
@@ -1172,6 +1172,8 @@
       body.drawer-open .sidebar { transform: translateX(0); }
       /* Una sola X: al abrir el menú se oculta la hamburguesa del header */
       body.drawer-open .hamburger-btn { display: none; }
+      /* Evitar que la animación del admin-shell cree un containing block para el sidebar fijo */
+      .admin-shell { animation: none; }
       .side-menu { display: flex; flex-direction: column; gap: .5rem; }
       .side-link { text-align: left; padding: .9rem 1rem; letter-spacing: .08em; font-size: .72rem; }
 
