@@ -49,6 +49,7 @@
       --shadow-lg: 0 32px 90px rgba(76, 29, 149, 0.28);
     }
 
+    html { overflow-x: hidden; }
     body {
       min-height: 100vh;
       font-family: 'Plus Jakarta Sans', sans-serif;
@@ -1152,7 +1153,7 @@
     @media (max-width: 930px) {
       /* Menú lateral se convierte en off-canvas (drawer) */
       .hamburger-btn { display: inline-flex; flex-shrink: 0; }
-      .admin-shell { grid-template-columns: 1fr; }
+      .admin-shell { grid-template-columns: minmax(0, 1fr); }
       .drawer-close { display: block; }
       .sidebar {
         position: fixed;
