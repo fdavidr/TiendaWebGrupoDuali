@@ -3475,6 +3475,8 @@
     if (!btn) return;
     activateSection(btn.dataset.section);
     closeDrawer();
+    /* Llevar la vista al inicio de la sección seleccionada en móvil */
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 
   /* ── Reubicar acciones secundarias (Ver Tienda / Cerrar sesión) ──
