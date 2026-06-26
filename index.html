@@ -144,6 +144,7 @@
     html[data-hide~="catalog"] #footer-btn-catalogo,
     html[data-hide~="catalog"] #modal-catalogo,
     html[data-hide~="confidence"] #header-link-confianza,
+    html[data-hide~="confidence"] #about-summary,
     html[data-hide~="confidence"] #confianza,
     html[data-hide~="buy"] #header-link-comprar,
     html[data-hide~="buy"] #comprar,
@@ -902,9 +903,10 @@
 
     .info-social-icons {
       margin-top: 0.8rem;
+      margin-bottom: 5rem;
       display: flex;
       gap: 0.55rem;
-      justify-content: flex-end;
+      justify-content: center;
       align-items: center;
       flex-wrap: wrap;
     }
@@ -2083,6 +2085,8 @@
     .cf-card-icon svg { width: 18px; height: 18px; fill: currentColor; }
     .cf-card-title { font-family: 'Sora', sans-serif; font-size: 0.83rem; font-weight: 800; color: var(--text); margin-bottom: 0.2rem; }
     .cf-card-text { font-size: 0.79rem; color: var(--muted); line-height: 1.55; }
+    .cf-block-text { font-size: 0.87rem; color: var(--muted); line-height: 1.65; white-space: pre-line; margin: 0; }
+    .cf-block[hidden] { display: none; }
 
     /* ── Responsive modales premium ── */
     @media (max-width: 768px) {
@@ -2278,6 +2282,15 @@
         <strong>Listo para cotizar? Tu pedido puede quedar confirmado hoy mismo.</strong>
         <button id="cta-open-cart" type="button" class="btn-outline" style="background:#fff;color:var(--brand-dark);border-color:transparent;">Abrir carrito ahora</button>
       </div>
+
+      <!-- Resumen Confianza / Nosotros -->
+      <section class="info-panel reveal" id="about-summary" style="margin-top:1.5rem;text-align:center;">
+        <p class="eyebrow" style="color:var(--brand);font-weight:700;letter-spacing:.12em;text-transform:uppercase;font-size:.72rem;margin-bottom:.4rem;">Quiénes somos</p>
+        <h2 class="info-title">Nuestra empresa</h2>
+        <p id="about-summary-text" style="color:var(--muted);line-height:1.65;font-size:.88rem;max-width:620px;margin:0 auto;"></p>
+        <div style="height:1rem"></div>
+        <button type="button" class="btn-solid" id="about-summary-more">Ver más</button>
+      </section>
     </section>
   </main>
 
@@ -2314,6 +2327,8 @@
 
   <div id="toast"></div>
 
+  <div id="social-links" class="info-social-icons"></div>
+
   <footer class="site-footer">
     <div class="container footer-inner">
       <p class="footer-copy">(c) 2026 Mi empresa - este es el eslogan de tu empresa</p>
@@ -2334,7 +2349,6 @@
           <svg viewBox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zm0-2h10c.75 0 1.41-.41 1.75-1.03L21.7 7H6.21L5.27 5H2v2h2l3.6 7.59zM17 18c-1.1 0-1.99.9-1.99 2S15.9 22 17 22s2-.9 2-2-.9-2-2-2z"/></svg>
           Como comprar
         </a>
-        <div id="social-links" class="info-social-icons"></div>
       </div>
     </div>
   </footer>
@@ -2461,7 +2475,7 @@
   </div>
 
   <!-- Modal Confianza / Nosotros -->
-  <div class="modal-overlay" id="modal-confianza" role="dialog" aria-modal="true" aria-labelledby="modal-cf-title" aria-label="Sobre nosotros">
+  <div class="modal-overlay" id="modal-confianza" role="dialog" aria-modal="true" aria-label="Sobre nosotros">
     <div class="modal mdl-wide">
       <button class="modal-close" id="modal-close-confianza" aria-label="Cerrar modal">&times;</button>
 
@@ -2474,73 +2488,40 @@
         </div>
       </div>
 
-      <div class="mdl-header" style="margin-bottom:0.8rem">
-        <p class="mdl-eyebrow">Quiénes somos</p>
-        <h2 class="mdl-title" id="modal-cf-title">Nuestra empresa</h2>
-      </div>
-      <p id="cf-about-text" style="color:var(--muted);font-size:0.87rem;line-height:1.65">Somos una empresa especializada en equipamiento profesional de limpieza, comprometida con brindar productos de alta calidad y una atención personalizada a cada cliente.</p>
-
-      <p class="cf-section-title">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
-        Misión &amp; Visión
-      </p>
-      <div class="cf-cards cf-two-col">
-        <div class="cf-card">
-          <div class="cf-card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l7.1-1.01L12 2z"/></svg></div>
-          <div>
-            <div class="cf-card-title">Misión</div>
-            <div class="cf-card-text">Ofrecer soluciones de limpieza profesional con productos de calidad, asesoramiento experto y atención personalizada que supere las expectativas de nuestros clientes.</div>
-          </div>
-        </div>
-        <div class="cf-card">
-          <div class="cf-card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/></svg></div>
-          <div>
-            <div class="cf-card-title">Visión</div>
-            <div class="cf-card-text">Ser la empresa líder en soluciones de limpieza profesional, reconocida por la excelencia de sus productos, innovación constante y compromiso con sus clientes.</div>
-          </div>
-        </div>
+      <!-- Quiénes somos -->
+      <div class="cf-block" id="cf-block-quienes">
+        <p class="cf-section-title">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+          Quiénes somos
+        </p>
+        <p class="cf-block-text" id="cf-quienes-text"></p>
       </div>
 
-      <p class="cf-section-title">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm4.24 16L12 15.45 7.77 18l1.12-4.81-3.73-3.23 4.92-.42L12 5l1.92 4.53 4.92.42-3.73 3.23L16.23 18z"/></svg>
-        Nuestros Valores
-      </p>
-      <div class="cf-cards cf-two-col">
-        <div class="cf-card">
-          <div class="cf-card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg></div>
-          <div><div class="cf-card-title">Calidad</div><div class="cf-card-text">Productos cuidadosamente seleccionados que cumplen los más altos estándares del sector.</div></div>
-        </div>
-        <div class="cf-card">
-          <div class="cf-card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div>
-          <div><div class="cf-card-title">Confianza</div><div class="cf-card-text">Relaciones duraderas basadas en transparencia, honestidad y cumplimiento en cada pedido.</div></div>
-        </div>
-        <div class="cf-card">
-          <div class="cf-card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></div>
-          <div><div class="cf-card-title">Compromiso</div><div class="cf-card-text">Garantizamos satisfacción total antes y después de cada compra con soporte continuo.</div></div>
-        </div>
-        <div class="cf-card">
-          <div class="cf-card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg></div>
-          <div><div class="cf-card-title">Innovación</div><div class="cf-card-text">Buscamos constantemente nuevas soluciones para mejorar nuestro catálogo y servicio.</div></div>
-        </div>
+      <!-- Nuestra empresa -->
+      <div class="cf-block" id="cf-block-empresa">
+        <p class="cf-section-title">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z"/></svg>
+          Nuestra empresa
+        </p>
+        <p class="cf-block-text" id="cf-empresa-text"></p>
       </div>
 
-      <p class="cf-section-title">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 4a3 3 0 1 1 0 6 3 3 0 0 1 0-6zm4 10H8v-1c0-1.33 2.67-2 4-2s4 .67 4 2v1z"/></svg>
-        Garantías y Compromisos
-      </p>
-      <div class="cf-cards">
-        <div class="cf-card">
-          <div class="cf-card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6h-2.18c.07-.44.18-.87.18-1.33C18 2.53 15.48 1 13.5 1c-1.3 0-2.4.58-3 1.5L12 4l-1.5-1.5C9.9 1.58 8.8 1 7.5 1 5.52 1 3 2.53 3 4.67c0 .46.11.89.18 1.33H1L2 17h20L20 6z"/></svg></div>
-          <div><div class="cf-card-title">Garantía en productos</div><div class="cf-card-text">Todos nuestros productos cuentan con garantía y respaldo del fabricante. Tu inversión siempre está protegida.</div></div>
-        </div>
-        <div class="cf-card">
-          <div class="cf-card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11.5 2C6.81 2 3 5.81 3 10.5S6.81 19 11.5 19h.5v3c4.86-2.34 8-7 8-11.5C20 5.81 16.19 2 11.5 2zm1 14.5h-2v-2h2v2zm0-4h-2c0-3.25 3-3 3-5 0-1.1-.9-2-2-2s-2 .9-2 2h-2c0-2.21 1.79-4 4-4s4 1.79 4 4c0 2.5-3 2.75-3 5z"/></svg></div>
-          <div><div class="cf-card-title">Asesoría experta</div><div class="cf-card-text">Nuestro equipo te orienta en la elección correcta para cada necesidad, antes y después de tu compra.</div></div>
-        </div>
-        <div class="cf-card">
-          <div class="cf-card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></div>
-          <div><div class="cf-card-title">Atención post-venta</div><div class="cf-card-text">Disponibles para apoyarte con cualquier consulta, reclamo o reposición después de tu pedido.</div></div>
-        </div>
+      <!-- Misión & Visión -->
+      <div class="cf-block" id="cf-block-mision">
+        <p class="cf-section-title">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm0 9c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z"/></svg>
+          Misión &amp; Visión
+        </p>
+        <p class="cf-block-text" id="cf-mision-text"></p>
+      </div>
+
+      <!-- Nuestros Valores -->
+      <div class="cf-block" id="cf-block-valores">
+        <p class="cf-section-title">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l7.1-1.01L12 2z"/></svg>
+          Nuestros Valores
+        </p>
+        <p class="cf-block-text" id="cf-valores-text"></p>
       </div>
     </div>
   </div>
@@ -2697,10 +2678,39 @@
       })).filter(branch => Object.values(branch).some(Boolean));
     }
 
+    function defaultConfianza() {
+      return {
+        quienesSomos: { text: 'Somos una empresa especializada en equipamiento profesional de limpieza, comprometida con brindar productos de alta calidad y una atención personalizada a cada cliente.', visible: true },
+        nuestraEmpresa: { text: 'Contamos con un equipo experto y un catálogo en constante crecimiento para acompañar a cada cliente con soluciones confiables y un servicio cercano.', visible: true },
+        misionVision: { text: 'Misión: Ofrecer soluciones de limpieza profesional con productos de calidad, asesoramiento experto y atención personalizada que supere las expectativas de nuestros clientes.\nVisión: Ser la empresa líder en soluciones de limpieza profesional, reconocida por la excelencia de sus productos, innovación constante y compromiso con sus clientes.', visible: true },
+        nuestrosValores: { text: 'Calidad, confianza, compromiso e innovación guían cada una de nuestras acciones para garantizar tu satisfacción antes, durante y después de cada compra.', visible: true }
+      };
+    }
+
+    function normalizeConfianzaItem(raw, fallback) {
+      const src = raw || {};
+      return {
+        text: (typeof src.text === 'string' ? src.text : fallback.text).trim(),
+        visible: src.visible !== false
+      };
+    }
+
+    function normalizeConfianza(raw) {
+      const defaults = defaultConfianza();
+      const src = raw || {};
+      return {
+        quienesSomos: normalizeConfianzaItem(src.quienesSomos, defaults.quienesSomos),
+        nuestraEmpresa: normalizeConfianzaItem(src.nuestraEmpresa, defaults.nuestraEmpresa),
+        misionVision: normalizeConfianzaItem(src.misionVision, defaults.misionVision),
+        nuestrosValores: normalizeConfianzaItem(src.nuestrosValores, defaults.nuestrosValores)
+      };
+    }
+
     function defaultSiteInfo() {
       return {
         aboutTitle: 'Asesoria especializada',
         aboutContent: 'No solo vendemos productos: te recomendamos combinaciones, frecuencia de reposicion y mejores practicas para optimizar tiempo y costos de limpieza.',
+        confianza: defaultConfianza(),
         buyTitle: 'Compra en 3 pasos',
         buySteps: [
           'Explora el catalogo y agrega productos al carrito.',
@@ -2725,6 +2735,7 @@
       const normalized = {
         aboutTitle: String(raw && (raw.aboutTitle || raw.confidenceTitle) || defaults.aboutTitle).trim(),
         aboutContent: String(raw && (raw.aboutContent || raw.confidenceContent) || defaults.aboutContent).trim(),
+        confianza: normalizeConfianza(raw && raw.confianza),
         buyTitle: String(raw && raw.buyTitle || defaults.buyTitle).trim(),
         buySteps: Array.isArray(raw && raw.buySteps) && raw.buySteps.length
           ? raw.buySteps.map(step => String(step || '').trim()).filter(Boolean).slice(0, 3)
@@ -2874,6 +2885,31 @@
       }
     }
 
+    function renderConfianza() {
+      const cf = ((_siteConfig.siteInfo && _siteConfig.siteInfo.confianza) || defaultConfianza());
+      const blocks = [
+        ['cf-block-quienes', 'cf-quienes-text', cf.quienesSomos],
+        ['cf-block-empresa', 'cf-empresa-text', cf.nuestraEmpresa],
+        ['cf-block-mision', 'cf-mision-text', cf.misionVision],
+        ['cf-block-valores', 'cf-valores-text', cf.nuestrosValores]
+      ];
+      blocks.forEach(([blockId, textId, item]) => {
+        const blockEl = document.getElementById(blockId);
+        const textEl = document.getElementById(textId);
+        const text = item && String(item.text || '').trim();
+        const show = Boolean(item && item.visible && text);
+        if (textEl) textEl.textContent = text || '';
+        if (blockEl) blockEl.hidden = !show;
+      });
+
+      const summaryText = document.getElementById('about-summary-text');
+      if (summaryText) {
+        const empresa = cf.nuestraEmpresa && cf.nuestraEmpresa.visible ? String(cf.nuestraEmpresa.text || '').trim() : '';
+        const quienes = cf.quienesSomos && cf.quienesSomos.visible ? String(cf.quienesSomos.text || '').trim() : '';
+        summaryText.textContent = empresa || quienes || '';
+      }
+    }
+
     async function loadBranding() {
       try {
         // ── Phase 1: config.json (fast static file, eliminates FOUC) ──────────
@@ -2984,6 +3020,7 @@
           }
         }
         renderSiteInfo();
+        renderConfianza();
         renderBranches();
         renderSocialLinks();
         updateWhatsAppLinks();
@@ -3636,6 +3673,8 @@
       /* Confianza / Nosotros */
       document.getElementById('header-link-confianza').addEventListener('click', () => openModal('modal-confianza'));
       document.getElementById('footer-btn-confianza').addEventListener('click', () => openModal('modal-confianza'));
+      const aboutMoreBtn = document.getElementById('about-summary-more');
+      if (aboutMoreBtn) aboutMoreBtn.addEventListener('click', () => openModal('modal-confianza'));
       document.getElementById('modal-close-confianza').addEventListener('click', () => closeModal('modal-confianza'));
       document.getElementById('modal-confianza').addEventListener('click', function(e) { if (e.target === this) closeModal('modal-confianza'); });
 

@@ -1485,13 +1485,22 @@
                   <div class="visibility-row">
                     <label class="switch-label"><input type="checkbox" id="vis-confidence" checked /> Mostrar este bloque en la tienda</label>
                   </div>
+                  <p class="cfg-help">Cada bloque aparece en la ventana <strong>Confianza</strong> del sitio solo si su interruptor está activado.</p>
                   <div class="field">
-                    <label for="info-about-title">Titulo</label>
-                    <input type="text" id="info-about-title" maxlength="80" placeholder="Nosotros / Confianza" />
+                    <label class="switch-label"><input type="checkbox" id="vis-cf-quienes" checked /> Quiénes somos</label>
+                    <textarea id="cf-quienes-content" class="textarea-lg" placeholder="¿Quiénes somos?"></textarea>
                   </div>
                   <div class="field">
-                    <label for="info-about-content">Contenido</label>
-                    <textarea id="info-about-content" class="textarea-lg" placeholder="Describe por qué confiar en la empresa..."></textarea>
+                    <label class="switch-label"><input type="checkbox" id="vis-cf-empresa" checked /> Nuestra empresa</label>
+                    <textarea id="cf-empresa-content" class="textarea-lg" placeholder="Describe a tu empresa..."></textarea>
+                  </div>
+                  <div class="field">
+                    <label class="switch-label"><input type="checkbox" id="vis-cf-mision" checked /> Misión &amp; Visión</label>
+                    <textarea id="cf-mision-content" class="textarea-lg" placeholder="Misión y visión de la empresa..."></textarea>
+                  </div>
+                  <div class="field">
+                    <label class="switch-label"><input type="checkbox" id="vis-cf-valores" checked /> Nuestros Valores</label>
+                    <textarea id="cf-valores-content" class="textarea-lg" placeholder="Valores que representan a la empresa..."></textarea>
                   </div>
                 </div>
               </details>
@@ -1925,10 +1934,20 @@
     ];
   }
 
+  function getDefaultConfianza() {
+    return {
+      quienesSomos: { text: 'Somos una empresa especializada en equipamiento profesional de limpieza, comprometida con brindar productos de alta calidad y una atención personalizada a cada cliente.', visible: true },
+      nuestraEmpresa: { text: 'Contamos con un equipo experto y un catálogo en constante crecimiento para acompañar a cada cliente con soluciones confiables y un servicio cercano.', visible: true },
+      misionVision: { text: 'Misión: Ofrecer soluciones de limpieza profesional con productos de calidad, asesoramiento experto y atención personalizada que supere las expectativas de nuestros clientes.\nVisión: Ser la empresa líder en soluciones de limpieza profesional, reconocida por la excelencia de sus productos, innovación constante y compromiso con sus clientes.', visible: true },
+      nuestrosValores: { text: 'Calidad, confianza, compromiso e innovación guían cada una de nuestras acciones para garantizar tu satisfacción antes, durante y después de cada compra.', visible: true }
+    };
+  }
+
   function getDefaultInfoContent() {
     return {
       aboutTitle: 'Nosotros / Confianza',
       aboutContent: 'No solo vendemos productos: te recomendamos combinaciones, frecuencia de reposición y mejores prácticas para optimizar tiempo y costos de limpieza.',
+      confianza: getDefaultConfianza(),
       buySteps: [
         'Explora el catalogo y agrega productos al carrito.',
         'Completa tus datos en el carrito para agilizar la atencion.',
@@ -1970,6 +1989,25 @@
     };
   }
 
+  function normalizeConfianzaItem(raw, fallback) {
+    const src = raw || {};
+    return {
+      text: String(typeof src.text === 'string' ? src.text : fallback.text).trim(),
+      visible: src.visible !== false
+    };
+  }
+
+  function normalizeConfianza(raw) {
+    const defaults = getDefaultConfianza();
+    const src = raw || {};
+    return {
+      quienesSomos: normalizeConfianzaItem(src.quienesSomos, defaults.quienesSomos),
+      nuestraEmpresa: normalizeConfianzaItem(src.nuestraEmpresa, defaults.nuestraEmpresa),
+      misionVision: normalizeConfianzaItem(src.misionVision, defaults.misionVision),
+      nuestrosValores: normalizeConfianzaItem(src.nuestrosValores, defaults.nuestrosValores)
+    };
+  }
+
   function normalizeInfoContent(raw) {
     const defaults = getDefaultInfoContent();
     const buySteps = Array.from({ length: 3 }, (_, index) => String((raw && raw.buySteps && raw.buySteps[index]) || defaults.buySteps[index] || '').trim());
@@ -1985,6 +2023,7 @@
     return {
       aboutTitle: String((raw && raw.aboutTitle) || defaults.aboutTitle).trim(),
       aboutContent: String((raw && raw.aboutContent) || defaults.aboutContent).trim(),
+      confianza: normalizeConfianza(raw && raw.confianza),
       buySteps,
       testimonials,
       faqs
@@ -2040,8 +2079,15 @@
   }
 
   function fillInfoForm(info) {
-    document.getElementById('info-about-title').value = info.aboutTitle;
-    document.getElementById('info-about-content').value = info.aboutContent;
+    const cf = info.confianza || getDefaultConfianza();
+    document.getElementById('cf-quienes-content').value = cf.quienesSomos.text;
+    document.getElementById('cf-empresa-content').value = cf.nuestraEmpresa.text;
+    document.getElementById('cf-mision-content').value = cf.misionVision.text;
+    document.getElementById('cf-valores-content').value = cf.nuestrosValores.text;
+    document.getElementById('vis-cf-quienes').checked = cf.quienesSomos.visible;
+    document.getElementById('vis-cf-empresa').checked = cf.nuestraEmpresa.visible;
+    document.getElementById('vis-cf-mision').checked = cf.misionVision.visible;
+    document.getElementById('vis-cf-valores').checked = cf.nuestrosValores.visible;
     info.buySteps.forEach((step, index) => {
       document.getElementById(`info-buy-step-${index + 1}`).value = step;
     });
@@ -2093,8 +2139,15 @@
   }
 
   function collectInfoForm() {
-    const aboutTitle = document.getElementById('info-about-title').value.trim() || getDefaultInfoContent().aboutTitle;
-    const aboutContent = document.getElementById('info-about-content').value.trim() || getDefaultInfoContent().aboutContent;
+    const prev = _infoContent || getDefaultInfoContent();
+    const aboutTitle = prev.aboutTitle || getDefaultInfoContent().aboutTitle;
+    const aboutContent = prev.aboutContent || getDefaultInfoContent().aboutContent;
+    const confianza = {
+      quienesSomos: { text: document.getElementById('cf-quienes-content').value.trim(), visible: document.getElementById('vis-cf-quienes').checked },
+      nuestraEmpresa: { text: document.getElementById('cf-empresa-content').value.trim(), visible: document.getElementById('vis-cf-empresa').checked },
+      misionVision: { text: document.getElementById('cf-mision-content').value.trim(), visible: document.getElementById('vis-cf-mision').checked },
+      nuestrosValores: { text: document.getElementById('cf-valores-content').value.trim(), visible: document.getElementById('vis-cf-valores').checked }
+    };
     const buySteps = [1, 2, 3]
       .map(index => document.getElementById(`info-buy-step-${index}`).value.trim())
       .filter(Boolean)
@@ -2117,7 +2170,7 @@
       faqs.push({ question, answer });
     }
 
-    return normalizeInfoContent({ aboutTitle, aboutContent, buySteps, testimonials, faqs });
+    return normalizeInfoContent({ aboutTitle, aboutContent, confianza, buySteps, testimonials, faqs });
   }
 
   function collectSocialLinks() {
