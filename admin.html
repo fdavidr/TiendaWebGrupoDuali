@@ -2242,6 +2242,8 @@
     if (user) {
       document.getElementById('btn-logout').style.display = 'inline-flex';
       document.body.style.opacity = '1';
+      if (_adminLoaded) return;   // token refresh: no recargar datos
+      _adminLoaded = true;
       // Recuperar estado incompleto: Auth existe pero Firestore no tiene el doc creado
       CONFIG_DOC.get().then(snap => {
         if (!snap.exists || !snap.data().created) {
@@ -2510,6 +2512,7 @@
   let _dirty = false;
   let _savingAll = false;
   let _saveStateTimer = null;
+  let _adminLoaded = false;
 
   function getSaveBtn() { return document.getElementById('btn-save-all'); }
 
