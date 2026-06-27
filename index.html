@@ -68,6 +68,8 @@
         if (vis.catalog === false) h.push('catalog');
         if (vis.confidence === false) h.push('confidence');
         if (vis.buy === false) h.push('buy');
+        if (vis.testimonials === false) h.push('testimonials');
+        if (vis.faq === false) h.push('faq');
         if (vis.info === false) h.push('info');
         return h.join(' ');
       }
@@ -146,11 +148,11 @@
     html[data-hide~="confidence"] #header-link-confianza,
     html[data-hide~="confidence"] #about-summary,
     html[data-hide~="confidence"] #confianza,
-    html[data-hide~="buy"] #header-link-comprar,
-    html[data-hide~="buy"] #comprar,
-    html[data-hide~="info"] #info-testimonials-panel,
-    html[data-hide~="info"] #faq-panel,
-    html[data-hide~="info"] #about-summary { display: none !important; }
+    html[data-hide~="info"] #header-link-comprar,
+    html[data-hide~="info"] #comprar,
+    html[data-hide~="buy"] #info-testimonials-panel,
+    html[data-hide~="testimonials"] #testimonials-panel,
+    html[data-hide~="faq"] #faq-panel { display: none !important; }
 
     /* ═══════════════════════════════════════════════════════════
      *  PALETA DE COLORES – index.html  (MODO CLARO)
@@ -2245,7 +2247,7 @@
           </div>
         </article>
 
-        <article class="info-panel reveal">
+        <article class="info-panel reveal" id="testimonials-panel">
           <h2 class="info-title">Clientes que recomiendan <span id="clients-company-name">Mi empresa</span></h2>
           <div class="steps" id="testimonials-list">
             <div class="testimonial">"Excelente atencion, me ayudaron a elegir el equipo correcto para mi restaurante."<br><strong>- M. Vargas</strong></div>
