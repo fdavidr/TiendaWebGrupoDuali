@@ -2555,7 +2555,7 @@
       branches: [],
       siteInfo: null,
       whatsappUrl: '',
-      sectionVisibility: { branches: true, catalog: true, confidence: true, buy: true, info: true }
+      sectionVisibility: { branches: true, catalog: true, confidence: true, buy: true, testimonials: true, faq: true, info: true }
     };
     /* ── Colores personalizables de la tienda (se cargan desde Firestore) ── */
     const DEFAULT_THEME_COLORS = {
@@ -2636,6 +2636,8 @@
         catalog: src.catalog !== false,
         confidence: src.confidence !== false,
         buy: src.buy !== false,
+        testimonials: src.testimonials !== false,
+        faq: src.faq !== false,
         info: src.info !== false
       };
     }
@@ -2809,6 +2811,8 @@
       if (!vis.catalog) hide.push('catalog');
       if (!vis.confidence) hide.push('confidence');
       if (!vis.buy) hide.push('buy');
+      if (!vis.testimonials) hide.push('testimonials');
+      if (!vis.faq) hide.push('faq');
       if (!vis.info) hide.push('info');
       document.documentElement.setAttribute('data-hide', hide.join(' '));
     }
