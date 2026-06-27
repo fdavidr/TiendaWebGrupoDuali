@@ -736,6 +736,67 @@
       margin-top: 0.7rem;
     }
 
+    /* ═══════════════════════════════════════════════════════════
+     *  SKELETON LOADING (Shimmer) – placeholders de carga
+     *  Fondo base #f2f2f2 + brillo blanco translúcido que se
+     *  desplaza de izquierda a derecha. Mismo tamaño que el real
+     *  para evitar saltos de diseño (CLS).
+     * ═══════════════════════════════════════════════════════════ */
+    @keyframes sk-shimmer { 100% { transform: translateX(100%); } }
+
+    /* Superficies con efecto shimmer */
+    .skeleton-card .product-img,
+    .skeleton-card .sk,
+    .product-img.is-loading,
+    .cart-item-img.is-loading,
+    .media-box.is-loading {
+      position: relative;
+      overflow: hidden;
+      background-color: #f2f2f2;
+    }
+    .skeleton-card .product-img::after,
+    .skeleton-card .sk::after,
+    .product-img.is-loading::after,
+    .cart-item-img.is-loading::after,
+    .media-box.is-loading::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      transform: translateX(-100%);
+      background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.65) 50%, rgba(255,255,255,0) 100%);
+      animation: sk-shimmer 1.4s ease-in-out infinite;
+      will-change: transform;
+    }
+
+    /* Tarjeta placeholder: misma estructura y medidas que la real */
+    .skeleton-card { pointer-events: none; }
+    .skeleton-card .product-img { background: #ececec; }
+    .skeleton-card .sk { background-color: #ececec; border-radius: 7px; }
+    .skeleton-card .sk-chip   { width: 40%; height: 16px; border-radius: 999px; }
+    .skeleton-card .sk-title  { width: 88%; height: 15px; }
+    .skeleton-card .sk-title-2{ width: 60%; height: 15px; }
+    .skeleton-card .sk-price  { width: 38%; height: 19px; margin-top: 0.15rem; }
+    .skeleton-card .sk-btn    { height: 40px; margin: 0 1rem 1rem; border-radius: 11px; }
+
+    /* Mientras la imagen carga, solo su recuadro muestra el shimmer */
+    .product-img.is-loading { background: #f2f2f2; }
+
+    /* Fade suave del contenido real cuando la imagen termina de cargar */
+    .media-fade { opacity: 0; transition: opacity .26s ease-in; }
+    .media-fade.is-loaded { opacity: 1; }
+
+    /* Wrapper genérico para imágenes sueltas (detalle, galería, carrito) */
+    .media-box { display: block; position: relative; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .skeleton-card .product-img::after,
+      .skeleton-card .sk::after,
+      .product-img.is-loading::after,
+      .cart-item-img.is-loading::after,
+      .media-box.is-loading::after { animation: none; }
+      .media-fade { transition: none; }
+    }
+
     .split-sections {
       margin-top: 2.2rem;
       display: flex;
@@ -3093,6 +3154,72 @@
       }));
     }
 
+    /* ───────────────────────────────────────────────────────────
+     *  SKELETON LOADING (Shimmer) – componentes reutilizables
+     * ─────────────────────────────────────────────────────────── */
+
+    // Componente reutilizable: tarjeta placeholder con la misma
+    // estructura que una tarjeta de producto real.
+    function createSkeletonCard() {
+      const card = document.createElement('article');
+      card.className = 'product-card skeleton-card';
+      card.setAttribute('aria-hidden', 'true');
+      card.innerHTML = `
+        <div class="product-img"></div>
+        <div class="product-body">
+          <div class="sk sk-chip"></div>
+          <div class="sk sk-title"></div>
+          <div class="sk sk-title-2"></div>
+          <div class="sk sk-price"></div>
+        </div>
+        <div class="sk sk-btn"></div>
+      `;
+      return card;
+    }
+
+    // Llena un contenedor de grilla con N tarjetas skeleton.
+    function renderSkeletonCards(grid, count) {
+      if (!grid) return;
+      grid.innerHTML = '';
+      const frag = document.createDocumentFragment();
+      for (let i = 0; i < count; i++) frag.appendChild(createSkeletonCard());
+      grid.appendChild(frag);
+    }
+
+    // Skeleton por-imagen: mantiene el placeholder solo sobre la
+    // imagen hasta que termina de cargar, sin ocultar el resto de la
+    // tarjeta, y luego hace un fade suave (estilo Amazon / ML).
+    function setupImageSkeleton(img) {
+      if (!img || img.dataset.skeleton === '1') return;
+      img.dataset.skeleton = '1';
+      let box = img.closest('.product-img, .cart-item-img');
+      if (!box) {
+        box = document.createElement('span');
+        box.className = 'media-box';
+        img.parentNode.insertBefore(box, img);
+        box.appendChild(img);
+      }
+      // Imagen ya cacheada: mostrar al instante, sin shimmer.
+      if (img.complete && img.naturalWidth > 0) {
+        img.classList.add('media-fade', 'is-loaded');
+        return;
+      }
+      box.classList.add('is-loading');
+      img.classList.add('media-fade');
+      const reveal = () => { box.classList.remove('is-loading'); img.classList.add('is-loaded'); };
+      img.addEventListener('load', reveal, { once: true });
+      img.addEventListener('error', () => box.classList.remove('is-loading'), { once: true });
+    }
+
+    // Activa el skeleton por-imagen para toda la media de producto
+    // dentro de un contenedor (tarjetas, detalle, galería, carrito).
+    function setupMediaSkeletons(root) {
+      if (!root) return;
+      root.querySelectorAll('.product-img > img, .cart-item-img > img, img.product-detail-main, .product-detail-gallery img')
+        .forEach(setupImageSkeleton);
+    }
+
+
     function getDefaultProducts() {
       return [
         { id: 1, name: 'Mopa Industrial 120cm', category: 'Mopas', price: 85, quantity: 0, discount: 0, description: 'Mopa de microfibra para pisos industriales. Alta absorcion.', images: ['', '', ''] },
@@ -3274,6 +3401,7 @@
           `;
           itemsEl.insertBefore(div, emptyEl);
         });
+        setupMediaSkeletons(itemsEl);
         hydrateMediaImages(itemsEl);
       }
     }
@@ -3334,6 +3462,7 @@
         `;
         grid.appendChild(card);
       });
+      setupMediaSkeletons(grid);
       hydrateMediaImages(grid);
     }
 
@@ -3374,6 +3503,7 @@
         ${stockHtml}
       `;
 
+      setupMediaSkeletons(detailEl);
       hydrateMediaImages(detailEl);
 
       document.getElementById('modal-product-detail').classList.add('open');
@@ -3714,6 +3844,10 @@
       initRevealAnimations();
       initHeroSlider();
       bindEvents();
+
+      /* Skeleton inmediato: evita pantalla en blanco mientras cargan los datos */
+      renderSkeletonCards(document.getElementById('products-grid'), Math.min(PAGE_SIZE(), 8));
+
       await loadBranding();
 
       /* Sincronizar hero con branding cargado desde Firestore */
