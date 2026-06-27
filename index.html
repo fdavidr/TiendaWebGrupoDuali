@@ -2819,7 +2819,7 @@
 
     function renderBranches() {
       const container = document.getElementById('branches-modal-list');
-      const branches = _siteConfig.branches.length ? _siteConfig.branches : normalizeBranches([
+      const branches = (_siteConfig.branchesConfigured || _siteConfig.branches.length) ? _siteConfig.branches : normalizeBranches([
         { title: 'Cochabamba', address: 'Calle Sucre #1948', gpsUrl: 'https://maps.app.goo.gl/t2bCfj5XDovuukgP7', schedule: 'Lunes a viernes 10am - 6pm - Sabados 9am - 2pm', phone: '76924727' },
         { title: 'Santa Cruz', address: 'Av. Mutualista y Bruno Racua', gpsUrl: 'https://maps.app.goo.gl/uV4D7wNfLjd3mPgNA', schedule: 'Lunes a viernes 8:30am - 3:30pm - Sabados 8am - 1pm', phone: '73691496' }
       ]);
@@ -2970,6 +2970,7 @@
         _siteConfig = {
           socialLinks: normalizeSocialLinks(data.socialLinks || {}),
           branches: normalizeBranches(data.branches || []),
+          branchesConfigured: Array.isArray(data.branches),
           siteInfo: normalizeSiteInfo(data.siteInfo || data.infoContent || {}),
           whatsappUrl: String(data.whatsappUrl || '').trim(),
           sectionVisibility: normalizeSectionVisibility(data.sectionVisibility)

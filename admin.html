@@ -2321,7 +2321,7 @@
       const themeColors = normalizeThemeColors(data.themeColors);
       const whatsAppUrl = String(data.whatsappUrl || '').trim();
       const sectionVisibility = normalizeSectionVisibility(data.sectionVisibility);
-      const branches = Array.isArray(data.branches) && data.branches.length
+      const branches = Array.isArray(data.branches)
         ? data.branches.map(normalizeBranch).filter(branch => Object.values(branch).some(Boolean))
         : getDefaultBranches();
       const infoContent = normalizeInfoContent(data.siteInfo || {});
