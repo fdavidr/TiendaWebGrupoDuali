@@ -149,7 +149,8 @@
     html[data-hide~="buy"] #header-link-comprar,
     html[data-hide~="buy"] #comprar,
     html[data-hide~="info"] #info-testimonials-panel,
-    html[data-hide~="info"] #info-extra-sections { display: none !important; }
+    html[data-hide~="info"] #faq-panel,
+    html[data-hide~="info"] #about-summary { display: none !important; }
 
     /* ═══════════════════════════════════════════════════════════
      *  PALETA DE COLORES – index.html  (MODO CLARO)
@@ -2253,8 +2254,7 @@
           </div>
         </article>
 
-        <div id="info-extra-sections" style="display:contents">
-          <article class="info-panel reveal">
+        <article class="info-panel reveal" id="faq-panel">
             <h2 class="info-title">Preguntas frecuentes</h2>
             <div class="faq-list" id="faq-list">
               <details class="faq-item">
@@ -2270,16 +2270,15 @@
                 <div class="faq-content">Si, coordinamos envios interdepartamentales segun volumen y destino.</div>
               </details>
             </div>
-          </article>
+        </article>
 
-          <article class="info-panel reveal" id="about-summary">
+        <article class="info-panel reveal" id="about-summary">
             <p class="eyebrow" style="color:var(--brand);font-weight:700;letter-spacing:.12em;text-transform:uppercase;font-size:.72rem;margin-bottom:.4rem;">Quiénes somos</p>
             <h2 class="info-title">Nuestra empresa</h2>
             <p id="about-summary-text" style="color:var(--muted);line-height:1.65;font-size:.88rem;"></p>
             <div style="height:.7rem"></div>
             <button type="button" class="btn-solid" id="about-summary-more">Ver más</button>
-          </article>
-        </div>
+        </article>
       </section>
 
       <div class="cta-band reveal">
