@@ -735,12 +735,14 @@
 
     .split-sections {
       margin-top: 2.2rem;
-      display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
+      display: flex;
+      flex-wrap: wrap;
       gap: 1rem;
     }
 
     .info-panel {
+      flex: 1 1 calc(50% - 0.5rem);
+      min-width: 260px;
       border: 1px solid var(--line);
       border-radius: 18px;
       background: rgba(255, 255, 255, 0.95);
@@ -1352,7 +1354,8 @@
     }
 
     @media (max-width: 980px) {
-      .hero-shell, .split-sections { grid-template-columns: 1fr; }
+      .hero-shell { grid-template-columns: 1fr; }
+      .split-sections .info-panel { flex: 1 1 100%; }
       .trust-strip { grid-template-columns: repeat(2, 1fr); }
     }
 
@@ -2249,34 +2252,34 @@
             <div class="testimonial">"Compramos para oficina y nos asesoraron en cada detalle."<br><strong>- J. Aramayo</strong></div>
           </div>
         </article>
-      </section>
 
-      <section class="split-sections" id="info-extra-sections">
-        <article class="info-panel reveal">
-          <h2 class="info-title">Preguntas frecuentes</h2>
-          <div class="faq-list" id="faq-list">
-            <details class="faq-item">
-              <summary>Como se confirma mi pedido?</summary>
-              <div class="faq-content">Despues de enviarlo por WhatsApp, nuestro equipo valida stock, costo final y forma de entrega antes de cerrar la compra.</div>
-            </details>
-            <details class="faq-item">
-              <summary>Puedo pedir para empresa?</summary>
-              <div class="faq-content">Si. Atendemos compras institucionales y corporativas, incluyendo pedidos recurrentes.</div>
-            </details>
-            <details class="faq-item">
-              <summary>Hacen envios fuera de la ciudad?</summary>
-              <div class="faq-content">Si, coordinamos envios interdepartamentales segun volumen y destino.</div>
-            </details>
-          </div>
-        </article>
+        <div id="info-extra-sections" style="display:contents">
+          <article class="info-panel reveal">
+            <h2 class="info-title">Preguntas frecuentes</h2>
+            <div class="faq-list" id="faq-list">
+              <details class="faq-item">
+                <summary>Como se confirma mi pedido?</summary>
+                <div class="faq-content">Despues de enviarlo por WhatsApp, nuestro equipo valida stock, costo final y forma de entrega antes de cerrar la compra.</div>
+              </details>
+              <details class="faq-item">
+                <summary>Puedo pedir para empresa?</summary>
+                <div class="faq-content">Si. Atendemos compras institucionales y corporativas, incluyendo pedidos recurrentes.</div>
+              </details>
+              <details class="faq-item">
+                <summary>Hacen envios fuera de la ciudad?</summary>
+                <div class="faq-content">Si, coordinamos envios interdepartamentales segun volumen y destino.</div>
+              </details>
+            </div>
+          </article>
 
-        <article class="info-panel reveal" id="about-summary">
-          <p class="eyebrow" style="color:var(--brand);font-weight:700;letter-spacing:.12em;text-transform:uppercase;font-size:.72rem;margin-bottom:.4rem;">Quiénes somos</p>
-          <h2 class="info-title">Nuestra empresa</h2>
-          <p id="about-summary-text" style="color:var(--muted);line-height:1.65;font-size:.88rem;"></p>
-          <div style="height:.7rem"></div>
-          <button type="button" class="btn-solid" id="about-summary-more">Ver más</button>
-        </article>
+          <article class="info-panel reveal" id="about-summary">
+            <p class="eyebrow" style="color:var(--brand);font-weight:700;letter-spacing:.12em;text-transform:uppercase;font-size:.72rem;margin-bottom:.4rem;">Quiénes somos</p>
+            <h2 class="info-title">Nuestra empresa</h2>
+            <p id="about-summary-text" style="color:var(--muted);line-height:1.65;font-size:.88rem;"></p>
+            <div style="height:.7rem"></div>
+            <button type="button" class="btn-solid" id="about-summary-more">Ver más</button>
+          </article>
+        </div>
       </section>
 
       <div class="cta-band reveal">
