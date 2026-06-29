@@ -716,15 +716,42 @@
 
 <script>
   // ── Firebase ──
-  let _db, _auth, CONFIG_DOC, _firebaseReady = false;
+  let _db, _auth, CONFIG_DOC, ASSETS_COL, _firebaseReady = false;
   try {
     firebase.initializeApp(FIREBASE_CONFIG);
     _db        = firebase.firestore();
     _auth      = firebase.auth();
     CONFIG_DOC = _db.collection('config').doc('admin');
+    ASSETS_COL = _db.collection('assets');
     _firebaseReady = true;
   } catch (e) {
     console.error('Firebase no inicializado:', e);
+  }
+
+  // ── Resolución de assets de Firestore (logo) ──
+  const ASSET_REF_PREFIX = 'firestore-asset:';
+  function _isAssetRef(v) { return typeof v === 'string' && v.startsWith(ASSET_REF_PREFIX); }
+  function _assetIdFromRef(v) { return _isAssetRef(v) ? v.slice(ASSET_REF_PREFIX.length) : ''; }
+  function _b64ToBytes(b64) {
+    const bin = atob(b64); const len = bin.length;
+    const bytes = new Uint8Array(len);
+    for (let i = 0; i < len; i++) bytes[i] = bin.charCodeAt(i);
+    return bytes;
+  }
+  async function _resolveAsset(source) {
+    if (!source || !_isAssetRef(source)) return source;
+    const assetId = _assetIdFromRef(source);
+    if (!assetId || !ASSETS_COL) return '';
+    try {
+      const metaSnap = await ASSETS_COL.doc(assetId).get();
+      if (!metaSnap.exists) return '';
+      const meta = metaSnap.data() || {};
+      const mimeType = String(meta.mimeType || 'image/jpeg');
+      const chunksSnap = await ASSETS_COL.doc(assetId).collection('chunks').orderBy('index').get();
+      const base64 = chunksSnap.docs.map(d => String((d.data() || {}).data || '')).join('');
+      const blob = new Blob([_b64ToBytes(base64)], { type: mimeType });
+      return URL.createObjectURL(blob);
+    } catch (_e) { return ''; }
   }
 
   // Muestra banner de error si Firebase no cargó
@@ -1026,10 +1053,14 @@
         const mobileNameEl = document.getElementById('mobile-brand-name');
         if (mobileNameEl) mobileNameEl.textContent = d.companyName;
       }
-      if (d.logo && !d.logoAssetId) {
-        document.getElementById('brand-logo-img').src = d.logo;
-        const mobileLogoEl = document.getElementById('mobile-logo-img');
-        if (mobileLogoEl) mobileLogoEl.src = d.logo;
+      const logoSource = d.logoAssetId ? (ASSET_REF_PREFIX + d.logoAssetId) : String(d.logo || '').trim();
+      if (logoSource) {
+        const logoUrl = await _resolveAsset(logoSource);
+        if (logoUrl) {
+          document.getElementById('brand-logo-img').src = logoUrl;
+          const mobileLogoEl = document.getElementById('mobile-logo-img');
+          if (mobileLogoEl) mobileLogoEl.src = logoUrl;
+        }
       }
     } catch (_e) {}
   })();
