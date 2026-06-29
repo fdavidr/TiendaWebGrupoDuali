@@ -1,0 +1,14 @@
+{
+  "name": "Grupo Duali — Distribuidor 8CAR Bolivia",
+  "short_name": "Grupo Duali",
+  "description": "Distribuidor oficial 8CAR: pinturas en spray, siliconas, espumas, adhesivos, lubricantes y selladores en Bolivia.",
+  "lang": "es-BO",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f4f5f6",
+  "theme_color": "#14b51f",
+  "icons": [
+    { "src": "img/Mi logo.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

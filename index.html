@@ -3,8 +3,39 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mi empresa | Equipamiento Profesional de Limpieza</title>
-  <meta name="description" content="Tienda virtual Mi empresa. este es el eslogan de tu empresa." />
+  <title>Grupo Duali | Distribuidor 8CAR Bolivia: Pinturas en Spray, Siliconas, Espumas y Selladores</title>
+  <meta name="description" content="Grupo Duali, distribuidor oficial 8CAR en Bolivia. Pinturas en spray, siliconas, espumas expansivas, adhesivos, lubricantes, selladores y limpiadores para construcción, industria y automotriz. Sucursales en Cochabamba y Santa Cruz." />
+  <meta name="keywords" content="distribuidor 8CAR, pintura en spray Bolivia, espuma expansiva Bolivia, silicona para construcción Bolivia, selladores industriales Bolivia, lubricantes industriales Bolivia, adhesivos industriales Bolivia, aerosoles industriales Bolivia, productos químicos para construcción, mantenimiento industrial, Grupo Duali" />
+  <meta name="author" content="Grupo Duali" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta name="theme-color" content="#14b51f" />
+  <link rel="canonical" href="https://www.grupoduali.com/" />
+
+  <!-- Geo / SEO local Bolivia -->
+  <meta name="geo.region" content="BO" />
+  <meta name="geo.placename" content="Cochabamba, Santa Cruz, Bolivia" />
+
+  <!-- Favicon e iconos -->
+  <link rel="icon" type="image/svg+xml" href="img/Mi logo.svg" />
+  <link rel="apple-touch-icon" href="img/Mi logo.svg" />
+  <link rel="manifest" href="site.webmanifest" />
+
+  <!-- Open Graph (Facebook / WhatsApp) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Grupo Duali" />
+  <meta property="og:title" content="Grupo Duali | Distribuidor 8CAR Bolivia" />
+  <meta property="og:description" content="Distribuidor oficial 8CAR: pinturas en spray, siliconas, espumas expansivas, adhesivos, lubricantes y selladores para construcción, industria y automotriz. Cochabamba y Santa Cruz." />
+  <meta property="og:url" content="https://www.grupoduali.com/" />
+  <meta property="og:image" content="https://www.grupoduali.com/img/portadaescritorio.png" />
+  <meta property="og:image:alt" content="Grupo Duali, distribuidor 8CAR en Bolivia" />
+  <meta property="og:locale" content="es_BO" />
+
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Grupo Duali | Distribuidor 8CAR Bolivia" />
+  <meta name="twitter:description" content="Pinturas en spray, siliconas, espumas, adhesivos y selladores 8CAR para construcción, industria y automotriz en Bolivia." />
+  <meta name="twitter:image" content="https://www.grupoduali.com/img/portadaescritorio.png" />
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -89,7 +120,7 @@
           if (el) el.textContent = n;
           el = document.getElementById('clients-company-name');
           if (el) el.textContent = n;
-          document.title = n + ' | Equipamiento Profesional de Limpieza';
+          document.title = n + ' | Distribuidor 8CAR Bolivia';
         }
         if (s) { el = document.querySelector('.eyebrow'); if (el) el.textContent = s; }
         if (n && s) { el = document.querySelector('.footer-copy'); if (el) el.textContent = '(c) 2026 ' + n + ' - ' + s; }
@@ -787,6 +818,12 @@
 
     /* Wrapper genérico para imágenes sueltas (detalle, galería, carrito) */
     .media-box { display: block; position: relative; }
+
+    /* Placeholder de imagen (fallback): nunca recorta, fondo blanco corporativo */
+    .product-img img.is-placeholder,
+    .cart-item-img img.is-placeholder,
+    .product-detail-main.is-placeholder,
+    .product-detail-gallery img.is-placeholder { object-fit: contain; background: #fff; }
 
     @media (prefers-reduced-motion: reduce) {
       .skeleton-card .product-img::after,
@@ -2177,6 +2214,52 @@
       .branch-btn { width: 100%; justify-content: center; }
     }
   </style>
+
+  <!-- ════════════ Datos estructurados Schema.org (JSON-LD) ════════════ -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://www.grupoduali.com/#organization",
+        "name": "Grupo Duali",
+        "url": "https://www.grupoduali.com/",
+        "logo": "https://www.grupoduali.com/img/Mi%20logo.svg",
+        "description": "Distribuidor oficial de productos 8CAR en Bolivia: pinturas en spray, siliconas, espumas expansivas, adhesivos, lubricantes, selladores y limpiadores de contactos eléctricos.",
+        "brand": { "@type": "Brand", "name": "8CAR" },
+        "areaServed": "BO"
+      },
+      {
+        "@type": "LocalBusiness",
+        "@id": "https://www.grupoduali.com/#localbusiness",
+        "name": "Grupo Duali",
+        "image": "https://www.grupoduali.com/img/portadaescritorio.png",
+        "url": "https://www.grupoduali.com/",
+        "priceRange": "Bs",
+        "parentOrganization": { "@id": "https://www.grupoduali.com/#organization" },
+        "address": [
+          { "@type": "PostalAddress", "streetAddress": "Calle Sucre #1948", "addressLocality": "Cochabamba", "addressCountry": "BO" },
+          { "@type": "PostalAddress", "streetAddress": "Av. Mutualista y Bruno Racua", "addressLocality": "Santa Cruz", "addressCountry": "BO" }
+        ],
+        "telephone": ["+59176924727", "+59173691496"]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://www.grupoduali.com/#website",
+        "url": "https://www.grupoduali.com/",
+        "name": "Grupo Duali",
+        "publisher": { "@id": "https://www.grupoduali.com/#organization" },
+        "inLanguage": "es-BO",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": { "@type": "EntryPoint", "urlTemplate": "https://www.grupoduali.com/?q={search_term_string}" },
+          "query-input": "required name=search_term_string"
+        }
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
   <div class="bg-grid" aria-hidden="true"></div>
@@ -2184,8 +2267,8 @@
   <header>
     <div class="container topbar">
       <a href="index.html" class="logo-wrap">
-        <img src="img/mi logo.svg" alt="Mi empresa" />
-        <span>Mi empresa</span>
+        <img src="img/mi logo.svg" alt="Grupo Duali, distribuidor 8CAR Bolivia" />
+        <span>Grupo Duali</span>
       </a>
       <nav class="nav-links">
         <button id="header-btn-sucursales" class="chip-btn" type="button">Sucursales</button>
@@ -2224,13 +2307,13 @@
         <img
           id="hero-logo-img"
           src="img/mi logo.svg"
-          alt="Logo de Mi empresa"
+          alt="Logo de Grupo Duali, distribuidor 8CAR"
           class="hero-logo-img"
           width="78" height="78"
           loading="eager"
         />
-        <h1 class="hero-company">Mi empresa</h1>
-        <span class="eyebrow">este es el eslogan de tu empresa</span>
+        <h1 class="hero-company">Grupo Duali</h1>
+        <span class="eyebrow">Distribuidor 8CAR en Bolivia</span>
 
         <div class="hero-cta-group" role="group" aria-label="Acciones principales">
           <!-- Botón Catálogo -->
@@ -2309,7 +2392,7 @@
         </article>
 
         <article class="info-panel reveal" id="testimonials-panel">
-          <h2 class="info-title">Clientes que recomiendan <span id="clients-company-name">Mi empresa</span></h2>
+          <h2 class="info-title">Clientes que recomiendan <span id="clients-company-name">Grupo Duali</span></h2>
           <div class="steps" id="testimonials-list">
             <div class="testimonial">"Excelente atencion, me ayudaron a elegir el equipo correcto para mi restaurante."<br><strong>- M. Vargas</strong></div>
             <div class="testimonial">"Respuesta rapida y todo llego como acordamos. Muy profesionales."<br><strong>- C. Rojas</strong></div>
@@ -2388,7 +2471,7 @@
 
   <footer class="site-footer">
     <div class="container footer-inner">
-      <p class="footer-copy">(c) 2026 Mi empresa - este es el eslogan de tu empresa</p>
+      <p class="footer-copy">(c) 2026 Grupo Duali - Distribuidor 8CAR en Bolivia</p>
       <div class="footer-buttons">
         <button id="footer-btn-sucursales" class="f-btn" type="button">
           <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>
@@ -2488,7 +2571,7 @@
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5c-7 0-11 7-11 7s4 7 11 7 11-7 11-7-4-7-11-7zm0 12a5 5 0 1 1 0-10 5 5 0 0 1 0 10zm0-8a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/></svg>
                 Ver catálogo
               </button>
-              <a class="btn-download" id="cat-dl-main" href="Catalogo%20Ciam%20(2).pdf" download="Catalogo-Completo.pdf" aria-label="Descargar catálogo completo">
+              <a class="btn-download" id="cat-dl-main" href="#" download="Catalogo-Completo.pdf" aria-label="Descargar catálogo completo">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16l-5-5h3V4h4v7h3l-5 5zm-7 2h14v2H5v-2z"/></svg>
                 Descargar PDF
               </a>
@@ -3148,8 +3231,16 @@
         try {
           const resolved = await resolveAssetSourceToUrl(source);
           if (resolved) img.src = resolved;
+          else throw new Error('Asset vacío');
         } catch (e) {
           console.warn('No se pudo resolver imagen Firestore:', e);
+          if (!img.dataset.fallbackApplied) {
+            img.dataset.fallbackApplied = '1';
+            img.src = getProductPlaceholder(img.dataset.category);
+            img.classList.add('is-placeholder');
+            const box = img.closest('.is-loading');
+            if (box) box.classList.remove('is-loading');
+          }
         }
       }));
     }
@@ -3315,6 +3406,7 @@
         cart.push({
           id: product.id,
           name: product.name,
+          category: product.category || '',
           price: effectivePrice,
           image: (product.images && product.images[0]) || product.image || '',
           qty: 1
@@ -3382,8 +3474,8 @@
           div.className = 'cart-item';
           const imgSource = item.image || '';
           const imgMarkup = imgSource
-            ? `<img ${isAssetRef(imgSource) ? `data-media-source="${escapeHtml(imgSource)}"` : `src="${escapeHtml(imgSource)}"`} alt="${escapeHtml(item.name)}" />`
-            : '📦';
+            ? `<img ${isAssetRef(imgSource) ? `data-media-source="${escapeHtml(imgSource)}"` : `src="${escapeHtml(imgSource)}"`} data-category="${escapeHtml(item.category || '')}" alt="${escapeHtml(item.name)}" />`
+            : `<img src="${getProductPlaceholder(item.category)}" class="is-placeholder" alt="${escapeHtml(item.name)} — imagen próximamente" />`;
           div.innerHTML = `
             <div class="cart-item-img">
               ${imgMarkup}
@@ -3407,6 +3499,43 @@
     }
 
     const EMOJIS = { Mopas: 'ðŸ§¹', Carros: 'ðŸ›’', Escobas: 'ðŸ§º', Baldes: 'ðŸª£', Aromas: 'ðŸŒ¸' };
+
+    /* ───────────────────────────────────────────────────────────
+     *  IMAGE FALLBACK – placeholder único y reutilizable
+     *  500x500, fondo blanco, logo Grupo Duali, icono por categoría
+     *  y texto "Imagen próximamente". Es un SVG en data-URI: NO genera
+     *  peticiones de red, NO afecta lazy/skeleton y no produce CLS.
+     * ─────────────────────────────────────────────────────────── */
+    const _placeholderCache = new Map();
+    function getProductPlaceholder(category) {
+      const cat = String(category || '');
+      if (_placeholderCache.has(cat)) return _placeholderCache.get(cat);
+      const icon = EMOJIS[cat] || '📦';
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="500" height="500" viewBox="0 0 500 500">`
+        + `<rect width="500" height="500" fill="#ffffff"/>`
+        + `<rect x="8" y="8" width="484" height="484" rx="22" fill="none" stroke="#e2e8e6" stroke-width="2"/>`
+        + `<text x="250" y="225" font-size="150" text-anchor="middle" dominant-baseline="central">${icon}</text>`
+        + `<text x="250" y="345" font-family="Arial, sans-serif" font-size="30" font-weight="700" fill="#5d6168" text-anchor="middle">Imagen próximamente</text>`
+        + `<text x="250" y="392" font-family="Arial, sans-serif" font-size="22" font-weight="700" letter-spacing="2" fill="#14b51f" text-anchor="middle">GRUPO DUALI</text>`
+        + `</svg>`;
+      const uri = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+      _placeholderCache.set(cat, uri);
+      return uri;
+    }
+
+    /* Fallback global: cualquier <img> de producto que falle (404, URL
+       inválida, asset borrado de Firebase, error de red, onerror del
+       navegador) se reemplaza una sola vez por el placeholder. Captura en
+       fase de captura porque el evento "error" de imágenes no burbujea. */
+    document.addEventListener('error', function (e) {
+      const img = e.target;
+      if (!(img instanceof HTMLImageElement) || img.dataset.fallbackApplied) return;
+      if (!img.closest('.product-img, .cart-item-img, .product-detail-main, .product-detail-gallery, .media-box')) return;
+      img.dataset.fallbackApplied = '1';
+      img.src = getProductPlaceholder(img.dataset.category);
+      img.classList.add('is-placeholder');
+    }, true);
+
 
     function renderProducts(list, totalCount) {
       const grid = document.getElementById('products-grid');
@@ -3446,7 +3575,7 @@
 
         card.innerHTML = `
           <div class="product-img">
-            ${img0 ? `<img ${imgAttr} alt="${escapeHtml(p.name)}" loading="lazy" />` : `<div class="no-img">${emoji}</div>`}
+            ${img0 ? `<img ${imgAttr} data-category="${escapeHtml(p.category || '')}" alt="${escapeHtml(p.name)} 8CAR — ${escapeHtml(p.category || '')} para construcción, industria y automotriz" loading="lazy" />` : `<img src="${getProductPlaceholder(p.category)}" class="is-placeholder" alt="${escapeHtml(p.name)} 8CAR — ${escapeHtml(p.category || '')}, imagen próximamente" loading="lazy" />`}
           </div>
           <div class="product-body">
             <div class="product-cat">${escapeHtml(p.category)}</div>
@@ -3464,6 +3593,41 @@
       });
       setupMediaSkeletons(grid);
       hydrateMediaImages(grid);
+      injectProductsJsonLd(list);
+    }
+
+    // Datos estructurados Schema.org/Product (ItemList) para SEO de productos
+    function injectProductsJsonLd(list) {
+      try {
+        const existing = document.getElementById('products-jsonld');
+        if (existing) existing.remove();
+        if (!Array.isArray(list) || !list.length) return;
+        const items = list.slice(0, 40).map((p, i) => ({
+          "@type": "ListItem",
+          "position": i + 1,
+          "item": {
+            "@type": "Product",
+            "name": p.name,
+            "category": p.category || undefined,
+            "brand": { "@type": "Brand", "name": "8CAR" },
+            "description": p.description || `${p.name} 8CAR distribuido por Grupo Duali en Bolivia.`,
+            "offers": {
+              "@type": "Offer",
+              "priceCurrency": "BOB",
+              "price": Number(getEffectivePrice(p)).toFixed(2),
+              "availability": getStockValue(p) > 0
+                ? "https://schema.org/InStock"
+                : "https://schema.org/PreOrder"
+            }
+          }
+        }));
+        const data = { "@context": "https://schema.org", "@type": "ItemList", "itemListElement": items };
+        const s = document.createElement('script');
+        s.type = 'application/ld+json';
+        s.id = 'products-jsonld';
+        s.textContent = JSON.stringify(data);
+        document.head.appendChild(s);
+      } catch (e) { /* no-op: SEO opcional */ }
     }
 
     function openProductDetail(productId) {
@@ -3477,7 +3641,7 @@
         const attr = isAssetRef(url)
           ? `data-media-source="${escapeHtml(url)}"`
           : `src="${escapeHtml(url)}"`;
-        return `<img ${attr} alt="${escapeHtml(product.name)}" loading="lazy" />`;
+        return `<img ${attr} data-category="${escapeHtml(product.category || '')}" alt="${escapeHtml(product.name)} 8CAR — vista adicional" loading="lazy" />`;
       }).join('');
       const discount = getDiscountValue(product);
       const finalPrice = getEffectivePrice(product);
@@ -3494,7 +3658,7 @@
 
       const detailEl = document.getElementById('product-detail-content');
       detailEl.innerHTML = `
-        ${img0 ? `<img class="product-detail-main" ${mainImgAttr} alt="${escapeHtml(product.name)}" loading="lazy" />` : `<div class="product-detail-main" style="display:flex;align-items:center;justify-content:center;font-size:2rem;">📦</div>`}
+        ${img0 ? `<img class="product-detail-main" ${mainImgAttr} data-category="${escapeHtml(product.category || '')}" alt="${escapeHtml(product.name)} 8CAR — ${escapeHtml(product.category || '')} en Bolivia" loading="lazy" />` : `<img class="product-detail-main is-placeholder" src="${getProductPlaceholder(product.category)}" alt="${escapeHtml(product.name)} 8CAR — ${escapeHtml(product.category || '')}, imagen próximamente" loading="lazy" />`}
         ${thumbs ? `<div class="product-detail-gallery">${thumbs}</div>` : ''}
         <div class="product-detail-meta">${escapeHtml(product.category)}</div>
         <h3 class="product-detail-name">${escapeHtml(product.name)}</h3>

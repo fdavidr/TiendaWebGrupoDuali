@@ -3,7 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mi empresa – Panel Admin</title>
+  <title>Panel Admin – Grupo Duali</title>
+  <meta name="description" content="Panel de administración de Grupo Duali. Acceso restringido." />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#7c3aed" />
+  <link rel="icon" type="image/svg+xml" href="img/Mi logo.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -157,6 +161,13 @@
       gap: 1rem;
       flex-wrap: wrap;
       overflow: hidden;
+      /* Auto-hide: deslizamiento suave hacia arriba/abajo */
+      transition: transform 260ms cubic-bezier(.4, 0, .2, 1);
+    }
+
+    /* Estado oculto del header: se desliza fuera del viewport hacia arriba */
+    header.header--hidden {
+      transform: translateY(-100%);
     }
 
     header::before {
@@ -450,6 +461,8 @@
     .sidebar {
       position: sticky;
       top: 92px;
+      /* Sigue al header cuando se oculta (solo escritorio) */
+      transition: top 260ms cubic-bezier(.4, 0, .2, 1);
       background: linear-gradient(150deg, var(--accent2) 0%, var(--accent) 55%, var(--accent3) 100%);
       border: 1px solid rgba(255,255,255,.15);
       border-radius: 20px;
@@ -1343,18 +1356,6 @@
             </div>
           </div>
 
-          <div class="panel category-manager">
-            <div class="panel-title">🏷️ Categorías</div>
-            <p class="cfg-help">Crea y elimina las categorías sugeridas al registrar productos. Se guardan automáticamente y aparecen como sugerencias en el formulario de producto.</p>
-            <div class="cfg-add-row">
-              <input type="text" id="cfg-category-input" placeholder="Ej: Limpieza pesada" maxlength="40" aria-label="Nueva categoría" />
-              <button class="btn-pdf" id="btn-add-category" type="button">Agregar</button>
-            </div>
-            <div class="cfg-list" id="cfg-categories-list">
-              <p class="cfg-empty">No hay categorías configuradas.</p>
-            </div>
-          </div>
-
           <div id="product-form-panel" class="form-modal-overlay" aria-hidden="true">
             <div class="form-modal">
               <button class="form-modal-close" id="product-form-close" aria-label="Cerrar">×</button>
@@ -1443,6 +1444,7 @@
                   <div class="img-preview" id="img-preview2"><span>2</span></div>
                   <div class="img-preview" id="img-preview3"><span>3</span></div>
                 </div>
+                <p id="no-image-warning" style="display:none;margin-top:.55rem;padding:.55rem .7rem;border:1px solid rgba(220,38,38,.35);background:#fff1f1;color:var(--danger);border-radius:10px;font-size:.78rem;line-height:1.45;">⚠ Sin imagen — este producto no tiene imagen. La tienda mostrará un placeholder automáticamente. Puedes guardarlo igualmente.</p>
               </div>
 
                   <div class="form-actions">
@@ -2883,6 +2885,7 @@
     hidden.value = String(source || '').trim();
     nameEl.textContent = displayName || (source ? (isAssetRef(source) ? 'Archivo guardado en Firestore' : getFileNameFromUrl(source)) : 'Sin archivo subido');
     updateImagePreview(hidden.value, slot);
+    refreshNoImageWarning();
   }
 
   async function uploadImageSlot(slot) {
@@ -3292,6 +3295,7 @@
     document.getElementById('f-image-name3').textContent = 'Sin archivo subido';
     document.getElementById('f-desc').value  = '';
     [1,2,3].forEach(n => { document.getElementById(`img-preview${n}`).innerHTML = `<span>${n}</span>`; });
+    refreshNoImageWarning();
     document.getElementById('form-mode-label').textContent = '➕ Agregar Producto';
     document.getElementById('btn-save').textContent = 'Guardar Producto';
     document.getElementById('btn-cancel').style.display = 'none';
@@ -3319,6 +3323,7 @@
     document.getElementById('btn-save').textContent = 'Actualizar Producto';
     document.getElementById('btn-cancel').style.display = 'inline-flex';
     [1,2,3].forEach(n => updateImagePreview(imgs[n-1]||'', n));
+    refreshNoImageWarning();
     renderList();
     openProductFormPanel();
     document.getElementById('f-name').focus();
@@ -3342,6 +3347,14 @@
       .catch(() => {
         prev.innerHTML = `<span>❌</span>`;
       });
+  }
+
+  // Muestra/oculta la advertencia "Sin imagen" según los 3 campos de imagen.
+  function refreshNoImageWarning() {
+    const warn = document.getElementById('no-image-warning');
+    if (!warn) return;
+    const hasImage = [1,2,3].some(n => (document.getElementById(`f-image${n}`).value || '').trim());
+    warn.style.display = hasImage ? 'none' : 'block';
   }
 
   function validateForm() {
@@ -3595,6 +3608,73 @@
   window.addEventListener('beforeunload', (e) => {
     if (_dirty) { e.preventDefault(); e.returnValue = ''; }
   });
+
+  // ─────────────────────────────────────────────
+  //  AUTO-HIDE HEADER
+  //  Se oculta al bajar, reaparece al subir.
+  //  Usa requestAnimationFrame para no bloquear el hilo principal.
+  // ─────────────────────────────────────────────
+  (function autoHideHeader() {
+    const hdr     = document.querySelector('header');
+    const sidebar = document.querySelector('.sidebar');
+    if (!hdr) return;
+
+    // Altura completa del header medida una sola vez
+    const HDR_H      = hdr.getBoundingClientRect().height;
+    // Píxeles mínimos de desplazamiento para disparar el cambio (evita micro-movimientos)
+    const THRESHOLD  = 6;
+    // Margen superior para la sidebar cuando el header está oculto (desktop)
+    const SIDEBAR_TOP_VISIBLE = 92;   // px — coincide con el top: 92px del CSS
+    const SIDEBAR_TOP_HIDDEN  = 8;    // px — margen residual cuando el header desaparece
+
+    let lastScrollY = window.scrollY;
+    let ticking     = false;
+    let isHidden    = false;
+
+    function applyState(hide) {
+      if (hide === isHidden) return;   // sin cambio → sin repaint
+      isHidden = hide;
+
+      if (hide) {
+        hdr.classList.add('header--hidden');
+        // Solo ajustar sidebar en escritorio (en móvil es un drawer fijo)
+        if (sidebar && window.innerWidth > 930) {
+          sidebar.style.top = SIDEBAR_TOP_HIDDEN + 'px';
+        }
+      } else {
+        hdr.classList.remove('header--hidden');
+        if (sidebar && window.innerWidth > 930) {
+          sidebar.style.top = SIDEBAR_TOP_VISIBLE + 'px';
+        }
+      }
+    }
+
+    function onFrame() {
+      const currentY = window.scrollY;
+      const delta    = currentY - lastScrollY;
+
+      if (currentY <= HDR_H) {
+        // Siempre visible cuando estamos cerca del tope
+        applyState(false);
+      } else if (delta >  THRESHOLD) {
+        // Scrolleando hacia abajo → ocultar
+        applyState(true);
+      } else if (delta < -THRESHOLD) {
+        // Scrolleando hacia arriba → mostrar
+        applyState(false);
+      }
+
+      lastScrollY = currentY;
+      ticking     = false;
+    }
+
+    window.addEventListener('scroll', function () {
+      if (!ticking) {
+        requestAnimationFrame(onFrame);
+        ticking = true;
+      }
+    }, { passive: true });
+  })();
 
   // ─────────────────────────────────────────────
   //  INIT — load default products if storage empty
