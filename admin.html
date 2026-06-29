@@ -2681,6 +2681,7 @@
 
   function renderCategoryConfig() {
     const container = document.getElementById('cfg-categories-list');
+    if (!container) return;
     const cats = _customCategories;
     if (!cats.length) {
       container.innerHTML = '<p class="cfg-empty">No hay categorías configuradas.</p>';
@@ -3522,13 +3523,15 @@
     markDirty();
   });
 
-  document.getElementById('cfg-category-input').addEventListener('keydown', function(e) {
+  const _cfgCatInput = document.getElementById('cfg-category-input');
+  if (_cfgCatInput) _cfgCatInput.addEventListener('keydown', function(e) {
     if (e.key === 'Enter') {
       e.preventDefault();
       addCategoryFromConfig();
     }
   });
-  document.getElementById('cfg-categories-list').addEventListener('click', function(e) {
+  const _cfgCatList = document.getElementById('cfg-categories-list');
+  if (_cfgCatList) _cfgCatList.addEventListener('click', function(e) {
     const btn = e.target.closest('.cfg-remove');
     if (!btn) return;
     removeCategoryFromConfig(btn.dataset.category);
