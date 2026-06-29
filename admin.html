@@ -3486,7 +3486,8 @@
     document.getElementById('f-name').focus();
   });
 
-  document.getElementById('btn-add-category').addEventListener('click', addCategoryFromConfig);
+  const _btnAddCat = document.getElementById('btn-add-category');
+  if (_btnAddCat) _btnAddCat.addEventListener('click', addCategoryFromConfig);
   document.getElementById('btn-upload-logo').addEventListener('click', async () => {
     const source = await uploadBrandingLogo();
     if (source) {
