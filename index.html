@@ -16,8 +16,8 @@
   <meta name="geo.placename" content="Cochabamba, Santa Cruz, Bolivia" />
 
   <!-- Favicon e iconos -->
-  <link rel="icon" type="image/svg+xml" href="img/Mi logo.svg" />
-  <link rel="apple-touch-icon" href="img/Mi logo.svg" />
+  <link rel="icon" type="image/svg+xml" href="img/grupodualiLogo.png" />
+  <link rel="apple-touch-icon" href="img/grupodualiLogo.png" />
   <link rel="manifest" href="site.webmanifest" />
 
   <!-- Open Graph (Facebook / WhatsApp) -->
@@ -104,7 +104,6 @@
         if (vis.info === false) h.push('info');
         return h.join(' ');
       }
-      function usableLogo(src) { return src && String(src).indexOf('firestore-asset:') !== 0; }
       // Returns a displayable URL from cache: uses pre-resolved data URL (for Firestore assets)
       // or the direct URL; never returns raw firestore-asset: refs.
       function getCachedLogoUrl(cache) {
@@ -134,6 +133,16 @@
           if (el) { el.src = logoUrl; el.style.visibility = ''; if (n) el.alt = n; }
         }
       }
+      // Theme neutro y limpio para la PRIMERA visita (sin caché todavía).
+      // Evita pintar los colores de marca por defecto y luego corregirlos cuando
+      // responde Firestore: en su lugar se muestra un lienzo neutro intencional
+      // (alineado con el Skeleton Loading) hasta aplicar el tema real.
+      var NEUTRAL_TC = {
+        brand: '#6b7280', bg: '#ffffff', panel: '#ffffff',
+        text: '#111111', muted: '#6b7280', border: '#e5e7eb',
+        headerBg: '#ffffff', headerText: '#111111',
+        footerBg: '#1f2937', footerText: '#ffffff'
+      };
       try {
         var t = localStorage.getItem('_siteTheme');
         if (t) {
@@ -161,8 +170,14 @@
               __applyAndReveal();
             }
           }
+        } else {
+          // Primera visita: aplicar tema neutro antes del primer pintado.
+          applyTC(NEUTRAL_TC);
         }
-      } catch(e){}
+      } catch(e){
+        // Caché corrupta: caer al tema neutro para no mostrar un flash de marca.
+        try { applyTC(NEUTRAL_TC); } catch(_e){}
+      }
     })();
   </script>
 
@@ -200,11 +215,11 @@
       --text: #111111;           /* Texto principal */
       --muted: #5d6168;          /* Texto secundario / subtítulos */
       /* ── Color de marca: CAMBIA ESTOS para otro cliente ── */
-      --brand: #14b51f;                        /* Color primario de marca */
-      --brand-dark: #0d8f16;                   /* Variante oscura (hover, gradientes) */
+      --brand: #6714b5;                        /* Color primario de marca */
+      --brand-dark: #6714b5;                   /* Variante oscura (hover, gradientes) */
       --brand-light: rgba(20, 181, 31, 0.14);  /* Variante suave (chips, fondos) */
-      --accent: #14b51f;         /* Acento de UI (igual a brand por defecto) */
-      --ok: #14b51f;             /* Indicador positivo (stock, confirmaciones) */
+      --accent: #6714b5;         /* Acento de UI (igual a brand por defecto) */
+      --ok: #6714b5;             /* Indicador positivo (stock, confirmaciones) */
       /* ── Encabezado ── */
       --header-bg: rgba(243, 248, 248, 0.9);   /* Fondo del encabezado */
       --header-text: #111111;                  /* Texto / nombre del encabezado */
@@ -224,7 +239,7 @@
       color: var(--text);
       font-family: 'Plus Jakarta Sans', sans-serif;
       background: var(--body-bg,
-        radial-gradient(circle at 0% 0%, rgba(20, 181, 31, 0.14) 0, transparent 45%),
+        radial-gradient(circle at 0% 0%, rgba(211, 212, 211, 0.14) 0, transparent 45%),
         radial-gradient(circle at 100% 8%, rgba(0, 0, 0, 0.05) 0, transparent 35%),
         linear-gradient(180deg, #f4f5f6 0%, #ffffff 60%, #eceef1 100%));
       overflow-x: hidden;
@@ -504,7 +519,7 @@
     .btn-solid {
       color: #fff;
       background: linear-gradient(135deg, var(--brand-dark), var(--brand));
-      box-shadow: 0 10px 22px rgba(12, 138, 123, 0.3);
+      box-shadow: 0 10px 22px rgba(208, 209, 209, 0.3);
     }
 
     .btn-solid:hover { transform: translateY(-1px); box-shadow: 0 14px 30px rgba(12, 138, 123, 0.37); }
@@ -745,7 +760,7 @@
       text-transform: uppercase;
       font-weight: 700;
       background: linear-gradient(135deg, var(--brand-dark), var(--brand));
-      box-shadow: 0 8px 18px rgba(12, 138, 123, 0.26);
+      box-shadow: 0 8px 18px rgba(233, 235, 234, 0.26);
       transition: 0.2s ease;
       display: flex;
       align-items: center;
@@ -2267,7 +2282,7 @@
   <header>
     <div class="container topbar">
       <a href="index.html" class="logo-wrap">
-        <img src="img/mi logo.svg" alt="Grupo Duali, distribuidor 8CAR Bolivia" />
+        <img src="img/grupodualiLogo.png" alt="Grupo Duali, distribuidor 8CAR Bolivia" />
         <span>Grupo Duali</span>
       </a>
       <nav class="nav-links">
@@ -2306,7 +2321,7 @@
       <div class="hero-content">
         <img
           id="hero-logo-img"
-          src="img/mi logo.svg"
+          src="img/grupodualiLogo.png"
           alt="Logo de Grupo Duali, distribuidor 8CAR"
           class="hero-logo-img"
           width="78" height="78"
@@ -2608,7 +2623,7 @@
 
       <!-- Hero empresa -->
       <div class="mdl-cf-hero">
-        <img src="img/mi logo.svg" id="cf-logo-img" alt="Logo" class="mdl-cf-logo" width="52" height="52" loading="lazy" />
+        <img src="img/grupodualiLogo.png" id="cf-logo-img" alt="Logo" class="mdl-cf-logo" width="52" height="52" loading="lazy" />
         <div>
           <div class="mdl-cf-company" id="cf-company-name">Mi empresa</div>
           <div class="mdl-cf-slogan" id="cf-company-slogan">este es el eslogan de tu empresa</div>
@@ -2679,7 +2694,7 @@
     let _branding = {
       companyName: 'Mi empresa',
       slogan: 'este es el eslogan de tu empresa',
-      logo: 'img/mi logo.svg'
+      logo: 'img/grupodualiLogo.png'
     };
     let _siteConfig = {
       socialLinks: { youtube: '', tiktok: '', instagram: '', facebook: '' },
@@ -2928,12 +2943,6 @@
       `).join('');
     }
 
-    function setVisibilityById(id, visible) {
-      const el = document.getElementById(id);
-      if (!el) return;
-      el.style.display = visible ? '' : 'none';
-    }
-
     function applySectionVisibility() {
       const vis = normalizeSectionVisibility(_siteConfig.sectionVisibility);
       // Drive visibility through the data-hide attribute + CSS (no inline-style flash)
@@ -3096,7 +3105,7 @@
         const data = snap.exists ? snap.data() : {};
         const companyName = String(data.companyName || 'Mi empresa').trim();
         const slogan = String(data.slogan || 'este es el eslogan de tu empresa').trim();
-        const logoSource = data.logoAssetId ? makeAssetRef(data.logoAssetId) : String(data.logo || 'img/mi logo.svg').trim();
+        const logoSource = data.logoAssetId ? makeAssetRef(data.logoAssetId) : String(data.logo || 'img/grupodualiLogo.png').trim();
         const themeColors = normalizeThemeColors(data.themeColors);
         _siteConfig = {
           socialLinks: normalizeSocialLinks(data.socialLinks || {}),
@@ -3118,7 +3127,7 @@
           try {
             brandImg.src = await resolveAssetSourceToUrl(logoSource);
           } catch (_) {
-            brandImg.src = 'img/mi logo.svg';
+            brandImg.src = 'img/grupodualiLogo.png';
           }
           brandImg.alt = companyName;
         }

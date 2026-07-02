@@ -1992,10 +1992,6 @@
   // ─────────────────────────────────────────────
   //  AUTH HELPERS
   // ─────────────────────────────────────────────
-  function normalizeUsername(value) {
-    return String(value || '').trim().toLowerCase();
-  }
-
   function normalizeBranch(branch) {
     return {
       title: String((branch && branch.title) || '').trim(),
